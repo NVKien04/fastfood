@@ -17,6 +17,13 @@ export class UserRepository
   ) {
     super(repo);
   }
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    return await this.repo.findOne({ where: { email } });
+  }
+
+  async findById(id: string): Promise<UserEntity | null> {
+    return await this.repo.findOne({ where: { id } });
+  }
 
   createUserDemo(userDto: CreateUserDto): Promise<UserEntity> {
     throw new Error('Method not implemented.');

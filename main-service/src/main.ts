@@ -1,11 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { AllExceptionFilter } from './common/filter/all-exception.filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // app.use(helmet();
+
+  const config = new DocumentBuilder()
+    .setTitle('FastFood Api')
+    .setDescription('Xậy dụng Api cho website bán đồ ăn nhanh')
+    .setVersion('1.0')
+    .addTag('FastFood')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('swagger', app, documentFactory, {
+    jsonDocumentUrl: 'swagger/json',
+  });
 
   app.enableCors({
     origin: [
@@ -39,6 +53,8 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix('api');
+
+  app.useGlobalFilters(new AllExceptionFilter());
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
