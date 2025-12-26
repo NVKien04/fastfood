@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { CategoryEntity } from './category.entity';
 
@@ -22,6 +23,9 @@ export class IngredientsEntity {
 
   @Column({ type: 'text' })
   description: string;
+
+  @Column({ type: 'integer', default: 0 })
+  sortOrder: number;
 
   @Column({ type: 'integer' })
   price: number;
@@ -42,6 +46,9 @@ export class IngredientsEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'update_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }

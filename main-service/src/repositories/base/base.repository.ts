@@ -35,6 +35,22 @@ export class BaseRepository<
       this.repo = dataSourceOrRepo as Repository<T>;
     }
   }
+  async softDelete(id: number | string): Promise<{ message: string }> {
+    try {
+      const result = await this.repo.softDelete(id);
+      if (result.affected && result.affected > 0) {
+        return { message: 'Deleted successfully' };
+      }
+      return { message: 'No record found to delete' };
+    } catch (error: any) {
+      console.error(`[DB ERROR] delete failed:`, error.message);
+      throw new BadRequestException({
+        errorCode: error.code,
+        message: `Failed to delete record with id ${id}`,
+        detail: error.message,
+      });
+    }
+  }
   GetPage(filterObj: filterObj): Promise<PaginationResponse<any>> {
     throw new Error('Method not implemented.');
   }

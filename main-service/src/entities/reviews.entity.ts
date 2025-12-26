@@ -6,7 +6,8 @@ import {
   ManyToOne,
   JoinColumn,
   CreateDateColumn, // Thường nên có
-  UpdateDateColumn, // Thường nên có
+  UpdateDateColumn,
+  DeleteDateColumn, // Thường nên có
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { ProductEntity } from './product.entity';
@@ -54,6 +55,9 @@ export class ReviewEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'update_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }

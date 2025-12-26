@@ -22,12 +22,12 @@ export class AllExceptionFilter implements ExceptionFilter {
     const endTime = Date.now();
     const takenTime = `${endTime - startTime}ms`;
 
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let errorCode = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Hệ thống đang có lỗi';
     let error: string[] | null = null;
 
     if (exception instanceof HttpException) {
-      status = exception.getStatus();
+      errorCode = exception.getStatus();
       const exceptionResponse = exception.getResponse();
       if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
@@ -45,10 +45,10 @@ export class AllExceptionFilter implements ExceptionFilter {
         exception instanceof Error ? exception.stack : exception,
       );
     }
-    const err = new ApiErrorResponseDto(message, status, error);
+    const err = new ApiErrorResponseDto(message, errorCode, error);
     err.takenTime = takenTime;
     err.path = request.url;
 
-    response.status(status).json(err);
+    response.status(errorCode).json(err);
   }
 }

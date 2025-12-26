@@ -10,6 +10,7 @@ import {
   IsEnum,
 } from 'class-validator';
 import { RoleEnum } from 'src/enums/role.enum';
+import { IsNull } from 'typeorm';
 
 export class CreateUserDto {
   @ApiProperty({

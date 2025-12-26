@@ -1,31 +1,22 @@
-import { UserEntity } from 'src/entities/user.entity';
-import { IUserRepository } from './user.repository.interface';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { BaseRepository } from '../base/base.repository';
-import { CreateUserDto } from 'src/dtos/user/create-user.dto';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { CategoryEntity } from 'src/entities/category.entity';
+import { ICategoryRepository } from './category.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { filterObj } from 'src/common/core/filterObj';
 import { PaginationResponse } from 'src/common/core/paganation';
-import { QueryBuilderUtils } from 'typeorm/query-builder/QueryBuilderUtils.js';
 
 @Injectable()
-export class UserRepository
-  extends BaseRepository<UserEntity>
-  implements IUserRepository
+export class CategoryRepository
+  extends BaseRepository<CategoryEntity>
+  implements ICategoryRepository
 {
   constructor(
-    @InjectRepository(UserEntity) repo: Repository<UserEntity>,
+    @InjectRepository(CategoryEntity) repo: Repository<CategoryEntity>,
     private DataSource: DataSource,
   ) {
     super(repo);
-  }
-  async findByEmail(email: string): Promise<UserEntity | null> {
-    return await this.repo.findOne({ where: { email } });
-  }
-
-  async findById(id: string): Promise<UserEntity | null> {
-    return await this.repo.findOne({ where: { id } });
   }
 
   async GetPage(filterObj: filterObj): Promise<PaginationResponse<any>> {
@@ -37,7 +28,7 @@ export class UserRepository
       const skip = (page - 1) * limit;
       const filter = filterObj.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'users';
+      let entity = 'category';
       let relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
       // QueryBuilderUtils.applyFilters(qb, filter, entity);

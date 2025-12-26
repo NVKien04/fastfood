@@ -2,6 +2,7 @@ import {
   BadGatewayException,
   BadRequestException,
   Inject,
+  Injectable,
 } from '@nestjs/common';
 import { promises } from 'dns';
 import { LoginDto } from 'src/dtos/auth/login.dto';
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LocalStrategy } from 'src/strategies/local.strategy';
 
+@Injectable()
 export class AuthService {
   constructor(
     @Inject('UserRepositoryInterface')
@@ -46,6 +48,6 @@ export class AuthService {
       uid: id,
       role: role,
     });
-    return accessToken;
+    return { accessToken: accessToken };
   }
 }

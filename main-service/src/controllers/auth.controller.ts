@@ -1,5 +1,15 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { Auth } from 'src/common/decorators/auth.decorator';
 import { LoginDto } from 'src/dtos/auth/login.dto';
+import { RoleEnum } from 'src/enums/role.enum';
+import { JwtAuthGuard } from 'src/guards/jwt.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
 import { AuthService } from 'src/services/auth.service';
 
@@ -7,9 +17,18 @@ import { AuthService } from 'src/services/auth.service';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
   @Post('login')
+  @UseGuards(LocalAuthGuard)
   async Login(@Request() req) {
-    return await this.authService.login(req.id, req.role);
+    const user = req.user;
+    return await this.authService.login(user.id, user.role);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Auth(RoleEnum.CUSTOMER)
+  @Get('test')
+  async Test(@Request() req) {
+    console.log(req.user);
+    return { data: 'kiên dep trai' };
   }
 }

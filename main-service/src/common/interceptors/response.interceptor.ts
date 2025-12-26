@@ -61,7 +61,12 @@ export class ApiResponseInterceptor<T> implements NestInterceptor<
             ? result.data
             : result;
 
-        const response = new ApiResponseDto<T>(true, message, data);
+        const meta =
+          result && typeof result === 'object' && 'meta' in result
+            ? result.meta
+            : result;
+
+        const response = new ApiResponseDto<T>(true, message, data, meta);
         response.path = request.url;
         response.takenTime = takenTime;
 

@@ -32,6 +32,13 @@ export interface IBaseRepository<T> {
   update(id: number | string, entity: DeepPartial<T>): Promise<T | null>;
 
   /**
+   * Soft delete a record by id.
+   * @param {number | string} id - The record's id
+   * @returns {Promise<boolean>} true if deleted, false if not found
+   */
+  softDelete(id: number | string): Promise<{ message: string }>;
+
+  /**
    * Delete a record by id.
    * @param {number | string} id - The record's id
    * @returns {Promise<{ message: string }>} Delete result message

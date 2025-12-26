@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { AddressesEntity } from './addresses.entity';
@@ -79,6 +80,9 @@ export class OrdersEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'update_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }

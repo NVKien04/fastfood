@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   JoinColumn,
   ManyToOne,
+  DeleteDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { CouponsEntity } from './coupons.entity';
@@ -38,6 +39,9 @@ export class UserCouponsEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'update_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }

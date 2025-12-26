@@ -1,8 +1,6 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
-
 dotenv.config();
-
 export default new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -10,10 +8,11 @@ export default new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-
-  synchronize: true,
+  synchronize: false,
   logging: true,
-
-  entities: ['src/entities/**/*.ts'],
+  entities: [
+    __dirname + '/entities/**/*.entity{.ts,.js}',
+    'src/entities/**/*.ts',
+  ],
   migrations: ['src/database/migrations/*.ts'],
 });

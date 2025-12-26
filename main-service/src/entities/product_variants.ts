@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { ProductEntity } from './product.entity';
 import { SizeEnum } from 'src/enums/size.enum';
@@ -39,6 +40,9 @@ export class ProductVariantsEntity {
   @Column({ type: 'integer', default: 1 })
   isActive: number;
 
+  @Column({ type: 'integer', default: 0 })
+  sortOrder: number;
+
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
@@ -49,6 +53,9 @@ export class ProductVariantsEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'update_at', type: 'timestamp' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 }
