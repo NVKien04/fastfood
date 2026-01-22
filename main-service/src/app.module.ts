@@ -4,6 +4,7 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user.module';
@@ -13,9 +14,21 @@ import { StartTimingMiddleware } from './common/middleware/start-timing.middlewa
 import { AuthModule } from './modules/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { StringValue } from 'ms';
+import { CategoryModule } from './modules/category.module';
+import { ProductModule } from './modules/product.module';
+import { IngredientModule } from './modules/ingredient.module';
+import { AddressModule } from './modules/address.module';
+import { CouponModule } from './modules/coupon.module';
+import { ReviewModule } from './modules/review.module';
+import { CartModule } from './modules/cart.module';
+import { OrderModule } from './modules/order.module';
+import { ProductIngredientModule } from './modules/productIngredient.module';
+import { UserCouponModule } from './modules/userCoupon.module';
+import { ProductVariantModule } from './modules/productVariant.module';
 
 @Module({
   imports: [
+    HttpModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -54,6 +67,17 @@ import { StringValue } from 'ms';
     }),
     UserModule,
     AuthModule,
+    CategoryModule,
+    ProductModule,
+    IngredientModule,
+    AddressModule,
+    CouponModule,
+    ReviewModule,
+    CartModule,
+    OrderModule,
+    ProductIngredientModule,
+    UserCouponModule,
+    ProductVariantModule,
   ],
   controllers: [],
   providers: [

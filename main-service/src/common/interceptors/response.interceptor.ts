@@ -25,6 +25,8 @@ export class ApiResponseInterceptor<T> implements NestInterceptor<
         const endTime = Date.now();
         const takenTime = `${endTime - startTime}ms`;
 
+        // console.log('Response result:', result);
+
         // Nếu đã là ApiResponseDto
         if (
           result &&
@@ -64,7 +66,7 @@ export class ApiResponseInterceptor<T> implements NestInterceptor<
         const meta =
           result && typeof result === 'object' && 'meta' in result
             ? result.meta
-            : result;
+            : undefined;
 
         const response = new ApiResponseDto<T>(true, message, data, meta);
         response.path = request.url;

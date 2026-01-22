@@ -7,8 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
-import { IngredientsEntity } from './ingredients.entity';
+import { UserEntity } from './user.entity';
 import { CartItemsEntity } from './cart-items.entity';
 
 @Entity('cart')
@@ -17,24 +19,20 @@ export class CartEntity {
   id: string;
 
   @Column({ type: 'varchar', nullable: false })
-  cartItemId: string;
+  userId: string;
 
-  @ManyToOne(() => CartItemsEntity, (cartItemsEntity) => cartItemsEntity.id)
-  @JoinColumn({ name: 'cartItemId', referencedColumnName: 'id' })
-  cardItem_obj: CartItemsEntity;
+  @OneToOne(() => UserEntity)
+  @JoinColumn({ name: 'userId' })
+  user_obj: UserEntity;
 
-  @Column({ type: 'varchar', nullable: false })
-  ingredientId: string;
+  @Column({ type: 'integer', nullable: false })
+  totalCartPrice: number;
 
-  @ManyToOne(
-    () => IngredientsEntity,
-    (ingredientsEntity) => ingredientsEntity.id,
-  )
-  @JoinColumn({ name: 'ingredientId', referencedColumnName: 'id' })
-  ingredient_obj: IngredientsEntity;
+  @Column({ type: 'integer', nullable: false })
+  totalItemDiff: number;
 
-  @Column({ type: 'integer', default: 1 })
-  quantity: number;
+  @Column({ type: 'integer', nullable: false })
+  totalItems: number;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
@@ -44,4 +42,7 @@ export class CartEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => CartItemsEntity, (cartItem) => cartItem.cart_obj)
+  cartItems: CartItemsEntity[];
 }

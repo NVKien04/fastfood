@@ -8,6 +8,8 @@ import { DataSource, Repository } from 'typeorm';
 import { filterObj } from 'src/common/core/filterObj';
 import { PaginationResponse } from 'src/common/core/paganation';
 import { QueryBuilderUtils } from 'typeorm/query-builder/QueryBuilderUtils.js';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from '#src/dtos/user/response-user.dto';
 
 @Injectable()
 export class UserRepository
@@ -30,12 +32,13 @@ export class UserRepository
 
   async GetPage(filterObj: filterObj): Promise<PaginationResponse<any>> {
     console.log('🚀 ~ UserRepository ~ GetPage ~ :');
+    console.log('🚀 ~ UserRepository ~ GetPage ~ filterObj:', filterObj);
 
     try {
-      const page = Number(filterObj.page) || 1;
-      const limit = Number(filterObj.limit) || 10;
+      const page = Number(filterObj?.page ?? 1);
+      const limit = Number(filterObj?.limit ?? 10);
       const skip = (page - 1) * limit;
-      const filter = filterObj.fillter;
+      const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
       let entity = 'users';
       let relatedFields = [];
@@ -62,15 +65,15 @@ export class UserRepository
 
       const [data, totalItems] = await qb.getManyAndCount();
       // xử lý respone có thể thay data =dataDto
-      // const dataDto = plainToInstance(NhomtieuChiResponeDto, data, {
-      //   // optional: chỉ convert những field có @Expose
-      //   excludeExtraneousValues: false,
-      // });
+      const dataDto = plainToInstance(UserResponseDto, data, {
+        // optional: chỉ convert những field có @Expose
+        excludeExtraneousValues: false,
+      });
       const totalPages = Math.ceil(totalItems / limit);
       const itemCount = data.length;
 
       return {
-        data: data,
+        data: dataDto,
         meta: {
           totalItems,
           itemCount,

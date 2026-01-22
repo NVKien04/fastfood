@@ -7,8 +7,12 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { CategoryEntity } from './category.entity';
+import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';
+import { ProductIngredientsEntity } from './product_ingredients';
+import { OrderItemsIngredientsEntity } from './order-item-ingredients.entity';
 
 @Entity('ingredients')
 export class IngredientsEntity {
@@ -39,7 +43,7 @@ export class IngredientsEntity {
   @Column({ type: 'varchar', nullable: false })
   categoryId: string;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.id)
+  @ManyToOne(() => CategoryEntity, (category) => category.ingredients)
   @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
   category_obj: CategoryEntity;
 
@@ -51,4 +55,19 @@ export class IngredientsEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(
+    () => CartItemIngredientsEntity,
+    (cartItemIngredientsEntity) => cartItemIngredientsEntity.ingredient_obj,
+  )
+  cartItemIngredients: CartItemIngredientsEntity[];
+
+  @OneToMany(
+    () => ProductIngredientsEntity,
+    (product) => product.ingredient_obj,
+  )
+  productIngredients: ProductIngredientsEntity[];
+
+  @OneToMany(() => OrderItemsIngredientsEntity, (oii) => oii.ingredient_obj)
+  orderItemIngredients: OrderItemsIngredientsEntity[];
 }

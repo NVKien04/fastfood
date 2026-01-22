@@ -7,10 +7,13 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { ProductEntity } from './product.entity';
 import { SizeEnum } from 'src/enums/size.enum';
 import { TypeEnum } from 'src/enums/type.enum';
+import { CartItemsEntity } from './cart-items.entity';
+import { OrderItemsEntity } from './order-items.entity';
 
 @Entity('product_variants')
 export class ProductVariantsEntity {
@@ -46,9 +49,12 @@ export class ProductVariantsEntity {
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
-  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.id)
+  @ManyToOne(
+    () => ProductEntity,
+    (productEntity) => productEntity.productVariants,
+  )
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
-  productVariant_obj: ProductEntity;
+  product_obj: ProductEntity;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
@@ -58,4 +64,13 @@ export class ProductVariantsEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => CartItemsEntity, (cartItem) => cartItem.productVariant_obj)
+  cartItems: CartItemsEntity[];
+
+  @OneToMany(
+    () => OrderItemsEntity,
+    (orderItemsEntity) => orderItemsEntity.productVariant_obj,
+  )
+  orderItems: OrderItemsEntity[];
 }

@@ -1,3 +1,4 @@
+import { UserCouponsEntity } from '#src/entities/user-coupons.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController } from 'src/controllers/user.controller';
@@ -6,12 +7,12 @@ import { UserRepository } from 'src/repositories/user/user.repository';
 import { UserService } from 'src/services/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [TypeOrmModule.forFeature([UserEntity, UserCouponsEntity])],
   controllers: [UserController],
   providers: [
     UserService,
     {
-      provide: 'UserRepositoryInterface',
+      provide: 'IUserRepository',
       useClass: UserRepository,
     },
   ],

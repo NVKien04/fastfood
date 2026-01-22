@@ -7,7 +7,8 @@ import {
   JoinColumn,
   CreateDateColumn, // Thường nên có
   UpdateDateColumn,
-  DeleteDateColumn, // Thường nên có
+  DeleteDateColumn,
+  OneToOne, // Thường nên có
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { ProductEntity } from './product.entity';
@@ -32,7 +33,7 @@ export class ReviewEntity {
   @Column({ type: 'varchar', nullable: false })
   userId: string;
 
-  @ManyToOne(() => UserEntity, (userEntity) => userEntity.id)
+  @ManyToOne(() => UserEntity, (userEntity) => userEntity.reviews)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user_obj: UserEntity;
 
@@ -40,17 +41,17 @@ export class ReviewEntity {
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
-  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.id)
+  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.reviews)
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product_obj: ProductEntity;
 
   // Quan hệ ManyToOne với Order
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ name: 'order_id', type: 'varchar', unique: true })
   orderId: string;
 
-  @ManyToOne(() => OrdersEntity, (order) => order.id)
-  @JoinColumn({ name: 'orderId', referencedColumnName: 'id' })
-  order_obj: OrdersEntity;
+  @OneToOne(() => OrdersEntity, (order) => order.review)
+  @JoinColumn({ name: 'order_id' }) // 🔥 FK nằm ở Review
+  order: OrdersEntity;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;

@@ -7,12 +7,16 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
   JoinColumn,
   DeleteDateColumn,
+  ManyToOne,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { AddressesEntity } from './addresses.entity';
+import { ReviewEntity } from './reviews.entity';
+import { OrderItemsEntity } from './order-items.entity';
 
 @Entity('orders')
 export class OrdersEntity {
@@ -66,14 +70,14 @@ export class OrdersEntity {
   @Column({ type: 'varchar', nullable: false })
   userId: string;
 
-  @OneToMany(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.orders)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user_obj: UserEntity;
 
   @Column({ type: 'varchar', nullable: false })
   addressId: string;
 
-  @OneToMany(() => AddressesEntity, (addressesEntity) => addressesEntity.id)
+  @ManyToOne(() => AddressesEntity, (addressesEntity) => addressesEntity.orders)
   @JoinColumn({ name: 'addressId', referencedColumnName: 'id' })
   address_obj: AddressesEntity;
 
@@ -85,4 +89,13 @@ export class OrdersEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToOne(() => ReviewEntity, (review) => review.order)
+  review: ReviewEntity;
+
+  @OneToMany(
+    () => OrderItemsEntity,
+    (orderItemsEntity) => orderItemsEntity.productVariant_obj,
+  )
+  orderItems: OrderItemsEntity[];
 }

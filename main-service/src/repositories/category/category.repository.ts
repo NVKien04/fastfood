@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { filterObj } from 'src/common/core/filterObj';
 import { PaginationResponse } from 'src/common/core/paganation';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CategoryRepository
@@ -19,18 +20,25 @@ export class CategoryRepository
     super(repo);
   }
 
-  async GetPage(filterObj: filterObj): Promise<PaginationResponse<any>> {
-    console.log('🚀 ~ UserRepository ~ GetPage ~ :');
+  async GetPage(filterObj?: any): Promise<PaginationResponse<any>> {
+    console.log('🚀 ~ CategoryRepository ~ GetPage ~ :');
 
     try {
-      const page = Number(filterObj.page) || 1;
-      const limit = Number(filterObj.limit) || 10;
+      const page = Number(filterObj?.page ?? 1);
+      const limit = Number(filterObj?.limit ?? 10);
       const skip = (page - 1) * limit;
-      const filter = filterObj.fillter;
+      const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
       let entity = 'category';
-      let relatedFields = [];
+      let relatedFields = [
+        {
+          field: 'products',
+          alias: 'products',
+          select: ['id', 'name'],
+        },
+      ];
       const qb = this.repo.createQueryBuilder(entity);
+
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
 
       if (relatedFields.length > 0) {

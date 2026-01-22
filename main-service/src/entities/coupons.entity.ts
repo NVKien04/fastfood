@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { UserCouponsEntity } from './user-coupons.entity';
 
 @Entity('coupons')
 export class CouponsEntity {
@@ -50,4 +52,7 @@ export class CouponsEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => UserCouponsEntity, (uc) => uc.coupons_obj)
+  userCoupons: UserCouponsEntity[];
 }

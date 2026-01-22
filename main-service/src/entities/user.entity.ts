@@ -6,7 +6,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
+  OneToOne,
 } from 'typeorm';
+import { AddressesEntity } from './addresses.entity';
+import { UserCouponsEntity } from './user-coupons.entity';
+import { ReviewEntity } from './reviews.entity';
+import { OrdersEntity } from './orders.entity';
+import { CartEntity } from './cart.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -46,4 +53,19 @@ export class UserEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => AddressesEntity, (address) => address.user_obj)
+  addresses: AddressesEntity[];
+
+  @OneToMany(() => UserCouponsEntity, (userCoupon) => userCoupon.user_obj)
+  userCoupons: UserCouponsEntity[];
+
+  @OneToMany(() => ReviewEntity, (review) => review.user_obj)
+  reviews: ReviewEntity[];
+
+  @OneToMany(() => OrdersEntity, (order) => order.user_obj)
+  orders: OrdersEntity[];
+
+  @OneToOne(() => CartEntity, (cart) => cart.user_obj)
+  cart: CartEntity;
 }

@@ -7,10 +7,12 @@ import {
   JoinColumn,
   ManyToOne,
   DeleteDateColumn,
+  Index,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { CouponsEntity } from './coupons.entity';
 
+@Index(['userId', 'couponsId'], { unique: true })
 @Entity('user_coupons')
 export class UserCouponsEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -25,14 +27,14 @@ export class UserCouponsEntity {
   @Column({ type: 'varchar', nullable: false })
   userId: string;
 
-  @ManyToOne(() => UserEntity, (userEntity) => userEntity.id)
+  @ManyToOne(() => UserEntity, (userEntity) => userEntity.userCoupons)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user_obj: UserEntity;
 
   @Column({ type: 'varchar', nullable: false })
   couponsId: string;
 
-  @ManyToOne(() => CouponsEntity, (couponsEntity) => couponsEntity.id)
+  @ManyToOne(() => CouponsEntity, (couponsEntity) => couponsEntity.userCoupons)
   @JoinColumn({ name: 'couponsId', referencedColumnName: 'id' })
   coupons_obj: CouponsEntity;
 

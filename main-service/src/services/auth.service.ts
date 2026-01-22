@@ -1,21 +1,12 @@
-import {
-  BadGatewayException,
-  BadRequestException,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
-import { promises } from 'dns';
-import { LoginDto } from 'src/dtos/auth/login.dto';
-import { UserEntity } from 'src/entities/user.entity';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import type { IUserRepository } from 'src/repositories/user/user.repository.interface';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { LocalStrategy } from 'src/strategies/local.strategy';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('UserRepositoryInterface')
+    @Inject('IUserRepository')
     private readonly repo: IUserRepository,
     private readonly jwtService: JwtService,
   ) {}

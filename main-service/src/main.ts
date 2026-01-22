@@ -1,11 +1,13 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AllExceptionFilter } from './common/filter/all-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import dataSource from './data-source';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  console.log(dataSource.entityMetadatas.map((e) => e.name));
 
   // app.use(helmet();
 
@@ -48,10 +50,14 @@ async function bootstrap() {
       whitelist: true, //xóa các fields không có trong dto
       forbidNonWhitelisted: true, //báo lỗi dư thưa fields
       disableErrorMessages: false,
-      transformOptions: { enableImplicitConversion: true }, //cho phép transform dữ liệu của fields
+      transformOptions: {
+        enableImplicitConversion: true,
+        exposeDefaultValues: true,
+      }, //cho phép transform dữ liệu của fields
     }),
   );
 
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.setGlobalPrefix('api');
 
   app.useGlobalFilters(new AllExceptionFilter());

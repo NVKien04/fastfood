@@ -7,11 +7,12 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { ProductVariantsEntity } from './product_variants';
-import { OrdersEntity } from './orders.entity';
 import { ProductEntity } from './product.entity';
-import { CartsEntity } from './carts.entity';
+import { CartEntity } from './cart.entity';
+import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';
 
 @Entity('cart_items')
 export class CartItemsEntity {
@@ -21,7 +22,7 @@ export class CartItemsEntity {
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
-  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.id)
+  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.cartItems)
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product_obj: ProductEntity;
 
@@ -30,17 +31,17 @@ export class CartItemsEntity {
 
   @ManyToOne(
     () => ProductVariantsEntity,
-    (product_variants) => product_variants.id,
+    (product_variants) => product_variants.cartItems,
   )
   @JoinColumn({ name: 'productVariantId', referencedColumnName: 'id' })
-  productVariant_obj: OrdersEntity;
+  productVariant_obj: ProductVariantsEntity;
 
   @Column({ type: 'varchar', nullable: false })
-  cartsId: string;
+  cartId: string;
 
-  @ManyToOne(() => CartsEntity, (cartsEntity) => cartsEntity.id)
-  @JoinColumn({ name: 'cartsId', referencedColumnName: 'id' })
-  carts_obj: OrdersEntity;
+  @ManyToOne(() => CartEntity, (cartEntity) => cartEntity.cartItems)
+  @JoinColumn({ name: 'cartId', referencedColumnName: 'id' })
+  cart_obj: CartEntity;
 
   @Column({ type: 'integer', default: 1 })
   quantity: number;
@@ -49,7 +50,12 @@ export class CartItemsEntity {
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
-
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(
+    () => CartItemIngredientsEntity,
+    (cartItemIngredientsEntity) => cartItemIngredientsEntity.cartItem_obj,
+  )
+  cartItemIngredients: CartItemIngredientsEntity[];
 }

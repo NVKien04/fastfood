@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { UpdateUserDto } from '#src/dtos/user/update-user.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CreateUserDto } from 'src/dtos/user/create-user.dto';
 import { RoleEnum } from 'src/enums/role.enum';
@@ -9,25 +18,35 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
-  CreateUserDemo(@Body() userDto: CreateUserDto) {
-    const user = this.userService.register(userDto);
+  async register(@Body() userDto: CreateUserDto) {
+    const user = await this.userService.register(userDto);
     return {
       data: user,
     };
   }
-
   @Auth(RoleEnum.ADMIN)
   @Get('')
-  getAllUser() {
-    const users = this.userService.getAllUser();
+  async getAll() {
+    const users = await this.userService.getAllUser();
     return {
       data: users,
     };
   }
-
   @Auth(RoleEnum.ADMIN)
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.userService.delete(id);
+  }
+
+  @Auth(RoleEnum.CUSTOMER)
+  @Patch('update/:id')
+  async update(@Body('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return await this.userService.update(id, updateUserDto);
+  }
+
+  // @Auth(RoleEnum.ADMIN)
   @Post('get-page')
-  getPage(@Body() filterObject: any) {
-    return this.userService.getPage(filterObject);
+  async getPage(@Body() filterObject: any) {
+    return await this.userService.getPage(filterObject);
   }
 }

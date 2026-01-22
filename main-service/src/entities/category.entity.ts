@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { ProductEntity } from './product.entity';
+import { IngredientsEntity } from './ingredients.entity';
 
 @Entity('category')
 export class CategoryEntity {
@@ -40,4 +43,10 @@ export class CategoryEntity {
     default: null,
   })
   deletedAt?: Date;
+
+  @OneToMany(() => ProductEntity, (product) => product.category_obj)
+  products: ProductEntity[];
+
+  @OneToMany(() => IngredientsEntity, (ingredient) => ingredient.category_obj)
+  ingredients: IngredientsEntity[];
 }

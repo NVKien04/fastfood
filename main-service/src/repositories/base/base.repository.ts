@@ -4,6 +4,8 @@ import {
   ObjectLiteral,
   DeepPartial,
   FindOptionsWhere,
+  FindOptionsOrder,
+  EntityManager,
 } from 'typeorm';
 import { IBaseRepository } from './base.interface';
 import { BadRequestException } from '@nestjs/common';
@@ -35,6 +37,33 @@ export class BaseRepository<
       this.repo = dataSourceOrRepo as Repository<T>;
     }
   }
+
+  protected getRepo(manager?: EntityManager): Repository<T> {
+    if (!this.entity) {
+      throw new Error('Entity is not defined');
+    }
+    return manager ? manager.getRepository(this.entity) : this.repo;
+  }
+
+  async findOne(
+    condition: FindOptionsWhere<T>,
+    relations?: string[],
+  ): Promise<T | null> {
+    try {
+      return await this.repo.findOne({
+        where: condition,
+        relations: relations || [],
+      });
+    } catch (error: any) {
+      console.error(`[DB ERROR] findOne failed:`, error.message);
+      throw new BadRequestException({
+        errorCode: error.code,
+        message: 'Failed to fetch record',
+        detail: error.message,
+      });
+    }
+  }
+
   async softDelete(id: number | string): Promise<{ message: string }> {
     try {
       const result = await this.repo.softDelete(id);
@@ -60,9 +89,17 @@ export class BaseRepository<
    *
    * @returns {Promise<T[]>} List of all records
    */
-  async findAll(): Promise<T[]> {
+  async findAll(
+    condition?: FindOptionsWhere<T>,
+    order?: FindOptionsOrder<T>,
+    relations?: string[],
+  ): Promise<T[]> {
     try {
-      return await this.repo.find();
+      return await this.repo.find({
+        where: condition,
+        order: order || {},
+        relations: relations || [],
+      });
     } catch (error: any) {
       console.error(`[DB ERROR] findAll failed:`, error.message);
       throw new BadRequestException({
@@ -86,10 +123,12 @@ export class BaseRepository<
     }
   }
 
-  async create(entity: DeepPartial<T>): Promise<T> {
+  async create(entity: DeepPartial<T>, manager?: EntityManager): Promise<T> {
     try {
-      const obj = this.repo.create(entity);
-      return await this.repo.save(obj);
+      const repo = this.getRepo(manager);
+
+      const obj = repo.create(entity);
+      return await repo.save(obj);
     } catch (error: any) {
       console.error(`[DB ERROR] create failed:`, error.message);
 
@@ -110,9 +149,14 @@ export class BaseRepository<
     }
   }
 
-  async update(id: number | string, entity: DeepPartial<T>): Promise<T | null> {
+  async update(
+    id: number | string,
+    entity: DeepPartial<T>,
+    manager?: EntityManager,
+  ): Promise<T | null> {
     try {
-      const result = await this.repo.update(id as any, entity);
+      const repo = this.getRepo(manager);
+      const result = await repo.update(id as any, entity);
       if (result.affected && result.affected > 0) {
         return this.findById(id);
       }
@@ -166,9 +210,13 @@ export class BaseRepository<
     }
   }
 
-  async delete(id: number | string): Promise<{ message: string }> {
+  async delete(
+    id: number | string,
+    manager?: EntityManager,
+  ): Promise<{ message: string }> {
     try {
-      const result = await this.repo.delete(id as any);
+      const repo = this.getRepo(manager);
+      const result = await repo.delete(id as any);
       if (result.affected && result.affected > 0) {
         return { message: 'Deleted successfully' };
       }

@@ -23,7 +23,7 @@ import { LocalStrategy } from 'src/strategies/local.strategy';
     AuthorizationGuard,
     JwtStrategy,
     {
-      provide: 'UserRepositoryInterface',
+      provide: 'IUserRepository',
       useClass: UserRepository,
     },
   ],

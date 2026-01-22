@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
@@ -17,7 +18,7 @@ import { PaginationResponse } from 'src/common/core/paganation';
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('UserRepositoryInterface')
+    @Inject('IUserRepository')
     private readonly repo: IUserRepository,
   ) {}
 
@@ -25,7 +26,7 @@ export class UserService {
     try {
       const existed = await this.repo.findByEmail(userDto.email);
       if (existed) {
-        throw new BadRequestException('Email đã tồn tại');
+        throw new ConflictException('Email đã tồn tại');
       }
       const hashPassword = bcrypt.hashSync(userDto.password, 10);
       const dataToSave = {
@@ -38,7 +39,7 @@ export class UserService {
       return UserMapper.toResponse(user);
     } catch (error: any) {
       if (error.code === '23505') {
-        throw new BadRequestException('Mã định danh đã tồn tại!');
+        throw new ConflictException('Mã định danh đã tồn tại!');
       }
       throw error;
     }
@@ -50,16 +51,12 @@ export class UserService {
   }
 
   async delete(userId: string) {
-    const user = await this.repo.findById(userId);
-    if (!user) {
-      throw new NotFoundException('Không tìm thấy tài khoản');
-    }
     return this.repo.softDelete(userId);
   }
 
   async update(
-    updateUserDto: UpdateUserDto,
     userId: string,
+    updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
     const user = await this.repo.update(userId, updateUserDto);
     if (!user) {
@@ -68,7 +65,16 @@ export class UserService {
     return UserMapper.toResponse(user);
   }
 
+  async getById(userId: string): Promise<UserEntity | null> {
+    const user = await this.repo.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Người dùng không tồn tại');
+    }
+    return user;
+  }
+
   async getPage(FilterObject: any): Promise<PaginationResponse<any>> {
+    // console.log('🚀 ~ UserService ~ getPage ~ FilterObject:', FilterObject);
     return this.repo.GetPage(FilterObject);
   }
 }

@@ -7,8 +7,10 @@ import {
   OneToMany,
   JoinColumn,
   DeleteDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { OrdersEntity } from './orders.entity';
 
 @Entity('addresses')
 export class AddressesEntity {
@@ -27,10 +29,10 @@ export class AddressesEntity {
   @Column({ type: 'varchar' })
   ward: string;
 
-  @Column({ type: 'float', nullable: false })
-  longtitude: number;
+  @Column('decimal', { precision: 10, scale: 7 })
+  longitude: number;
 
-  @Column({ type: 'float', nullable: false })
+  @Column('decimal', { precision: 10, scale: 7 })
   latitude: number;
 
   @Column({ type: 'integer', default: 1 })
@@ -39,7 +41,7 @@ export class AddressesEntity {
   @Column({ type: 'varchar', nullable: false })
   userId: string;
 
-  @OneToMany(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity, (user) => user.addresses)
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user_obj: UserEntity;
 
@@ -51,4 +53,7 @@ export class AddressesEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
+
+  @OneToMany(() => OrdersEntity, (order) => order.address_obj)
+  orders: OrdersEntity[];
 }

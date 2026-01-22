@@ -1,7 +1,13 @@
+import { Expose, Transform } from 'class-transformer';
+
 export class ApiResponseDto<T = any> {
   success: boolean;
   message: string;
+  @Expose()
+  @Transform(({ value }) => (value === null ? undefined : value))
   data?: T | null;
+  @Expose()
+  @Transform(({ value }) => (value === null ? undefined : value))
   meta?: PaginationMeta | null;
   timestamp: string;
   path: string;
@@ -10,13 +16,13 @@ export class ApiResponseDto<T = any> {
   constructor(
     success: boolean,
     message: string,
-    data?: T | null,
-    meta?: PaginationMeta | null,
+    data?: T,
+    meta?: PaginationMeta,
   ) {
     this.success = success;
     this.message = message;
-    this.data = data || null;
-    this.meta = meta || null;
+    this.data = data || undefined;
+    this.meta = meta || undefined;
     this.timestamp = new Date().toLocaleString('vi-VN', {
       timeZone: 'Asia/Ho_Chi_Minh',
       hour12: false,
