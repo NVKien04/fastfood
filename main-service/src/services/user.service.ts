@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from 'src/dtos/user/create-user.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { RoleEnum } from 'src/enums/role.enum';
@@ -54,10 +48,7 @@ export class UserService {
     return this.repo.softDelete(userId);
   }
 
-  async update(
-    userId: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UserResponseDto> {
+  async update(userId: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
     const user = await this.repo.update(userId, updateUserDto);
     if (!user) {
       throw new BadRequestException('Có lỗi');

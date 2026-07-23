@@ -1,11 +1,6 @@
 import { PaginationResponse } from '#src/common/core/paganation';
 import { Fn } from '#src/utils/fn';
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreateCategoryDto } from 'src/dtos/category/create-category.dto';
 import { UpdateCategoryDto } from 'src/dtos/category/update-category.dto';
@@ -19,9 +14,7 @@ export class CategoryService {
     private readonly repo: ICategoryRepository,
   ) {}
 
-  async create(
-    createCategory: CreateCategoryDto,
-  ): Promise<CategoryEntity | null> {
+  async create(createCategory: CreateCategoryDto): Promise<CategoryEntity | null> {
     const slug = Fn.changeNameToSlug(createCategory.name);
     const existed = await this.repo.findOne({ slug: slug });
     if (existed) {
@@ -31,10 +24,7 @@ export class CategoryService {
     return await this.repo.create(createCategory);
   }
 
-  async update(
-    updateCategoryDto: UpdateCategoryDto,
-    id: string,
-  ): Promise<CategoryEntity | null> {
+  async update(updateCategoryDto: UpdateCategoryDto, id: number): Promise<CategoryEntity | null> {
     const category = await this.repo.findById(id);
     if (!category) {
       throw new NotFoundException('Danh mục không tồn tại');
@@ -42,18 +32,18 @@ export class CategoryService {
     return this.repo.update(id, updateCategoryDto);
   }
 
-  async delete(categoryId: string) {
+  async delete(categoryId: number) {
     return await this.repo.softDelete(categoryId);
   }
   async getPage(FilterObject: any): Promise<PaginationResponse<any>> {
     return await this.repo.GetPage(FilterObject);
   }
 
-  async geyWidthProduct(id: string): Promise<CategoryEntity | null> {
+  async geyWidthProduct(id: number): Promise<CategoryEntity | null> {
     return await this.repo.findById(id);
   }
 
-  async getById(categoryId: string): Promise<CategoryEntity | null> {
+  async getById(categoryId: number): Promise<CategoryEntity | null> {
     return this.repo.findById(categoryId);
   }
 }

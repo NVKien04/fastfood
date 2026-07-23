@@ -9,10 +9,7 @@ import { IngredientsEntity } from '#src/entities/ingredients.entity';
 import { IIngredientRepository } from './ingredient.repository.interface';
 
 @Injectable()
-export class IngredientsRepository
-  extends BaseRepository<IngredientsEntity>
-  implements IIngredientRepository
-{
+export class IngredientsRepository extends BaseRepository<IngredientsEntity> implements IIngredientRepository {
   constructor(
     @InjectRepository(IngredientsEntity) repo: Repository<IngredientsEntity>,
     private DataSource: DataSource,
@@ -29,8 +26,8 @@ export class IngredientsRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'ingredients';
-      let relatedFields = [];
+      const entity = 'ingredients';
+      const relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
 
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
@@ -45,8 +42,7 @@ export class IngredientsRepository
         });
       }
 
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
 
       // BaseFilterService.applyResourceFilter(qb, userScope, {

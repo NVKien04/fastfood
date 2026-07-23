@@ -24,12 +24,7 @@ import { IngredientModule } from './ingredient.module';
 
   exports: [ProductService],
   imports: [
-    TypeOrmModule.forFeature([
-      ProductEntity,
-      OrderItemsEntity,
-      ProductVariantsEntity,
-      ProductIngredientsEntity,
-    ]),
+    TypeOrmModule.forFeature([ProductEntity, OrderItemsEntity, ProductVariantsEntity, ProductIngredientsEntity]),
     CategoryModule,
     ProductVariantModule,
     ProductIngredientModule,

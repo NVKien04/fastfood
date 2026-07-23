@@ -10,11 +10,7 @@ export class ProductIngredientService {
     private readonly productIngredientRepository: IProductIngredientRepository,
   ) {}
 
-  async create(
-    data: CreateProductIngredientDto,
-    productId: string,
-    manager?: EntityManager,
-  ): Promise<any> {
+  async create(data: CreateProductIngredientDto, productId: string, manager?: EntityManager): Promise<any> {
     return await this.productIngredientRepository.create(
       {
         ...data,

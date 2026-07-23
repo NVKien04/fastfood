@@ -12,15 +12,8 @@ export class ProductVariantService {
     private readonly productVariantRepository: IProductVariantRepository,
   ) {}
 
-  async create(
-    data: CreateProductVariantDto,
-    productId: string,
-    manager?: EntityManager,
-  ): Promise<any> {
-    return await this.productVariantRepository.create(
-      { ...data, productId },
-      manager,
-    );
+  async create(data: CreateProductVariantDto, productId: string, manager?: EntityManager): Promise<any> {
+    return await this.productVariantRepository.create({ ...data, productId }, manager);
   }
 
   async getPage(FilterObject: any): Promise<PaginationResponse<any>> {

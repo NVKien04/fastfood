@@ -1,12 +1,5 @@
 import { ProductService } from '#src/services/product.service';
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { LoginDto } from 'src/dtos/auth/login.dto';
 import { RoleEnum } from 'src/enums/role.enum';

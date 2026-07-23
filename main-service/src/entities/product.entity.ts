@@ -42,8 +42,8 @@ export class ProductEntity {
   @Column({ type: 'integer', default: 0 })
   isFeatured: number;
 
-  @Column({ type: 'varchar', nullable: false })
-  categoryId: string;
+  @Column({ type: 'integer', nullable: false })
+  categoryId: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
@@ -73,9 +73,6 @@ export class ProductEntity {
   @OneToMany(() => ProductIngredientsEntity, (product) => product.product_obj)
   productIngredients: ProductIngredientsEntity[];
 
-  @OneToMany(
-    () => OrderItemsEntity,
-    (orderItemsEntity) => orderItemsEntity.product_obj,
-  )
+  @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.product_obj)
   orderItems: OrderItemsEntity[];
 }

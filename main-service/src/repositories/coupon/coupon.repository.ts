@@ -9,10 +9,7 @@ import { CouponsEntity } from '#src/entities/coupons.entity';
 import { ICouponRepository } from './coupon.repository.interface';
 
 @Injectable()
-export class CouponsRepository
-  extends BaseRepository<CouponsEntity>
-  implements ICouponRepository
-{
+export class CouponsRepository extends BaseRepository<CouponsEntity> implements ICouponRepository {
   constructor(
     @InjectRepository(CouponsEntity) repo: Repository<CouponsEntity>,
     private DataSource: DataSource,
@@ -29,8 +26,8 @@ export class CouponsRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'coupons';
-      let relatedFields = [];
+      const entity = 'coupons';
+      const relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
 
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
@@ -45,8 +42,7 @@ export class CouponsRepository
         });
       }
 
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
 
       // BaseFilterService.applyResourceFilter(qb, userScope, {

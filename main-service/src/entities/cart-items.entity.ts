@@ -26,13 +26,10 @@ export class CartItemsEntity {
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product_obj: ProductEntity;
 
-  @Column({ type: 'varchar', nullable: false })
-  productVariantId: string;
+  @Column({ type: 'integer', nullable: false })
+  productVariantId: number;
 
-  @ManyToOne(
-    () => ProductVariantsEntity,
-    (product_variants) => product_variants.cartItems,
-  )
+  @ManyToOne(() => ProductVariantsEntity, (product_variants) => product_variants.cartItems)
   @JoinColumn({ name: 'productVariantId', referencedColumnName: 'id' })
   productVariant_obj: ProductVariantsEntity;
 
@@ -53,9 +50,6 @@ export class CartItemsEntity {
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
 
-  @OneToMany(
-    () => CartItemIngredientsEntity,
-    (cartItemIngredientsEntity) => cartItemIngredientsEntity.cartItem_obj,
-  )
+  @OneToMany(() => CartItemIngredientsEntity, (cartItemIngredientsEntity) => cartItemIngredientsEntity.cartItem_obj)
   cartItemIngredients: CartItemIngredientsEntity[];
 }

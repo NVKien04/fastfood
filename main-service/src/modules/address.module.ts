@@ -9,11 +9,7 @@ import { ProviceService } from '#src/services/provice.service';
 import { HttpModule, HttpService } from '@nestjs/axios';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AddressesEntity]),
-    UserModule,
-    HttpModule,
-  ],
+  imports: [TypeOrmModule.forFeature([AddressesEntity]), UserModule, HttpModule],
   controllers: [AddressController],
   providers: [
     AddressService,

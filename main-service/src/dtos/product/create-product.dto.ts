@@ -1,14 +1,7 @@
 import { SizeEnum } from '#src/enums/size.enum';
 import { TypeEnum } from '#src/enums/type.enum';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
-import {
-  IsNotEmpty,
-  IsString,
-  IsInt,
-  IsOptional,
-  Min,
-  IsEnum,
-} from 'class-validator';
+import { IsNotEmpty, IsString, IsInt, IsOptional, Min, IsEnum } from 'class-validator';
 
 export class CreateProductVariantDto {
   @IsString()
@@ -26,8 +19,8 @@ export class CreateProductVariantDto {
 }
 
 export class CreateProductIngredientDto {
-  @IsString()
-  ingredientId: string;
+  @IsInt()
+  ingredientId: number;
 
   @IsInt()
   isDefault: number;
@@ -65,8 +58,8 @@ export class CreateProductDto {
   isFeatured?: number;
 
   @IsNotEmpty()
-  @IsString()
-  categoryId: string;
+  @IsInt()
+  categoryId: number;
 
   @IsOptional()
   @ApiProperty({ type: [CreateProductVariantDto] })

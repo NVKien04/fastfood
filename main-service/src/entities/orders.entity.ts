@@ -93,9 +93,6 @@ export class OrdersEntity {
   @OneToOne(() => ReviewEntity, (review) => review.order)
   review: ReviewEntity;
 
-  @OneToMany(
-    () => OrderItemsEntity,
-    (orderItemsEntity) => orderItemsEntity.productVariant_obj,
-  )
+  @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.productVariant_obj)
   orderItems: OrderItemsEntity[];
 }

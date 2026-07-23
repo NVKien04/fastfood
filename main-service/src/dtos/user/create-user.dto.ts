@@ -1,14 +1,6 @@
 // register-user.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  Length,
-  IsPhoneNumber,
-  Matches,
-  IsEnum,
-} from 'class-validator';
+import { IsEmail, IsOptional, IsString, Length, IsPhoneNumber, Matches, IsEnum } from 'class-validator';
 import { RoleEnum } from 'src/enums/role.enum';
 import { IsNull } from 'typeorm';
 

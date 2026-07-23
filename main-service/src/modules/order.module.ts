@@ -5,12 +5,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      OrdersEntity,
-      OrderItemsEntity,
-      OrderItemsIngredientsEntity,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([OrdersEntity, OrderItemsEntity, OrderItemsIngredientsEntity])],
 })
 export class OrderModule {}

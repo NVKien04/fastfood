@@ -1,11 +1,5 @@
 import { RoleEnum } from 'src/enums/role.enum';
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  SetMetadata,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, SetMetadata, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 export const Roles = (...roles: RoleEnum[]) => SetMetadata('roles', roles);
@@ -14,10 +8,7 @@ export const Roles = (...roles: RoleEnum[]) => SetMetadata('roles', roles);
 export class AuthorizationGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
   canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.getAllAndOverride<RoleEnum[]>('roles', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const roles = this.reflector.getAllAndOverride<RoleEnum[]>('roles', [context.getHandler(), context.getClass()]);
     // Api không có đánh dấu metadata role
     if (!roles || roles.length === 0) {
       return true;

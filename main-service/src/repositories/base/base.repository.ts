@@ -16,9 +16,7 @@ interface IBaseEntity {
   id: number | string;
 }
 
-export class BaseRepository<
-  T extends ObjectLiteral & IBaseEntity,
-> implements IBaseRepository<T> {
+export class BaseRepository<T extends ObjectLiteral & IBaseEntity> implements IBaseRepository<T> {
   protected readonly repo: Repository<T>;
 
   /**
@@ -45,10 +43,7 @@ export class BaseRepository<
     return manager ? manager.getRepository(this.entity) : this.repo;
   }
 
-  async findOne(
-    condition: FindOptionsWhere<T>,
-    relations?: string[],
-  ): Promise<T | null> {
+  async findOne(condition: FindOptionsWhere<T>, relations?: string[]): Promise<T | null> {
     try {
       return await this.repo.findOne({
         where: condition,
@@ -89,11 +84,7 @@ export class BaseRepository<
    *
    * @returns {Promise<T[]>} List of all records
    */
-  async findAll(
-    condition?: FindOptionsWhere<T>,
-    order?: FindOptionsOrder<T>,
-    relations?: string[],
-  ): Promise<T[]> {
+  async findAll(condition?: FindOptionsWhere<T>, order?: FindOptionsOrder<T>, relations?: string[]): Promise<T[]> {
     try {
       return await this.repo.find({
         where: condition,
@@ -149,11 +140,7 @@ export class BaseRepository<
     }
   }
 
-  async update(
-    id: number | string,
-    entity: DeepPartial<T>,
-    manager?: EntityManager,
-  ): Promise<T | null> {
+  async update(id: number | string, entity: DeepPartial<T>, manager?: EntityManager): Promise<T | null> {
     try {
       const repo = this.getRepo(manager);
       const result = await repo.update(id as any, entity);
@@ -210,10 +197,7 @@ export class BaseRepository<
     }
   }
 
-  async delete(
-    id: number | string,
-    manager?: EntityManager,
-  ): Promise<{ message: string }> {
+  async delete(id: number | string, manager?: EntityManager): Promise<{ message: string }> {
     try {
       const repo = this.getRepo(manager);
       const result = await repo.delete(id as any);

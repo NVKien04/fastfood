@@ -1,11 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-  IsInt,
-  Min,
-  IsUUID,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt, Min } from 'class-validator';
 
 export class CreateIngredientDto {
   @IsString()
@@ -37,7 +30,7 @@ export class CreateIngredientDto {
   @IsOptional()
   isActive?: number; // 0 | 1
 
-  @IsUUID()
+  @IsInt()
   @IsNotEmpty()
-  categoryId: string;
+  categoryId: number;
 }

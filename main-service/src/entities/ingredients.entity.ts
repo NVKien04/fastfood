@@ -16,8 +16,8 @@ import { OrderItemsIngredientsEntity } from './order-item-ingredients.entity';
 
 @Entity('ingredients')
 export class IngredientsEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', nullable: false })
   name: string;
@@ -40,8 +40,8 @@ export class IngredientsEntity {
   @Column({ type: 'integer', default: 1 })
   isActive: number;
 
-  @Column({ type: 'varchar', nullable: false })
-  categoryId: string;
+  @Column({ type: 'integer', nullable: false })
+  categoryId: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.ingredients)
   @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
@@ -56,16 +56,10 @@ export class IngredientsEntity {
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
 
-  @OneToMany(
-    () => CartItemIngredientsEntity,
-    (cartItemIngredientsEntity) => cartItemIngredientsEntity.ingredient_obj,
-  )
+  @OneToMany(() => CartItemIngredientsEntity, (cartItemIngredientsEntity) => cartItemIngredientsEntity.ingredient_obj)
   cartItemIngredients: CartItemIngredientsEntity[];
 
-  @OneToMany(
-    () => ProductIngredientsEntity,
-    (product) => product.ingredient_obj,
-  )
+  @OneToMany(() => ProductIngredientsEntity, (product) => product.ingredient_obj)
   productIngredients: ProductIngredientsEntity[];
 
   @OneToMany(() => OrderItemsIngredientsEntity, (oii) => oii.ingredient_obj)

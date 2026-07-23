@@ -8,10 +8,7 @@ import { ReviewEntity } from '#src/entities/reviews.entity';
 import { IReviewRepository } from './review.repository.interface';
 
 @Injectable()
-export class ReviewRepository
-  extends BaseRepository<ReviewEntity>
-  implements IReviewRepository
-{
+export class ReviewRepository extends BaseRepository<ReviewEntity> implements IReviewRepository {
   constructor(
     @InjectRepository(ReviewEntity) repo: Repository<ReviewEntity>,
     private DataSource: DataSource,
@@ -28,8 +25,8 @@ export class ReviewRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'reviews';
-      let relatedFields = [];
+      const entity = 'reviews';
+      const relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
 
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
@@ -44,8 +41,7 @@ export class ReviewRepository
         });
       }
 
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
 
       // BaseFilterService.applyResourceFilter(qb, userScope, {

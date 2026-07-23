@@ -13,9 +13,7 @@ import { UserEntity } from '#src/entities/user.entity';
 import { ProductEntity } from '#src/entities/product.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ReviewEntity, UserEntity, ProductEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([ReviewEntity, UserEntity, ProductEntity])],
   controllers: [ReviewController],
   providers: [
     ReviewService,

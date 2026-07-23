@@ -17,8 +17,8 @@ import { OrderItemsEntity } from './order-items.entity';
 
 @Entity('product_variants')
 export class ProductVariantsEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', nullable: false })
   name: string;
@@ -33,7 +33,7 @@ export class ProductVariantsEntity {
   @Column({
     type: 'enum',
     enum: TypeEnum,
-    default: TypeEnum.NORMAL,
+    default: TypeEnum.MEDIUM,
   })
   type: TypeEnum;
 
@@ -49,10 +49,7 @@ export class ProductVariantsEntity {
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
-  @ManyToOne(
-    () => ProductEntity,
-    (productEntity) => productEntity.productVariants,
-  )
+  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.productVariants)
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product_obj: ProductEntity;
 
@@ -68,9 +65,6 @@ export class ProductVariantsEntity {
   @OneToMany(() => CartItemsEntity, (cartItem) => cartItem.productVariant_obj)
   cartItems: CartItemsEntity[];
 
-  @OneToMany(
-    () => OrderItemsEntity,
-    (orderItemsEntity) => orderItemsEntity.productVariant_obj,
-  )
+  @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.productVariant_obj)
   orderItems: OrderItemsEntity[];
 }

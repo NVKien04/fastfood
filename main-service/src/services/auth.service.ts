@@ -18,10 +18,7 @@ export class AuthService {
       if (!alreadyUser) {
         throw new BadRequestException('Tài khoản chưa được đăng kí');
       }
-      const isCorrectPassword = bcrypt.compareSync(
-        password,
-        alreadyUser?.password,
-      );
+      const isCorrectPassword = bcrypt.compareSync(password, alreadyUser?.password);
       if (!isCorrectPassword) {
         throw new BadRequestException('Thông tin đăng nhập sai!');
       }

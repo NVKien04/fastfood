@@ -1,0 +1,16 @@
+node_modules
+dist
+npm-debug.log
+.git
+.gitignore
+README.md
+Dockerfile
+docker-compose.yml
+.env
+.env.example
+.env.prod
+.vscode
+tsconfig.build.tsbuildinfo
+eslint.config.mjs
+nest-cli.json
+package-lock.json

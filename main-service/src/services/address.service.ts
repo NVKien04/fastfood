@@ -13,10 +13,7 @@ export class AddressService {
     private readonly userService: UserService,
   ) {}
 
-  async create(
-    userId: string,
-    data: CreateAddressDto,
-  ): Promise<AddressesEntity> {
+  async create(userId: string, data: CreateAddressDto): Promise<AddressesEntity> {
     const createAddressData: Partial<AddressesEntity> = {
       street: data.street,
       city: data.city,
@@ -29,17 +26,10 @@ export class AddressService {
   }
 
   async findAllByUserId(userId: string): Promise<AddressesEntity[]> {
-    return this.addressRepository.findAll(
-      { userId: userId },
-      { isDefault: 'DESC', createdAt: 'DESC' },
-      [],
-    );
+    return this.addressRepository.findAll({ userId: userId }, { isDefault: 'DESC', createdAt: 'DESC' }, []);
   }
 
-  async update(
-    addressId: string,
-    updateData: Partial<CreateAddressDto>,
-  ): Promise<AddressesEntity | null> {
+  async update(addressId: string, updateData: Partial<CreateAddressDto>): Promise<AddressesEntity | null> {
     const address = await this.addressRepository.findById(addressId);
     if (!address) {
       throw new NotFoundException('Address not found');

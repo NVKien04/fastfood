@@ -10,10 +10,7 @@ import { IAddressRepository } from './address.repository.interface';
 import { AddressesEntity } from '#src/entities/addresses.entity';
 
 @Injectable()
-export class AddressRepository
-  extends BaseRepository<AddressesEntity>
-  implements IAddressRepository
-{
+export class AddressRepository extends BaseRepository<AddressesEntity> implements IAddressRepository {
   constructor(
     @InjectRepository(AddressesEntity) repo: Repository<AddressesEntity>,
     private DataSource: DataSource,
@@ -30,8 +27,8 @@ export class AddressRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'addresses';
-      let relatedFields = [];
+      const entity = 'addresses';
+      const relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
 
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
@@ -46,8 +43,7 @@ export class AddressRepository
         });
       }
 
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
 
       // BaseFilterService.applyResourceFilter(qb, userScope, {

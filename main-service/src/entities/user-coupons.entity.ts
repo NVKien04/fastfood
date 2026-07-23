@@ -21,8 +21,8 @@ export class UserCouponsEntity {
   @Column({ type: 'integer', default: 0 })
   isUsed: number;
 
-  @Column({ name: 'user_at', type: 'timestamp' })
-  userdAt: Date;
+  @Column({ name: 'user_at', type: 'timestamp', nullable: true })
+  userdAt: Date | null;
 
   @Column({ type: 'varchar', nullable: false })
   userId: string;

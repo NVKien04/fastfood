@@ -12,10 +12,7 @@ import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '#src/dtos/user/response-user.dto';
 
 @Injectable()
-export class UserRepository
-  extends BaseRepository<UserEntity>
-  implements IUserRepository
-{
+export class UserRepository extends BaseRepository<UserEntity> implements IUserRepository {
   constructor(
     @InjectRepository(UserEntity) repo: Repository<UserEntity>,
     private DataSource: DataSource,
@@ -40,8 +37,8 @@ export class UserRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'users';
-      let relatedFields = [];
+      const entity = 'users';
+      const relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
 
@@ -55,8 +52,7 @@ export class UserRepository
         });
       }
 
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
 
       // BaseFilterService.applyResourceFilter(qb, userScope, {

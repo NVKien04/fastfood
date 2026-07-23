@@ -7,11 +7,9 @@ import {
   ManyToOne,
   JoinColumn,
   DeleteDateColumn,
-  OneToMany,
 } from 'typeorm';
 import { ProductEntity } from './product.entity';
 import { IngredientsEntity } from './ingredients.entity';
-import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';
 
 @Entity('product_ingredients')
 export class ProductIngredientsEntity {
@@ -21,20 +19,14 @@ export class ProductIngredientsEntity {
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
-  @ManyToOne(
-    () => ProductEntity,
-    (productEntity) => productEntity.productIngredients,
-  )
+  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.productIngredients)
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product_obj: ProductEntity;
 
-  @Column({ type: 'varchar', nullable: false })
-  ingredientId: string;
+  @Column({ type: 'integer', nullable: false })
+  ingredientId: number;
 
-  @ManyToOne(
-    () => IngredientsEntity,
-    (ingredientsEntity) => ingredientsEntity.productIngredients,
-  )
+  @ManyToOne(() => IngredientsEntity, (ingredientsEntity) => ingredientsEntity.productIngredients)
   @JoinColumn({ name: 'ingredientId', referencedColumnName: 'id' })
   ingredient_obj: IngredientsEntity;
 

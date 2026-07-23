@@ -1,11 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-  Logger,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ApiErrorResponseDto } from 'src/dtos/common/api-error-response.dto';
 
@@ -41,9 +34,7 @@ export class AllExceptionFilter implements ExceptionFilter {
         }
       }
     } else {
-      this.logger.error(
-        exception instanceof Error ? exception.stack : exception,
-      );
+      this.logger.error(exception instanceof Error ? exception.stack : exception);
     }
     const err = new ApiErrorResponseDto(message, errorCode, error);
     err.takenTime = takenTime;

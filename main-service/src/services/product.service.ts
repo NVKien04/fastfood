@@ -25,9 +25,7 @@ export class ProductService {
 
   async create(productDto: CreateProductDto): Promise<ProductEntity | null> {
     return this.dataSource.transaction(async (manager) => {
-      const category = await this.categoryService.getById(
-        productDto.categoryId,
-      );
+      const category = await this.categoryService.getById(productDto.categoryId);
       if (!category) {
         throw new NotFoundException('Category not found');
       }
@@ -55,25 +53,13 @@ export class ProductService {
           await this.productVariantService.create(variant, product.id, manager);
         }
       }
-      if (
-        productDto.ingredients &&
-        productDto.ingredients.length > 0 &&
-        product
-      ) {
-        const ingredients = await this.ingredientService.findByCategoryId(
-          productDto.categoryId,
-        );
+      if (productDto.ingredients && productDto.ingredients.length > 0 && product) {
+        const ingredients = await this.ingredientService.findByCategoryId(productDto.categoryId);
         if (ingredients.length === 0) {
-          throw new NotFoundException(
-            'No ingredients found for the given category',
-          );
+          throw new NotFoundException('No ingredients found for the given category');
         }
         for (const ingredient of productDto.ingredients) {
-          await this.productIngredientService.create(
-            ingredient,
-            product.id,
-            manager,
-          );
+          await this.productIngredientService.create(ingredient, product.id, manager);
         }
       }
       return product;
@@ -84,10 +70,7 @@ export class ProductService {
     return await this.repo.GetPage(FilterObject);
   }
 
-  async update(
-    productId: string,
-    updateData: UpdateProductDto,
-  ): Promise<ProductEntity | null> {
+  async update(productId: string, updateData: UpdateProductDto): Promise<ProductEntity | null> {
     const product = await this.repo.findById(productId);
     if (!product) {
       throw new NotFoundException('Product not found');

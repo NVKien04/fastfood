@@ -13,12 +13,7 @@ export class ApiResponseDto<T = any> {
   path: string;
   takenTime: string;
 
-  constructor(
-    success: boolean,
-    message: string,
-    data?: T,
-    meta?: PaginationMeta,
-  ) {
+  constructor(success: boolean, message: string, data?: T, meta?: PaginationMeta) {
     this.success = success;
     this.message = message;
     this.data = data || undefined;

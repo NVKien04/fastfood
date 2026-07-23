@@ -33,13 +33,10 @@ export class OrderItemsEntity {
   @JoinColumn({ name: 'orderId', referencedColumnName: 'id' })
   order_obj: OrdersEntity;
 
-  @Column({ type: 'varchar', nullable: false })
-  productVariantId: string;
+  @Column({ type: 'integer', nullable: false })
+  productVariantId: number;
 
-  @ManyToOne(
-    () => ProductVariantsEntity,
-    (product_variants) => product_variants.orderItems,
-  )
+  @ManyToOne(() => ProductVariantsEntity, (product_variants) => product_variants.orderItems)
   @JoinColumn({ name: 'productVariantId', referencedColumnName: 'id' })
   productVariant_obj: ProductVariantsEntity;
 

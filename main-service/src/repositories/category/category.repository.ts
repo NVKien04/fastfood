@@ -9,10 +9,7 @@ import { PaginationResponse } from 'src/common/core/paganation';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
-export class CategoryRepository
-  extends BaseRepository<CategoryEntity>
-  implements ICategoryRepository
-{
+export class CategoryRepository extends BaseRepository<CategoryEntity> implements ICategoryRepository {
   constructor(
     @InjectRepository(CategoryEntity) repo: Repository<CategoryEntity>,
     private DataSource: DataSource,
@@ -29,8 +26,8 @@ export class CategoryRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'category';
-      let relatedFields = [
+      const entity = 'category';
+      const relatedFields = [
         {
           field: 'products',
           alias: 'products',
@@ -51,8 +48,7 @@ export class CategoryRepository
         });
       }
 
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
 
       // BaseFilterService.applyResourceFilter(qb, userScope, {

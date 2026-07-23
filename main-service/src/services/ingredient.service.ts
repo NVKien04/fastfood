@@ -16,11 +16,11 @@ export class IngredientService {
     return this.ingredientRepository.create(data);
   }
 
-  async findById(id: string): Promise<IngredientsEntity | null> {
+  async findById(id: number): Promise<IngredientsEntity | null> {
     return this.ingredientRepository.findOne({ id });
   }
 
-  async findByCategoryId(categoryId: string): Promise<IngredientsEntity[]> {
+  async findByCategoryId(categoryId: number): Promise<IngredientsEntity[]> {
     return this.ingredientRepository.findAll({ categoryId });
   }
 

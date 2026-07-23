@@ -10,13 +10,7 @@ import { CategoryRepository } from 'src/repositories/category/category.repositor
 import { CategoryService } from 'src/services/category.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      CategoryEntity,
-      IngredientsEntity,
-      ProductEntity,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([CategoryEntity, IngredientsEntity, ProductEntity])],
   controllers: [CategoryController],
   providers: [
     CategoryService,

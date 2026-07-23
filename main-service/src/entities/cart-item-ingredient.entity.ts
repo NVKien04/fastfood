@@ -19,20 +19,14 @@ export class CartItemIngredientsEntity {
   @Column({ type: 'varchar', nullable: false })
   cartItemId: string;
 
-  @ManyToOne(
-    () => CartItemsEntity,
-    (cartItemsEntity) => cartItemsEntity.cartItemIngredients,
-  )
+  @ManyToOne(() => CartItemsEntity, (cartItemsEntity) => cartItemsEntity.cartItemIngredients)
   @JoinColumn({ name: 'cartItemId', referencedColumnName: 'id' })
   cartItem_obj: CartItemsEntity;
 
-  @Column({ type: 'varchar', nullable: false })
-  ingredientId: string;
+  @Column({ type: 'integer', nullable: false })
+  ingredientId: number;
 
-  @ManyToOne(
-    () => IngredientsEntity,
-    (ingredientsEntity) => ingredientsEntity.cartItemIngredients,
-  )
+  @ManyToOne(() => IngredientsEntity, (ingredientsEntity) => ingredientsEntity.cartItemIngredients)
   @JoinColumn({ name: 'ingredientId', referencedColumnName: 'id' })
   ingredient_obj: IngredientsEntity;
 

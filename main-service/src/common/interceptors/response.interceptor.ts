@@ -1,22 +1,11 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-} from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiResponseDto } from 'src/dtos/common/api-response.dto';
 
 @Injectable()
-export class ApiResponseInterceptor<T> implements NestInterceptor<
-  T,
-  ApiResponseDto<T>
-> {
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<ApiResponseDto<T>> {
+export class ApiResponseInterceptor<T> implements NestInterceptor<T, ApiResponseDto<T>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<ApiResponseDto<T>> {
     const request = context.switchToHttp().getRequest();
     const startTime = request['reqTime'] ?? Date.now();
 
@@ -28,12 +17,7 @@ export class ApiResponseInterceptor<T> implements NestInterceptor<
         // console.log('Response result:', result);
 
         // Nếu đã là ApiResponseDto
-        if (
-          result &&
-          typeof result === 'object' &&
-          'success' in result &&
-          'timestamp' in result
-        ) {
+        if (result && typeof result === 'object' && 'success' in result && 'timestamp' in result) {
           result.path = request.url;
           result.takenTime = takenTime;
           return result;
@@ -53,20 +37,11 @@ export class ApiResponseInterceptor<T> implements NestInterceptor<
             break;
         }
 
-        const message =
-          result && typeof result === 'object' && 'message' in result
-            ? result.message
-            : autoMessage;
+        const message = result && typeof result === 'object' && 'message' in result ? result.message : autoMessage;
 
-        const data =
-          result && typeof result === 'object' && 'data' in result
-            ? result.data
-            : result;
+        const data = result && typeof result === 'object' && 'data' in result ? result.data : result;
 
-        const meta =
-          result && typeof result === 'object' && 'meta' in result
-            ? result.meta
-            : undefined;
+        const meta = result && typeof result === 'object' && 'meta' in result ? result.meta : undefined;
 
         const response = new ApiResponseDto<T>(true, message, data, meta);
         response.path = request.url;

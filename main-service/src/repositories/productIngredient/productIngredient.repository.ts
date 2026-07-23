@@ -31,8 +31,8 @@ export class ProductIngredientRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'product_ingredients';
-      let relatedFields = [];
+      const entity = 'product_ingredients';
+      const relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
 
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
@@ -47,8 +47,7 @@ export class ProductIngredientRepository
         });
       }
 
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
 
       // BaseFilterService.applyResourceFilter(qb, userScope, {

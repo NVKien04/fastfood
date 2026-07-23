@@ -12,8 +12,8 @@ import { IngredientsEntity } from './ingredients.entity';
 
 @Entity('category')
 export class CategoryEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', nullable: false })
   name: string;

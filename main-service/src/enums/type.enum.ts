@@ -1,5 +1,5 @@
 export enum TypeEnum {
-  THIN = 'mỏng',
-  NORMAL = 'bình thường',
-  THICK = 'dày',
+  SMALL = 'nhỏ',
+  MEDIUM = 'vừa',
+  LARGE = 'lớn',
 }

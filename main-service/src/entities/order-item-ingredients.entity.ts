@@ -16,23 +16,17 @@ export class OrderItemsIngredientsEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', nullable: false })
-  ingredientId: string;
+  @Column({ type: 'integer', nullable: false })
+  ingredientId: number;
 
-  @ManyToOne(
-    () => IngredientsEntity,
-    (ingredientsEntity) => ingredientsEntity.orderItemIngredients,
-  )
+  @ManyToOne(() => IngredientsEntity, (ingredientsEntity) => ingredientsEntity.orderItemIngredients)
   @JoinColumn({ name: 'ingredientId', referencedColumnName: 'id' })
   ingredient_obj: IngredientsEntity;
 
   @Column({ type: 'varchar', nullable: false })
   orderItemId: string;
 
-  @ManyToOne(
-    () => OrderItemsEntity,
-    (orderItemsEntity) => orderItemsEntity.orderItemIngredients,
-  )
+  @ManyToOne(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.orderItemIngredients)
   @JoinColumn({ name: 'orderItemId', referencedColumnName: 'id' })
   orderItems_obj: OrderItemsEntity;
 

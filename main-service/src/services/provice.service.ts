@@ -9,9 +9,7 @@ export class ProviceService {
 
   async getProvinces(): Promise<any> {
     try {
-      const res = await firstValueFrom(
-        this.httpService.get(this.provinceUrl + 'p/'),
-      );
+      const res = await firstValueFrom(this.httpService.get(this.provinceUrl + 'p/'));
       return res?.data;
     } catch (error) {
       console.error('Error fetching provinces:', error);
@@ -21,11 +19,7 @@ export class ProviceService {
 
   async getDistricts(provinceCode: string): Promise<any> {
     try {
-      const res = await firstValueFrom(
-        this.httpService.get(
-          this.provinceUrl + 'p/' + provinceCode + '?depth=2',
-        ),
-      );
+      const res = await firstValueFrom(this.httpService.get(this.provinceUrl + 'p/' + provinceCode + '?depth=2'));
       return res?.data?.districts;
     } catch (error) {
       console.error('Error fetching districts:', error);
@@ -35,11 +29,7 @@ export class ProviceService {
 
   async getWards(districtCode: string): Promise<any> {
     try {
-      const res = await firstValueFrom(
-        this.httpService.get(
-          this.provinceUrl + 'd/' + districtCode + '?depth=2',
-        ),
-      );
+      const res = await firstValueFrom(this.httpService.get(this.provinceUrl + 'd/' + districtCode + '?depth=2'));
       return res?.data?.wards;
     } catch (error) {
       console.error('Error fetching wards:', error);

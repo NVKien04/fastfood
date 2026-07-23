@@ -1,13 +1,5 @@
 import { UpdateUserDto } from '#src/dtos/user/update-user.dto';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { CreateUserDto } from 'src/dtos/user/create-user.dto';
 import { RoleEnum } from 'src/enums/role.enum';

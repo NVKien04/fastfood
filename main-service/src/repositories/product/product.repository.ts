@@ -10,10 +10,7 @@ import { IProductRepository } from './product.repository.interface';
 import { ProductEntity } from '#src/entities/product.entity';
 
 @Injectable()
-export class ProductRepository
-  extends BaseRepository<ProductEntity>
-  implements IProductRepository
-{
+export class ProductRepository extends BaseRepository<ProductEntity> implements IProductRepository {
   constructor(
     @InjectRepository(ProductEntity) repo: Repository<ProductEntity>,
     private DataSource: DataSource,
@@ -30,8 +27,8 @@ export class ProductRepository
       const skip = (page - 1) * limit;
       const filter = filterObj?.fillter;
       const orderby = filterObj?.orderby;
-      let entity = 'product';
-      let relatedFields = [];
+      const entity = 'product';
+      const relatedFields = [];
       const qb = this.repo.createQueryBuilder(entity);
 
       // QueryBuilderUtils.applyFilters(qb, filter, entity);
@@ -46,8 +43,7 @@ export class ProductRepository
         });
       }
       console.log('🚀 ~ ProductRepository ~ GetPage ~ qb:', qb.getSql());
-      if (orderby)
-        qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
+      if (orderby) qb.take(limit).skip(skip).orderBy(`${entity}.${orderby}`, 'ASC');
       else qb.take(limit).skip(skip);
       // BaseFilterService.applyResourceFilter(qb, userScope, {
       //   bo_nganh_id: `${entity}.id`,
