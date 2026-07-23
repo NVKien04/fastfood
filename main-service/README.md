@@ -1,98 +1,101 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🍔 FastFood Main Service (NestJS Application)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Thư mục này chứa mã nguồn cho **main-service**, là dịch vụ backend chính trong hệ thống FastFood, được phát triển bằng **NestJS**, **TypeORM**, và kết nối tới **PostgreSQL**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 📁 Cấu trúc thư mục (Directory Structure)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```text
+src/
+├── common/           # Middleware, Filters, Interceptors & Decorators dùng chung
+│   ├── filter/       # Xử lý Exception tập trung (AllExceptionFilter)
+│   ├── interceptors/ # Định dạng cấu trúc Response trả về (ApiResponseInterceptor)
+│   └── middleware/   # Đo lường thời gian phản hồi (StartTimingMiddleware)
+├── controllers/      # Chịu trách nhiệm định tuyến & tiếp nhận HTTP Requests
+├── database/         # Quản lý Database Migrations & Seeds dữ liệu mẫu
+├── dtos/             # Data Transfer Objects hỗ trợ validation đầu vào bằng class-validator
+├── entities/         # Các Class mô tả cấu trúc bảng (TypeORM Entities)
+├── enums/            # Các Enum dùng chung toàn hệ thống
+├── guards/           # Bảo vệ các API bằng quyền truy cập
+├── modules/          # Module NestJS nhóm các Controller, Service tương ứng
+├── repositories/     # Lớp truy xuất cơ sở dữ liệu (Database access layer)
+├── services/         # Nơi thực hiện Business Logic của ứng dụng
+├── strategies/       # Cấu hình Passport Strategy cho Auth (JWT, Local)
+├── utils/            # Các hàm tiện ích
+└── main.ts           # Điểm khởi chạy ứng dụng (Bootstrap)
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## 🛠️ Hướng dẫn cài đặt nhanh (Quickstart)
 
-# watch mode
-$ npm run start:dev
+### Yêu cầu hệ thống
 
-# production mode
-$ npm run start:prod
-```
+- **Node.js**: >= 18
+- **npm** hoặc **yarn**
+- **Cơ sở dữ liệu**: PostgreSQL đang chạy và đã cấu hình trong file `.env`.
 
-## Run tests
+### Các bước thực hiện
 
-```bash
-# unit tests
-$ npm run test
+1. **Cài đặt thư viện**:
 
-# e2e tests
-$ npm run test:e2e
+   ```bash
+   npm install
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+2. **Cấu hình môi trường**:
+   Sao chép tệp mẫu và cập nhật các thông số cần thiết:
 
-## Deployment
+   ```bash
+   cp .env.example .env
+   ```
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+3. **Chạy các Migrations**:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+   ```bash
+   npm run mig:run
+   ```
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+4. **Nạp dữ liệu mẫu (Seed Data)**:
+   Nạp dữ liệu mẫu ban đầu về các danh mục món ăn (Categories):
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+   ```bash
+   npx ts-node -r tsconfig-paths/register src/database/seeds.ts
+   ```
 
-## Resources
+5. **Khởi chạy ứng dụng ở chế độ nhà phát triển**:
+   ```bash
+   npm run start:dev
+   ```
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 📜 Các Scripts thông dụng
 
-## Support
+| Script              | Ý nghĩa                                                        |
+| :------------------ | :------------------------------------------------------------- |
+| `npm run start`     | Khởi chạy server production                                    |
+| `npm run start:dev` | Khởi chạy server ở chế độ watch mode (tự tải lại khi code đổi) |
+| `npm run build`     | Biên dịch mã TypeScript sang JavaScript trong thư mục `/dist`  |
+| `npm run lint`      | Chạy công cụ kiểm tra lỗi linter (ESLint)                      |
+| `npm run format`    | Tự động căn chỉnh và format code với Prettier                  |
+| `npm run test`      | Khạy kiểm thử unit test                                        |
+| `npm run test:e2e`  | Chạy kiểm thử tích hợp đầu cuối (End-to-End)                   |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## 🗄️ Database Migrations
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Sử dụng các lệnh TypeORM CLI sau để tạo/chạy migration:
 
-## License
+- **Chạy các file migration mới**: `npm run mig:run`
+- **Revert migration cuối**: `npm run mig:revert`
+- **Tự động sinh file migration**: `npm run mig:generate -- src/database/migrations/<MigrationName>`
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## 📖 Swagger API Docs
+
+- Giao diện Swagger UI: `http://localhost:3001/api` hoặc `http://localhost:3001/swagger`
+- File JSON tài liệu: `http://localhost:3001/swagger/json`
