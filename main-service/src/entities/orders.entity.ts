@@ -67,19 +67,31 @@ export class OrdersEntity {
   @Column({ type: 'text', nullable: true })
   notes: string;
 
-  @Column({ type: 'varchar', nullable: false })
-  userId: string;
+  @Column({ type: 'varchar', nullable: true })
+  userId?: string | null;
 
-  @ManyToOne(() => UserEntity, (user) => user.orders)
+  @ManyToOne(() => UserEntity, (user) => user.orders, { nullable: true })
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-  user_obj: UserEntity;
+  user_obj?: UserEntity | null;
 
-  @Column({ type: 'varchar', nullable: false })
-  addressId: string;
+  @Column({ type: 'varchar', nullable: true })
+  addressId?: string | null;
 
-  @ManyToOne(() => AddressesEntity, (addressesEntity) => addressesEntity.orders)
+  @ManyToOne(() => AddressesEntity, (addressesEntity) => addressesEntity.orders, { nullable: true })
   @JoinColumn({ name: 'addressId', referencedColumnName: 'id' })
-  address_obj: AddressesEntity;
+  address_obj?: AddressesEntity | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  guestName?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  guestPhone?: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  guestEmail?: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  guestAddress?: string | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
@@ -93,6 +105,6 @@ export class OrdersEntity {
   @OneToOne(() => ReviewEntity, (review) => review.order)
   review: ReviewEntity;
 
-  @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.productVariant_obj)
+  @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.order_obj)
   orderItems: OrderItemsEntity[];
 }

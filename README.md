@@ -28,6 +28,60 @@ Hệ thống bao gồm các phân hệ (modules) cốt lõi của một ứng d�
 
 ---
 
+## 🗄️ Thiết kế Cơ sở dữ liệu (Database Schema & Relationships)
+
+Hệ thống sử dụng cơ sở dữ liệu quan hệ PostgreSQL với các thực thể chính được liên kết chặt chẽ qua cơ chế khóa ngoại và ORM TypeORM:
+
+```mermaid
+erDiagram
+    users ||--oN addresses : "has many"
+    users ||--o| cart : "has one"
+    users ||--oN orders : "places many"
+    users ||--oN reviews : "writes many"
+    users ||--oN user_coupons : "claims many"
+    coupons ||--oN user_coupons : "assigned to many"
+    category ||--oN product : "contains many"
+    category ||--oN ingredients : "contains many"
+    product ||--oN product_variants : "has many variants"
+    product ||--oN product_ingredients : "links"
+    ingredients ||--oN product_ingredients : "links"
+    cart ||--oN cart_items : "has many"
+    product ||--oN cart_items : "referenced"
+    product_variants ||--oN cart_items : "referenced"
+    cart_items ||--oN cart_item_ingredients : "contains toppings"
+    ingredients ||--oN cart_item_ingredients : "referenced"
+    orders ||--oN order_items : "has many"
+    product ||--oN order_items : "referenced"
+    product_variants ||--oN order_items : "referenced"
+    order_items ||--oN order_item_ingredients : "contains toppings"
+    ingredients ||--oN order_item_ingredients : "referenced"
+    orders ||--o| reviews : "has review"
+    product ||--oN reviews : "gets reviews"
+    addresses ||--oN orders : "delivers to"
+```
+
+### Các mối quan hệ cốt lõi:
+1. **User & Auth**:
+   - `users` (1) ── (N) `addresses`: Lưu trữ các địa chỉ nhận hàng của người dùng.
+   - `users` (1) ── (1) `cart`: Mỗi người dùng sở hữu duy nhất 1 giỏ hàng hoạt động.
+2. **Product Catalog**:
+   - `category` (1) ── (N) `product`: Phân nhóm sản phẩm (Ví dụ: Pizza, Burger, Drinks).
+   - `product` (1) ── (N) `product_variants`: Các lựa chọn về kích thước hoặc hương vị của sản phẩm kèm chênh lệch giá.
+   - `category` (1) ── (N) `ingredients`: Phân nhóm các loại nguyên liệu/topping đi kèm.
+   - `product` (N) ── (N) `ingredients` (Thông qua bảng trung gian `product_ingredients`): Khai báo những toppings nào khả dụng hoặc mặc định đi kèm với sản phẩm.
+3. **Cart & Customization**:
+   - `cart` (1) ── (N) `cart_items`: Các món ăn được bỏ vào giỏ hàng.
+   - `cart_items` (1) ── (N) `cart_item_ingredients`: Danh sách các toppings tùy chỉnh mà người dùng chọn riêng cho phần ăn đó.
+4. **Order History**:
+   - `users` (1) ── (N) `orders`: Quản lý các đơn đặt hàng đã thực hiện.
+   - `orders` (1) ── (N) `order_items`: Chi tiết các món ăn tại thời điểm mua (lưu vết độc lập tránh biến động giá).
+   - `order_items` (1) ── (N) `order_item_ingredients`: Toppings thực tế khách đã đặt kèm món ăn tại thời điểm mua.
+5. **Coupons & Reviews**:
+   - `users` (N) ── (N) `coupons` (Thông qua bảng trung gian `user_coupons`): Quản lý quyền nhận và sử dụng mã giảm giá của từng user.
+   - `orders` (1) ── (1) `reviews`: Mỗi đơn đặt hàng thành công chỉ được đánh giá tối đa 1 lần.
+
+---
+
 ## 📁 Cấu trúc thư mục dự án (Repository Directory Structure)
 
 ```text

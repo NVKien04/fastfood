@@ -20,6 +20,7 @@ import { OrderModule } from './modules/order.module';
 import { ProductIngredientModule } from './modules/productIngredient.module';
 import { UserCouponModule } from './modules/userCoupon.module';
 import { ProductVariantModule } from './modules/productVariant.module';
+import { NotificationModule } from './modules/notification.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { ProductVariantModule } from './modules/productVariant.module';
     ProductIngredientModule,
     UserCouponModule,
     ProductVariantModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [

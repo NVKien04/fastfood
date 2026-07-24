@@ -14,6 +14,7 @@ import { UserCouponsEntity } from './user-coupons.entity';
 import { ReviewEntity } from './reviews.entity';
 import { OrdersEntity } from './orders.entity';
 import { CartEntity } from './cart.entity';
+import { NotificationEntity } from './notification.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -68,4 +69,7 @@ export class UserEntity {
 
   @OneToOne(() => CartEntity, (cart) => cart.user_obj)
   cart: CartEntity;
+
+  @OneToMany(() => NotificationEntity, (notification) => notification.user_obj)
+  notifications: NotificationEntity[];
 }
