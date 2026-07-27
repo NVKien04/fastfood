@@ -12,8 +12,8 @@ import {
 import { CategoryEntity } from './category.entity';
 import { CartItemsEntity } from './cart-items.entity';
 import { ReviewEntity } from './reviews.entity';
-import { ProductVariantsEntity } from './product_variants';
-import { ProductIngredientsEntity } from './product_ingredients';
+import { ProductVariantsEntity } from './product_variants.entity';
+import { ProductIngredientsEntity } from './product_ingredients.entity';
 import { OrderItemsEntity } from './order-items.entity';
 
 @Entity('product')

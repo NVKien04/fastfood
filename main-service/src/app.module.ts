@@ -2,25 +2,27 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserModule } from './modules/user.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ApiResponseInterceptor } from './common/interceptors/response.interceptor';
 import { StartTimingMiddleware } from './common/middleware/start-timing.middleware';
-import { AuthModule } from './modules/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { StringValue } from 'ms';
-import { CategoryModule } from './modules/category.module';
-import { ProductModule } from './modules/product.module';
-import { IngredientModule } from './modules/ingredient.module';
-import { AddressModule } from './modules/address.module';
-import { CouponModule } from './modules/coupon.module';
-import { ReviewModule } from './modules/review.module';
-import { CartModule } from './modules/cart.module';
-import { OrderModule } from './modules/order.module';
-import { ProductIngredientModule } from './modules/productIngredient.module';
-import { UserCouponModule } from './modules/userCoupon.module';
-import { ProductVariantModule } from './modules/productVariant.module';
-import { NotificationModule } from './modules/notification.module';
+
+// Domain Modules
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
+import { IngredientModule } from './modules/ingredient/ingredient.module';
+import { AddressModule } from './modules/address/address.module';
+import { CouponModule } from './modules/coupon/coupon.module';
+import { ReviewModule } from './modules/review/review.module';
+import { CartModule } from './modules/cart/cart.module';
+import { OrderModule } from './modules/order/order.module';
+import { ProductVariantModule } from './modules/product-variant/product-variant.module';
+import { ProductIngredientModule } from './modules/product-ingredient/product-ingredient.module';
+import { UserCouponModule } from './modules/user-coupon/user-coupon.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -42,10 +44,6 @@ import { NotificationModule } from './modules/notification.module';
         autoLoadEntities: true,
         logging: configService.get<string>('DB_LOGGING', 'false') === 'true',
         ssl: false,
-        // configService.get<string>('NODE_ENV') === 'production'
-        //   ?
-        //   { rejectUnauthorized: false }
-        //   : false,
       }),
       inject: [ConfigService],
     }),
@@ -71,9 +69,9 @@ import { NotificationModule } from './modules/notification.module';
     ReviewModule,
     CartModule,
     OrderModule,
+    ProductVariantModule,
     ProductIngredientModule,
     UserCouponModule,
-    ProductVariantModule,
     NotificationModule,
   ],
   controllers: [],

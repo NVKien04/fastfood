@@ -9,7 +9,7 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ProductVariantsEntity } from './product_variants';
+import { ProductVariantsEntity } from './product_variants.entity';
 import { ProductEntity } from './product.entity';
 import { CartEntity } from './cart.entity';
 import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';

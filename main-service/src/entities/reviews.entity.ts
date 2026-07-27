@@ -4,10 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  CreateDateColumn, // Thường nên có
+  CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  OneToOne, // Thường nên có
+  OneToOne,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { ProductEntity } from './product.entity';
@@ -36,7 +36,6 @@ export class ReviewEntity {
   @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user_obj: UserEntity;
 
-  // Quan hệ ManyToOne với Product
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
@@ -44,12 +43,11 @@ export class ReviewEntity {
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
   product_obj: ProductEntity;
 
-  // Quan hệ ManyToOne với Order
   @Column({ name: 'order_id', type: 'varchar', unique: true })
   orderId: string;
 
   @OneToOne(() => OrdersEntity, (order) => order.review)
-  @JoinColumn({ name: 'order_id' }) // 🔥 FK nằm ở Review
+  @JoinColumn({ name: 'order_id' })
   order: OrdersEntity;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })

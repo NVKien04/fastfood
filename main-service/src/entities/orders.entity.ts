@@ -1,6 +1,6 @@
-import { OrderStatus } from 'src/enums/order-status.enum.ts';
-import { PaymentMethod } from 'src/enums/payment-method.enum';
-import { PaymentStatus } from 'src/enums/payment-status.enum';
+import { OrderStatus } from '#src/enums/order-status.enum.ts';
+import { PaymentMethod } from '#src/enums/payment-method.enum';
+import { PaymentStatus } from '#src/enums/payment-status.enum';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -40,30 +40,25 @@ export class OrdersEntity {
   })
   paymentStatus: PaymentStatus;
 
-  // paymentMethod (PaymentMethod E)
   @Column({
     type: 'enum',
     enum: PaymentMethod,
-    nullable: true, // Thường paymentMethod có thể null nếu thanh toán chưa được chọn
+    nullable: true,
   })
   paymentMethod: PaymentMethod;
 
   @Column({ type: 'integer' })
   subTotal: number;
 
-  // deliveryFee (integer)
   @Column({ type: 'integer' })
   deliveryFee: number;
 
-  // discount (integer)
   @Column({ type: 'integer' })
   discount: number;
 
-  // total (integer)
   @Column({ type: 'integer' })
   total: number;
 
-  // notes (text)
   @Column({ type: 'text', nullable: true })
   notes: string;
 

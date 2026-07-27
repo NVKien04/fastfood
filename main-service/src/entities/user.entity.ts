@@ -1,4 +1,4 @@
-import { RoleEnum } from '../enums/role.enum';
+import { RoleEnum } from '#src/enums/role.enum';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -19,7 +19,7 @@ import { NotificationEntity } from './notification.entity';
 @Entity('users')
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string; // UUID phải là string
+  id: string;
 
   @Column({ type: 'varchar', nullable: false })
   email: string;

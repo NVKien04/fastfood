@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { CategoryEntity } from './category.entity';
 import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';
-import { ProductIngredientsEntity } from './product_ingredients';
+import { ProductIngredientsEntity } from './product_ingredients.entity';
 import { OrderItemsIngredientsEntity } from './order-item-ingredients.entity';
 
 @Entity('ingredients')
