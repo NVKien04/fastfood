@@ -23,10 +23,13 @@ import { ProductVariantModule } from './modules/product-variant/product-variant.
 import { ProductIngredientModule } from './modules/product-ingredient/product-ingredient.module';
 import { UserCouponModule } from './modules/user-coupon/user-coupon.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { ComboModule } from './modules/combo/combo.module';
+import { RedisModule } from './modules/redis/redis.module';
 
 @Module({
   imports: [
     HttpModule,
+    RedisModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -73,6 +76,7 @@ import { NotificationModule } from './modules/notification/notification.module';
     ProductIngredientModule,
     UserCouponModule,
     NotificationModule,
+    ComboModule,
   ],
   controllers: [],
   providers: [

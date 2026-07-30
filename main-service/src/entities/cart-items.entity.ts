@@ -13,25 +13,33 @@ import { ProductVariantsEntity } from './product_variants.entity';
 import { ProductEntity } from './product.entity';
 import { CartEntity } from './cart.entity';
 import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';
+import { CombosEntity } from './combos.entity';
 
 @Entity('cart_items')
 export class CartItemsEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', nullable: false })
-  productId: string;
+  @Column({ type: 'varchar', nullable: true })
+  productId?: string | null;
 
-  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.cartItems)
+  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.cartItems, { nullable: true })
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
-  product_obj: ProductEntity;
+  product_obj?: ProductEntity | null;
 
-  @Column({ type: 'integer', nullable: false })
-  productVariantId: number;
+  @Column({ type: 'integer', nullable: true })
+  productVariantId?: number | null;
 
-  @ManyToOne(() => ProductVariantsEntity, (product_variants) => product_variants.cartItems)
+  @ManyToOne(() => ProductVariantsEntity, (product_variants) => product_variants.cartItems, { nullable: true })
   @JoinColumn({ name: 'productVariantId', referencedColumnName: 'id' })
-  productVariant_obj: ProductVariantsEntity;
+  productVariant_obj?: ProductVariantsEntity | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  comboId?: string | null;
+
+  @ManyToOne(() => CombosEntity, { nullable: true })
+  @JoinColumn({ name: 'comboId', referencedColumnName: 'id' })
+  combo_obj?: CombosEntity | null;
 
   @Column({ type: 'varchar', nullable: false })
   cartId: string;
@@ -43,10 +51,18 @@ export class CartItemsEntity {
   @Column({ type: 'integer', default: 1 })
   quantity: number;
 
+  @Column({ type: 'integer', nullable: true })
+  price?: number | null;
+
+  @Column({ type: 'json', nullable: true })
+  options?: Record<string, any> | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
+
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
+
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
 

@@ -13,18 +13,33 @@ import { ProductEntity } from './product.entity';
 import { OrdersEntity } from './orders.entity';
 import { ProductVariantsEntity } from './product_variants.entity';
 import { OrderItemsIngredientsEntity } from './order-item-ingredients.entity';
+import { CombosEntity } from './combos.entity';
 
 @Entity('order-items')
 export class OrderItemsEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', nullable: false })
-  productId: string;
+  @Column({ type: 'varchar', nullable: true })
+  productId?: string | null;
 
-  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.orderItems)
+  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.orderItems, { nullable: true })
   @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
-  product_obj: ProductEntity;
+  product_obj?: ProductEntity | null;
+
+  @Column({ type: 'integer', nullable: true })
+  productVariantId?: number | null;
+
+  @ManyToOne(() => ProductVariantsEntity, (product_variants) => product_variants.orderItems, { nullable: true })
+  @JoinColumn({ name: 'productVariantId', referencedColumnName: 'id' })
+  productVariant_obj?: ProductVariantsEntity | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  comboId?: string | null;
+
+  @ManyToOne(() => CombosEntity, { nullable: true })
+  @JoinColumn({ name: 'comboId', referencedColumnName: 'id' })
+  combo_obj?: CombosEntity | null;
 
   @Column({ type: 'varchar', nullable: false })
   orderId: string;
@@ -33,15 +48,14 @@ export class OrderItemsEntity {
   @JoinColumn({ name: 'orderId', referencedColumnName: 'id' })
   order_obj: OrdersEntity;
 
-  @Column({ type: 'integer', nullable: false })
-  productVariantId: number;
-
-  @ManyToOne(() => ProductVariantsEntity, (product_variants) => product_variants.orderItems)
-  @JoinColumn({ name: 'productVariantId', referencedColumnName: 'id' })
-  productVariant_obj: ProductVariantsEntity;
-
   @Column({ type: 'integer', default: 1 })
   quantity: number;
+
+  @Column({ type: 'integer', nullable: true })
+  price?: number | null;
+
+  @Column({ type: 'json', nullable: true })
+  options?: Record<string, any> | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;

@@ -11,6 +11,4 @@ docker-compose.yml
 .env.prod
 .vscode
 tsconfig.build.tsbuildinfo
-eslint.config.mjs
-nest-cli.json
-package-lock.json
+

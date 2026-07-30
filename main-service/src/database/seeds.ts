@@ -1,16 +1,18 @@
-// src/database/seed.ts
 import DataSource from '../data-source';
-import { CategoriesSeed } from './seeders/category.seed';
+import { MasterSeed } from './seeders/master.seed';
 
 async function bootstrap() {
+  console.log('🔌 Initializing Database DataSource...');
   await DataSource.initialize();
 
-  console.log('🌱 Seeding...');
-  await CategoriesSeed(DataSource);
+  await MasterSeed(DataSource);
 
-  console.log('🌱 Done');
   await DataSource.destroy();
+  console.log('👋 Database connection closed.');
   process.exit(0);
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('❌ Seeding failed with error:', err);
+  process.exit(1);
+});
