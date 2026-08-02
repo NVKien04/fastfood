@@ -4,8 +4,9 @@ import { IngredientsEntity } from '#src/entities/ingredients.entity';
 import { ProductEntity } from '#src/entities/product.entity';
 import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
 import { CombosEntity } from '#src/entities/combos.entity';
+import { ProductIngredientsEntity } from '#src/entities/product_ingredients.entity';
 
-import { categories, ingredients, products, productVariants, combos } from './data';
+import { categories, ingredients, products, productVariants, combos, productIngredients } from './data';
 
 export async function MasterSeed(dataSource: DataSource) {
   console.log('🌱 --- Starting Database Seeding ---');
@@ -34,10 +35,13 @@ export async function MasterSeed(dataSource: DataSource) {
 
   // 2. Seed Ingredients
   const ingredientRepo = dataSource.getRepository(IngredientsEntity);
-  for (const item of ingredients) {
-    const exists = await ingredientRepo.findOne({ where: { name: item.name } });
-    if (!exists) {
-      const ingredient = ingredientRepo.create({
+  const ingredientMap = new Map<number, IngredientsEntity>();
+
+  for (let i = 0; i < ingredients.length; i++) {
+    const item = ingredients[i];
+    let ingredient = await ingredientRepo.findOne({ where: { name: item.name } });
+    if (!ingredient) {
+      ingredient = ingredientRepo.create({
         name: item.name,
         description: item.description,
         price: item.price,
@@ -46,11 +50,12 @@ export async function MasterSeed(dataSource: DataSource) {
         isRequired: item.isRequired,
         categoryId: categoryMap.get(item.categoryId)?.id || 1,
       });
-      await ingredientRepo.save(ingredient);
+      ingredient = await ingredientRepo.save(ingredient);
       console.log(`✅ Seeded Ingredient: ${item.name}`);
     } else {
       console.log(`⚠️ Ingredient Existed: ${item.name}`);
     }
+    ingredientMap.set(i + 1, ingredient);
   }
 
   // 3. Seed Products
@@ -127,6 +132,32 @@ export async function MasterSeed(dataSource: DataSource) {
       console.log(`✅ Seeded Combo: ${item.name}`);
     } else {
       console.log(`⚠️ Combo Existed: ${item.name}`);
+    }
+  }
+
+  // 6. Seed Product Ingredients
+  const productIngredientRepo = dataSource.getRepository(ProductIngredientsEntity);
+  for (const item of productIngredients) {
+    const parentProduct = productMap.get(item.productId);
+    const parentIngredient = ingredientMap.get(item.ingredientId);
+    if (!parentProduct || !parentIngredient) continue;
+
+    const exists = await productIngredientRepo.findOne({
+      where: {
+        productId: parentProduct.id,
+        ingredientId: parentIngredient.id,
+      },
+    });
+
+    if (!exists) {
+      const pi = productIngredientRepo.create({
+        productId: parentProduct.id,
+        ingredientId: parentIngredient.id,
+        isDefault: item.isDefault,
+        quantity: item.quantity,
+      });
+      await productIngredientRepo.save(pi);
+      console.log(`✅ Seeded ProductIngredient: ${parentProduct.name} - ${parentIngredient.name}`);
     }
   }
 

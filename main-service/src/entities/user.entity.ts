@@ -21,7 +21,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   email: string;
 
   @Column({ type: 'varchar', nullable: false })
@@ -30,7 +30,7 @@ export class UserEntity {
   @Column({ type: 'varchar', nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', name: 'so_dien_thoai' })
+  @Column({ type: 'varchar', name: 'so_dien_thoai', unique: true })
   phone: string;
 
   @Column({ type: 'varchar', nullable: true })

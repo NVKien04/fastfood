@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from '#src/entities/user.entity';
 import { RoleEnum } from '#src/enums/role.enum';
 import type { IUserRepository } from '#src/modules/user/repository/user.repository.interface';
-import * as bcrypt from 'bcrypt';
+import { HashUtil } from '#src/utils/hash.util';
 import { UserMapper } from '#src/modules/user/user.mapper';
 import { UserResponseDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,14 +22,13 @@ export class UserService {
       if (existed) {
         throw new ConflictException('Email đã tồn tại');
       }
-      const hashPassword = bcrypt.hashSync(userDto.password, 10);
+      const hashPassword = await HashUtil.hash(userDto.password);
       const dataToSave = {
         ...userDto,
         password: hashPassword,
         role: userDto.role || RoleEnum.CUSTOMER,
       };
       const user = await this.repo.create(dataToSave);
-      console.log(user);
       return UserMapper.toResponse(user);
     } catch (error: any) {
       if (error.code === '23505') {
