@@ -1,7 +1,6 @@
-import { DeepPartial, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { UserEntity } from '#src/entities/user.entity';
-import { filterObj } from '#src/common/core/filterObj';
-import { PaginationResponse } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/paganation';
 
 export interface IUserRepository {
   findAll(
@@ -14,8 +13,8 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<UserEntity | null>;
   create(entity: DeepPartial<UserEntity>, manager?: EntityManager): Promise<UserEntity>;
   update(id: string, entity: DeepPartial<UserEntity>, manager?: EntityManager): Promise<UserEntity | null>;
-  softDelete(id: string, manager?: EntityManager): Promise<{ message: string }>;
-  delete(id: string, manager?: EntityManager): Promise<{ message: string }>;
-  createMany(entity: DeepPartial<UserEntity[]>, manager?: EntityManager): Promise<UserEntity[]>;
-  GetPage(filterObj: filterObj, userScope?: any): Promise<PaginationResponse<any>>;
+  softDelete(id: string, manager?: EntityManager): Promise<DeleteResult>;
+  delete(id: string, manager?: EntityManager): Promise<DeleteResult>;
+  createMany(entity: DeepPartial<UserEntity>[], manager?: EntityManager): Promise<UserEntity[]>;
+  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[UserEntity[], number]>;
 }

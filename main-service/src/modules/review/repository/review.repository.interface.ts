@@ -1,7 +1,6 @@
-import { DeepPartial, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { ReviewEntity } from '#src/entities/reviews.entity';
-import { filterObj } from '#src/common/core/filterObj';
-import { PaginationResponse } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/paganation';
 
 export interface IReviewRepository {
   findAll(
@@ -13,8 +12,8 @@ export interface IReviewRepository {
   findById(id: number): Promise<ReviewEntity | null>;
   create(entity: DeepPartial<ReviewEntity>, manager?: EntityManager): Promise<ReviewEntity>;
   update(id: number, entity: DeepPartial<ReviewEntity>, manager?: EntityManager): Promise<ReviewEntity | null>;
-  softDelete(id: number, manager?: EntityManager): Promise<{ message: string }>;
-  delete(id: number, manager?: EntityManager): Promise<{ message: string }>;
-  createMany(entity: DeepPartial<ReviewEntity[]>, manager?: EntityManager): Promise<ReviewEntity[]>;
-  GetPage(filterObj?: filterObj): Promise<PaginationResponse<any>>;
+  softDelete(id: number, manager?: EntityManager): Promise<DeleteResult>;
+  delete(id: number, manager?: EntityManager): Promise<DeleteResult>;
+  createMany(entity: DeepPartial<ReviewEntity>[], manager?: EntityManager): Promise<ReviewEntity[]>;
+  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[ReviewEntity[], number]>;
 }

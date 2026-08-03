@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ApiErrorResponseDto } from '#src/common/dto/api-error-response.dto';
+import { BusinessException } from '#src/common/exception/biz.exception';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -15,12 +16,21 @@ export class AllExceptionFilter implements ExceptionFilter {
     const endTime = Date.now();
     const takenTime = `${endTime - startTime}ms`;
 
-    let errorCode = HttpStatus.INTERNAL_SERVER_ERROR;
+    let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    let errorCode: string | number = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Hệ thống đang có lỗi';
-    let error: string[] | null = null;
+    let errors: string[] | null = null;
 
-    if (exception instanceof HttpException) {
-      errorCode = exception.getStatus();
+    if (exception instanceof BusinessException) {
+      // Xử lý lỗi nghiệp vụ từ BusinessException
+      httpStatus = exception.getStatus();
+      const exceptionResponse = exception.getResponse() as Record<string, any>;
+      message = exceptionResponse.message;
+      errorCode = exceptionResponse.errorCode;
+    } else if (exception instanceof HttpException) {
+      // Xử lý lỗi HttpException chuẩn NestJS (ValidationPipe, Guards, v.v.)
+      httpStatus = exception.getStatus();
+      errorCode = httpStatus;
       const exceptionResponse = exception.getResponse();
       if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
@@ -28,18 +38,20 @@ export class AllExceptionFilter implements ExceptionFilter {
         const res = exceptionResponse as Record<string, any>;
         if (Array.isArray(res.message)) {
           message = 'Dữ liệu không hợp lệ';
-          error = res.message;
+          errors = res.message;
         } else {
           message = res.message || res.error || message;
         }
       }
     } else {
+      // Lỗi không xác định (crash code, mất kết nối DB, v.v.)
       this.logger.error(exception instanceof Error ? exception.stack : exception);
     }
-    const err = new ApiErrorResponseDto(message, errorCode, error);
+
+    const err = new ApiErrorResponseDto(message, errorCode, errors);
     err.takenTime = takenTime;
     err.path = request.url;
 
-    response.status(errorCode).json(err);
+    response.status(httpStatus).json(err);
   }
 }

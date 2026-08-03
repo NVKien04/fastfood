@@ -1,7 +1,6 @@
-import { DeepPartial, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { CombosEntity } from '#src/entities/combos.entity';
-import { filterObj } from '#src/common/core/filterObj';
-import { PaginationResponse } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/paganation';
 
 export interface IComboRepository {
   findAll(
@@ -14,8 +13,8 @@ export interface IComboRepository {
   findBySlug(slug: string): Promise<CombosEntity | null>;
   create(entity: DeepPartial<CombosEntity>, manager?: EntityManager): Promise<CombosEntity>;
   update(id: string, entity: DeepPartial<CombosEntity>, manager?: EntityManager): Promise<CombosEntity | null>;
-  softDelete(id: string, manager?: EntityManager): Promise<{ message: string }>;
-  delete(id: string, manager?: EntityManager): Promise<{ message: string }>;
-  createMany(entity: DeepPartial<CombosEntity[]>, manager?: EntityManager): Promise<CombosEntity[]>;
-  GetPage(filterObj?: filterObj): Promise<PaginationResponse<any>>;
+  softDelete(id: string, manager?: EntityManager): Promise<DeleteResult>;
+  delete(id: string, manager?: EntityManager): Promise<DeleteResult>;
+  createMany(entity: DeepPartial<CombosEntity>[], manager?: EntityManager): Promise<CombosEntity[]>;
+  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[CombosEntity[], number]>;
 }

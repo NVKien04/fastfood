@@ -1,7 +1,6 @@
-import { DeepPartial, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
-import { filterObj } from '#src/common/core/filterObj';
-import { PaginationResponse } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/paganation';
 
 export interface IProductVariantRepository {
   findAll(
@@ -20,8 +19,8 @@ export interface IProductVariantRepository {
     entity: DeepPartial<ProductVariantsEntity>,
     manager?: EntityManager,
   ): Promise<ProductVariantsEntity | null>;
-  softDelete(id: number, manager?: EntityManager): Promise<{ message: string }>;
-  delete(id: number, manager?: EntityManager): Promise<{ message: string }>;
-  createMany(entity: DeepPartial<ProductVariantsEntity[]>, manager?: EntityManager): Promise<ProductVariantsEntity[]>;
-  GetPage(filterObj?: filterObj): Promise<PaginationResponse<any>>;
+  softDelete(id: number, manager?: EntityManager): Promise<DeleteResult>;
+  delete(id: number, manager?: EntityManager): Promise<DeleteResult>;
+  createMany(entity: DeepPartial<ProductVariantsEntity>[], manager?: EntityManager): Promise<ProductVariantsEntity[]>;
+  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[ProductVariantsEntity[], number]>;
 }

@@ -1,7 +1,6 @@
-import { DeepPartial, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { ProductIngredientsEntity } from '#src/entities/product_ingredients.entity';
-import { filterObj } from '#src/common/core/filterObj';
-import { PaginationResponse } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/paganation';
 
 export interface IProductIngredientRepository {
   findAll(
@@ -20,11 +19,11 @@ export interface IProductIngredientRepository {
     entity: DeepPartial<ProductIngredientsEntity>,
     manager?: EntityManager,
   ): Promise<ProductIngredientsEntity | null>;
-  softDelete(id: string, manager?: EntityManager): Promise<{ message: string }>;
-  delete(id: string, manager?: EntityManager): Promise<{ message: string }>;
+  softDelete(id: string, manager?: EntityManager): Promise<DeleteResult>;
+  delete(id: string, manager?: EntityManager): Promise<DeleteResult>;
   createMany(
-    entity: DeepPartial<ProductIngredientsEntity[]>,
+    entity: DeepPartial<ProductIngredientsEntity>[],
     manager?: EntityManager,
   ): Promise<ProductIngredientsEntity[]>;
-  GetPage(filterObj?: filterObj): Promise<PaginationResponse<any>>;
+  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[ProductIngredientsEntity[], number]>;
 }

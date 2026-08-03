@@ -1,7 +1,6 @@
-import { DeepPartial, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { AddressesEntity } from '#src/entities/addresses.entity';
-import { filterObj } from '#src/common/core/filterObj';
-import { PaginationResponse } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/paganation';
 
 export interface IAddressRepository {
   findAll(
@@ -13,8 +12,8 @@ export interface IAddressRepository {
   findById(id: string): Promise<AddressesEntity | null>;
   create(entity: DeepPartial<AddressesEntity>, manager?: EntityManager): Promise<AddressesEntity>;
   update(id: string, entity: DeepPartial<AddressesEntity>, manager?: EntityManager): Promise<AddressesEntity | null>;
-  softDelete(id: string, manager?: EntityManager): Promise<{ message: string }>;
-  delete(id: string, manager?: EntityManager): Promise<{ message: string }>;
-  createMany(entity: DeepPartial<AddressesEntity[]>, manager?: EntityManager): Promise<AddressesEntity[]>;
-  GetPage(filterObj?: filterObj): Promise<PaginationResponse<any>>;
+  softDelete(id: string, manager?: EntityManager): Promise<DeleteResult>;
+  delete(id: string, manager?: EntityManager): Promise<DeleteResult>;
+  createMany(entity: DeepPartial<AddressesEntity>[], manager?: EntityManager): Promise<AddressesEntity[]>;
+  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[AddressesEntity[], number]>;
 }

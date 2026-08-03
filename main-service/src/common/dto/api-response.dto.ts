@@ -1,7 +1,7 @@
 import { Expose, Transform } from 'class-transformer';
 
 export class ApiResponseDto<T = any> {
-  success: boolean;
+  code: number;
   message: string;
   @Expose()
   @Transform(({ value }) => (value === null ? undefined : value))
@@ -13,8 +13,8 @@ export class ApiResponseDto<T = any> {
   path: string;
   takenTime: string;
 
-  constructor(success: boolean, message: string, data?: T, meta?: PaginationMeta) {
-    this.success = success;
+  constructor(code: number, message: string, data?: T, meta?: PaginationMeta) {
+    this.code = code;
     this.message = message;
     this.data = data || undefined;
     this.meta = meta || undefined;
