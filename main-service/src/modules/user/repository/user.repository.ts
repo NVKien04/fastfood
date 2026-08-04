@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { PaginationOptions } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/pagination';
 import { UserEntity } from '#src/entities/user.entity';
 import { IUserRepository } from './user.repository.interface';
 

@@ -1,4 +1,4 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { CreateAddressDto } from '#src/modules/address/dto/create-address.dto';
 import { AddressesEntity } from '#src/entities/addresses.entity';
 import { Inject, Injectable } from '@nestjs/common';

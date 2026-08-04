@@ -1,6 +1,6 @@
 import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { ProductEntity } from '#src/entities/product.entity';
-import { PaginationOptions } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/pagination';
 
 export interface IProductRepository {
   findAll(

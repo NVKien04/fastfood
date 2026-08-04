@@ -1,4 +1,4 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { Inject, Injectable } from '@nestjs/common';
 import type { IReviewRepository } from '#src/modules/review/repository/review.repository.interface';
 import { CreateReviewDto } from '#src/modules/review/dto/create-review.dto';

@@ -1,40 +1,27 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
+import { ERROR_MAP, ErrorEnum } from '#src/common/constants/error-code.constant';
 
 /**
- * BusinessException - Exception lỗi nghiệp vụ tập trung.
- * Hỗ trợ 2 cách throw:
+ * BusinessException - Exception lỗi nghiệp vụ tập trung (hỗ trợ i18n).
  *
- * 1. Truyền ErrorEnum (tự tách 3 thành phần CODE:MESSAGE:HTTP_STATUS):
- *    throw new BusinessException(ErrorEnum.USER_NOT_FOUND);
+ * Cách sử dụng:
+ *   throw new BusinessException(ErrorEnum.CATEGORY_EXISTED);
  *
- * 2. Truyền chuỗi custom message (mặc định HTTP 400):
- *    throw new BusinessException('Tài khoản đã bị khóa');
+ * Response body sẽ chứa:
+ *   { code: 'CATEGORY_EXISTED', message: 'Category already exists' }
+ *
+ * FE dùng field `code` để tra cứu file i18n, `message` chỉ là fallback.
  */
 export class BusinessException extends HttpException {
   constructor(error: ErrorEnum) {
-    if (!error.includes(':')) {
-      // Trường hợp truyền chuỗi custom message
-      super(
-        {
-          message: error,
-          errorCode: HttpStatus.BAD_REQUEST,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-      return;
-    }
-
-    // Trường hợp truyền ErrorEnum → tách 3 thành phần
-    const [code, message, httpStatus] = error.split(':');
-    const status = Number(httpStatus) || HttpStatus.BAD_REQUEST;
+    const detail = ERROR_MAP[error];
 
     super(
       {
-        message: message,
-        errorCode: Number(code),
+        code: error,
+        message: detail?.message ?? 'Internal server error',
       },
-      status,
+      detail?.httpStatus ?? HttpStatus.OK,
     );
   }
 }

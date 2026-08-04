@@ -7,7 +7,7 @@ import { HashUtil } from '#src/utils/hash.util';
 import { UserMapper } from '#src/modules/user/user.mapper';
 import { UserResponseDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { BusinessException } from '#src/common/exception/biz.exception';
 import { ErrorEnum } from '#src/common/constants/error-code.constant';
 import { plainToInstance } from 'class-transformer';

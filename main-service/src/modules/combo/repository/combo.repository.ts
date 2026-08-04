@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { PaginationOptions } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/pagination';
 import { CombosEntity } from '#src/entities/combos.entity';
 import { IComboRepository } from './combo.repository.interface';
 

@@ -1,6 +1,6 @@
 import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { UserEntity } from '#src/entities/user.entity';
-import { PaginationOptions } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/pagination';
 
 export interface IUserRepository {
   findAll(

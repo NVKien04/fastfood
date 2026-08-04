@@ -1,4 +1,4 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { CreateCouponDto } from '#src/modules/coupon/dto/create-coupon.dto';
 import { UpdateCouponDto } from '#src/modules/coupon/dto/update-coupon.dto';
 import { CouponsEntity } from '#src/entities/coupons.entity';

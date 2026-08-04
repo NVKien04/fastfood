@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { IComboRepository } from './repository/combo.repository.interface';
 import { CreateComboDto } from './dto/create-combo.dto';
 import { CombosEntity } from '#src/entities/combos.entity';
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { BusinessException } from '#src/common/exception/biz.exception';
 import { ErrorEnum } from '#src/common/constants/error-code.constant';
 

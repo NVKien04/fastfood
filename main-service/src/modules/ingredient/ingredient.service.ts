@@ -1,4 +1,4 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { CreateIngredientDto } from '#src/modules/ingredient/dto/create-ingredient.dto';
 import { UpdateIngredientDto } from '#src/modules/ingredient/dto/update-ingredient.dto';
 import { IngredientsEntity } from '#src/entities/ingredients.entity';

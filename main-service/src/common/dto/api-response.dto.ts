@@ -1,27 +1,26 @@
-import { Expose, Transform } from 'class-transformer';
-
+/**
+ * DTO chuẩn cho mọi response thành công.
+ *
+ * Format:
+ *   { success: true, data: { ... } }
+ *
+ * Pagination bổ sung field `meta`:
+ *   { success: true, data: [...], meta: { totalItems, ... } }
+ */
 export class ApiResponseDto<T = any> {
-  code: number;
-  message: string;
-  @Expose()
-  @Transform(({ value }) => (value === null ? undefined : value))
+  success: boolean = true;
   data?: T | null;
-  @Expose()
-  @Transform(({ value }) => (value === null ? undefined : value))
-  meta?: PaginationMeta | null;
+  meta?: PaginationMeta;
   timestamp: string;
   path: string;
   takenTime: string;
 
-  constructor(code: number, message: string, data?: T, meta?: PaginationMeta) {
-    this.code = code;
-    this.message = message;
-    this.data = data || undefined;
-    this.meta = meta || undefined;
-    this.timestamp = new Date().toLocaleString('vi-VN', {
-      timeZone: 'Asia/Ho_Chi_Minh',
-      hour12: false,
-    });
+  constructor(data?: T, meta?: PaginationMeta) {
+    this.data = data ?? undefined;
+    if (meta) {
+      this.meta = meta;
+    }
+    this.timestamp = new Date().toISOString();
     this.path = '';
     this.takenTime = '';
   }

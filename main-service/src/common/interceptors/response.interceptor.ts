@@ -25,20 +25,17 @@ export class ApiResponseInterceptor<T> implements NestInterceptor<T, ApiResponse
         const endTime = Date.now();
         const takenTime = `${endTime - startTime}ms`;
 
-        // Nếu đã là ApiResponseDto
-        if (result && typeof result === 'object' && 'code' in result && 'timestamp' in result) {
+        // Nếu đã là ApiResponseDto (đã wrap sẵn)
+        if (result && typeof result === 'object' && 'success' in result) {
           result.path = request.url;
           result.takenTime = takenTime;
           return result;
         }
 
-        const message = 'success';
-
         const data = result && typeof result === 'object' && 'data' in result ? result.data : result;
-
         const meta = result && typeof result === 'object' && 'meta' in result ? result.meta : undefined;
 
-        const response = new ApiResponseDto<T>(200, message, data, meta);
+        const response = new ApiResponseDto<T>(data, meta);
         response.path = request.url;
         response.takenTime = takenTime;
 

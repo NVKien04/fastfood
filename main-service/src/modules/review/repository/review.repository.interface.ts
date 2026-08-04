@@ -1,6 +1,6 @@
 import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 import { ReviewEntity } from '#src/entities/reviews.entity';
-import { PaginationOptions } from '#src/common/core/paganation';
+import { PaginationOptions } from '#src/common/core/pagination';
 
 export interface IReviewRepository {
   findAll(

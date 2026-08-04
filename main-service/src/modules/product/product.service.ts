@@ -1,4 +1,4 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { CreateProductDto } from '#src/modules/product/dto/create-product.dto';
 import { ProductEntity } from '#src/entities/product.entity';
 import type { IProductRepository } from '#src/modules/product/repository/product.repository.interface';

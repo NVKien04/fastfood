@@ -1,4 +1,4 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { CreateProductVariantDto } from '#src/modules/product/dto/create-product.dto';
 import type { IProductVariantRepository } from '#src/modules/product-variant/repository/product-variant.repository.interface';
 import { Inject, Injectable } from '@nestjs/common';

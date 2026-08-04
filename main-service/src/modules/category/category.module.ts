@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryController } from './category.controller';
 import { CategoryEntity } from '#src/entities/category.entity';
-import { CategoryRepository } from './repository/category.repository';
+import { CategoryTypeOrmRepository } from './infrastructure/category.typeorm.repository';
 import { CategoryService } from './category.service';
 
 @Module({
@@ -14,7 +14,7 @@ import { CategoryService } from './category.service';
     CategoryService,
     {
       provide: 'ICategoryRepository',
-      useClass: CategoryRepository,
+      useClass: CategoryTypeOrmRepository,
     },
   ],
   exports: [CategoryService],

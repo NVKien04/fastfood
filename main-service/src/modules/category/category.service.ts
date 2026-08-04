@@ -1,4 +1,4 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/paganation';
+import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { ErrorEnum } from '#src/common/constants/error-code.constant';
 import { BusinessException } from '#src/common/exception/biz.exception';
 import { Fn } from '#src/utils/fn';
@@ -6,8 +6,8 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CategoryEntity } from '#src/entities/category.entity';
-import type { ICategoryRepository } from '#src/modules/category/repository/category.repository.interface';
+import { Category } from './domain/category.domain';
+import type { ICategoryRepository } from './domain/category.repository.interface';
 
 @Injectable()
 export class CategoryService {
@@ -16,25 +16,35 @@ export class CategoryService {
     private readonly repo: ICategoryRepository,
   ) {}
 
-  async create(createCategory: CreateCategoryDto): Promise<CategoryEntity | null> {
+  async create(createCategory: CreateCategoryDto): Promise<Category | null> {
     const slug = Fn.changeNameToSlug(createCategory.name);
-    const existed = await this.repo.findOne({ slug: slug });
+    const existed = await this.repo.findOne({ slug });
     if (existed) {
       throw new BusinessException(ErrorEnum.CATEGORY_EXISTED);
     }
+    const categoryData: Partial<Category> = {
+      ...createCategory,
+      slug,
+      isActive: createCategory.isActive !== undefined ? Boolean(createCategory.isActive) : undefined,
+    };
 
-    return await this.repo.create(createCategory);
+    return await this.repo.create(categoryData);
   }
 
-  async update(updateCategoryDto: UpdateCategoryDto, id: number): Promise<CategoryEntity | null> {
+  async update(updateCategoryDto: UpdateCategoryDto, id: number): Promise<Category | null> {
     const category = await this.repo.findById(id);
     if (!category) {
       throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
     }
-    return this.repo.update(id, updateCategoryDto);
+    const payload: Partial<Category> = {
+      ...updateCategoryDto,
+      isActive: updateCategoryDto.isActive !== undefined ? Boolean(updateCategoryDto.isActive) : undefined,
+    };
+
+    return this.repo.update(id, payload);
   }
 
-  async delete(categoryId: number) {
+  async delete(categoryId: number): Promise<boolean> {
     const category = await this.repo.findById(categoryId);
     if (!category) {
       throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
@@ -53,14 +63,18 @@ export class CategoryService {
       orderBy: filterObject?.orderby,
     });
 
+    if (totalItems) {
+      throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
+    }
+
     return buildPaginationResponse(data, totalItems, page, limit);
   }
 
-  async geyWidthProduct(id: number): Promise<CategoryEntity | null> {
+  async geyWidthProduct(id: number): Promise<Category | null> {
     return await this.repo.findById(id);
   }
 
-  async getById(categoryId: number): Promise<CategoryEntity | null> {
+  async getById(categoryId: number): Promise<Category | null> {
     return this.repo.findById(categoryId);
   }
 }
