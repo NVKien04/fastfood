@@ -1,5 +1,5 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import type { IUserRepository } from '#src/modules/user/repository/user.repository.interface';
+import type { IUserRepository } from '#src/modules/user/domain/user.repository.interface';
 import { HashUtil } from '#src/utils/hash.util';
 import { JwtService } from '@nestjs/jwt';
 

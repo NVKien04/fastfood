@@ -1,5 +1,5 @@
 import { AddressesEntity } from '#src/entities/addresses.entity';
-import { AddressRepository } from './repository/address.repository';
+import { AddressTypeOrmRepository } from './infrastructure/address.typeorm.repository';
 import { AddressService } from './address.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,7 +16,7 @@ import { HttpModule } from '@nestjs/axios';
     ProviceService,
     {
       provide: 'IAddressRepository',
-      useClass: AddressRepository,
+      useClass: AddressTypeOrmRepository,
     },
   ],
   exports: [AddressService],

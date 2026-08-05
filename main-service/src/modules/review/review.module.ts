@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReviewEntity } from '#src/entities/reviews.entity';
 import { ReviewController } from './review.controller';
 import { ReviewService } from './review.service';
-import { ReviewRepository } from './repository/review.repository';
+import { ReviewTypeOrmRepository } from './infrastructure/review.typeorm.repository';
 import { UserEntity } from '#src/entities/user.entity';
 import { ProductEntity } from '#src/entities/product.entity';
 
@@ -14,7 +14,7 @@ import { ProductEntity } from '#src/entities/product.entity';
     ReviewService,
     {
       provide: 'IReviewRepository',
-      useClass: ReviewRepository,
+      useClass: ReviewTypeOrmRepository,
     },
   ],
   exports: [ReviewService],

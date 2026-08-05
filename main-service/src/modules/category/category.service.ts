@@ -16,9 +16,49 @@ export class CategoryService {
     private readonly repo: ICategoryRepository,
   ) {}
 
+  // ==========================================
+  // NHÓM 1: CÁC HÀM WRAPPER (ỦY QUYỀN REPOSITORY)
+  // ==========================================
+
+  async findById(id: number): Promise<Category | null> {
+    return this.repo.findById(id);
+  }
+
+  async findOne(condition: Partial<Category>): Promise<Category | null> {
+    return this.repo.findOne(condition);
+  }
+
+  async findAll(
+    condition?: Partial<Category>,
+    order?: Record<string, 'ASC' | 'DESC'>,
+    relations?: string[],
+  ): Promise<Category[]> {
+    return this.repo.findAll(condition, order, relations);
+  }
+
+  async save(entity: Partial<Category>): Promise<Category> {
+    return this.repo.create(entity);
+  }
+
+  async updateRaw(id: number, entity: Partial<Category>): Promise<Category | null> {
+    return this.repo.update(id, entity);
+  }
+
+  async softDeleteRaw(id: number): Promise<boolean> {
+    return this.repo.softDelete(id);
+  }
+
+  async findPaginated(options: any, where?: Record<string, any>): Promise<[Category[], number]> {
+    return this.repo.findPaginated(options, where);
+  }
+
+  // ==========================================
+  // NHÓM 2: CÁC HÀM NGHIỆP VỤ THỰC TẾ (BUSINESS LOGIC)
+  // ==========================================
+
   async create(createCategory: CreateCategoryDto): Promise<Category | null> {
     const slug = Fn.changeNameToSlug(createCategory.name);
-    const existed = await this.repo.findOne({ slug });
+    const existed = await this.findOne({ slug });
     if (existed) {
       throw new BusinessException(ErrorEnum.CATEGORY_EXISTED);
     }
@@ -28,11 +68,11 @@ export class CategoryService {
       isActive: createCategory.isActive !== undefined ? Boolean(createCategory.isActive) : undefined,
     };
 
-    return await this.repo.create(categoryData);
+    return await this.save(categoryData);
   }
 
   async update(updateCategoryDto: UpdateCategoryDto, id: number): Promise<Category | null> {
-    const category = await this.repo.findById(id);
+    const category = await this.findById(id);
     if (!category) {
       throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
     }
@@ -41,15 +81,15 @@ export class CategoryService {
       isActive: updateCategoryDto.isActive !== undefined ? Boolean(updateCategoryDto.isActive) : undefined,
     };
 
-    return this.repo.update(id, payload);
+    return this.updateRaw(id, payload);
   }
 
   async delete(categoryId: number): Promise<boolean> {
-    const category = await this.repo.findById(categoryId);
+    const category = await this.findById(categoryId);
     if (!category) {
       throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
     }
-    return await this.repo.softDelete(categoryId);
+    return await this.softDeleteRaw(categoryId);
   }
 
   async getPage(filterObject: any): Promise<PaginationResponse<any>> {
@@ -57,7 +97,7 @@ export class CategoryService {
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
 
-    const [data, totalItems] = await this.repo.findPaginated({
+    const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
       orderBy: filterObject?.orderby,
@@ -71,10 +111,10 @@ export class CategoryService {
   }
 
   async geyWidthProduct(id: number): Promise<Category | null> {
-    return await this.repo.findById(id);
+    return await this.findById(id);
   }
 
   async getById(categoryId: number): Promise<Category | null> {
-    return this.repo.findById(categoryId);
+    return this.findById(categoryId);
   }
 }

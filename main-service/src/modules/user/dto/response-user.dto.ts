@@ -17,7 +17,7 @@ export class UserResponseDto {
   phone: string;
 
   @Expose()
-  avatar: string;
+  avatar?: string;
 
   @Expose()
   role: RoleEnum;

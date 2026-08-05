@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CouponsEntity } from '#src/entities/coupons.entity';
 import { CouponController } from './coupon.controller';
 import { CouponService } from './coupon.service';
-import { CouponsRepository } from './repository/coupon.repository';
+import { CouponTypeOrmRepository } from './infrastructure/coupon.typeorm.repository';
 import { OrdersEntity } from '#src/entities/orders.entity';
 
 @Module({
@@ -13,7 +13,7 @@ import { OrdersEntity } from '#src/entities/orders.entity';
     CouponService,
     {
       provide: 'ICouponRepository',
-      useClass: CouponsRepository,
+      useClass: CouponTypeOrmRepository,
     },
   ],
   exports: [CouponService],

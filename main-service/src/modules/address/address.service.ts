@@ -1,11 +1,12 @@
 import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { CreateAddressDto } from '#src/modules/address/dto/create-address.dto';
-import { AddressesEntity } from '#src/entities/addresses.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserService } from '#src/modules/user/user.service';
-import type { IAddressRepository } from '#src/modules/address/repository/address.repository.interface';
 import { BusinessException } from '#src/common/exception/biz.exception';
 import { ErrorEnum } from '#src/common/constants/error-code.constant';
+
+import { Address } from './domain/address.domain';
+import type { IAddressRepository } from './domain/address.repository.interface';
 
 @Injectable()
 export class AddressService {
@@ -15,8 +16,48 @@ export class AddressService {
     private readonly userService: UserService,
   ) {}
 
-  async create(userId: string, data: CreateAddressDto): Promise<AddressesEntity> {
-    const createAddressData: Partial<AddressesEntity> = {
+  // ==========================================
+  // NHÓM 1: CÁC HÀM WRAPPER (ỦY QUYỀN REPOSITORY)
+  // ==========================================
+
+  async findById(id: string): Promise<Address | null> {
+    return this.addressRepository.findById(id);
+  }
+
+  async findOne(condition: Partial<Address>): Promise<Address | null> {
+    return this.addressRepository.findOne(condition);
+  }
+
+  async findAll(
+    condition?: Partial<Address>,
+    order?: Record<string, 'ASC' | 'DESC'>,
+    relations?: string[],
+  ): Promise<Address[]> {
+    return this.addressRepository.findAll(condition, order, relations);
+  }
+
+  async save(entity: Partial<Address>): Promise<Address> {
+    return this.addressRepository.create(entity);
+  }
+
+  async updateRaw(id: string, entity: Partial<Address>): Promise<Address | null> {
+    return this.addressRepository.update(id, entity);
+  }
+
+  async softDeleteRaw(id: string): Promise<boolean> {
+    return this.addressRepository.softDelete(id);
+  }
+
+  async findPaginated(options: any, where?: Record<string, any>): Promise<[Address[], number]> {
+    return this.addressRepository.findPaginated(options, where);
+  }
+
+  // ==========================================
+  // NHÓM 2: CÁC HÀM NGHIỆP VỤ THỰC TẾ (BUSINESS LOGIC)
+  // ==========================================
+
+  async create(userId: string, data: CreateAddressDto): Promise<Address> {
+    const createAddressData: Partial<Address> = {
       street: data.street,
       city: data.city,
       district: data.district,
@@ -24,15 +65,15 @@ export class AddressService {
       isDefault: data.isDefault || 1,
       userId: userId,
     };
-    return this.addressRepository.create(createAddressData);
+    return this.save(createAddressData);
   }
 
-  async findAllByUserId(userId: string): Promise<AddressesEntity[]> {
-    return this.addressRepository.findAll({ userId: userId }, { isDefault: 'DESC', createdAt: 'DESC' }, []);
+  async findAllByUserId(userId: string): Promise<Address[]> {
+    return this.findAll({ userId: userId }, { isDefault: 'DESC', createdAt: 'DESC' }, []);
   }
 
-  async update(addressId: string, updateData: Partial<CreateAddressDto>): Promise<AddressesEntity | null> {
-    const address = await this.addressRepository.findById(addressId);
+  async update(addressId: string, updateData: Partial<CreateAddressDto>): Promise<Address | null> {
+    const address = await this.findById(addressId);
     if (!address) {
       throw new BusinessException(ErrorEnum.ADDRESS_NOT_FOUND);
     }
@@ -40,7 +81,7 @@ export class AddressService {
     if (updateData.isDefault === 1 && address.isDefault !== 1) {
       // Set all other addresses of the user to isDefault = 0
     }
-    return this.addressRepository.update(addressId, updateData);
+    return this.updateRaw(addressId, updateData);
   }
 
   async getPage(filterObject: any): Promise<PaginationResponse<any>> {
@@ -48,7 +89,7 @@ export class AddressService {
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
 
-    const [data, totalItems] = await this.addressRepository.findPaginated({
+    const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
       orderBy: filterObject?.orderby,
@@ -58,10 +99,10 @@ export class AddressService {
   }
 
   async delete(addressId: string) {
-    const address = await this.addressRepository.findById(addressId);
+    const address = await this.findById(addressId);
     if (!address) {
       throw new BusinessException(ErrorEnum.ADDRESS_NOT_FOUND);
     }
-    return this.addressRepository.softDelete(addressId);
+    return this.softDeleteRaw(addressId);
   }
 }

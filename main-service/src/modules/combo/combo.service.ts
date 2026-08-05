@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { IComboRepository } from './repository/combo.repository.interface';
+import type { IComboRepository } from './domain/combo.repository.interface';
 import { CreateComboDto } from './dto/create-combo.dto';
-import { CombosEntity } from '#src/entities/combos.entity';
+import { Combo } from './domain/combo.domain';
 import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { BusinessException } from '#src/common/exception/biz.exception';
 import { ErrorEnum } from '#src/common/constants/error-code.constant';
@@ -13,24 +13,68 @@ export class ComboService {
     private readonly comboRepository: IComboRepository,
   ) {}
 
-  async create(createComboDto: CreateComboDto): Promise<CombosEntity> {
-    return this.comboRepository.create(createComboDto as Partial<CombosEntity>);
+  // ==========================================
+  // NHÓM 1: CÁC HÀM WRAPPER (ỦY QUYỀN REPOSITORY)
+  // ==========================================
+
+  async findById(id: string): Promise<Combo | null> {
+    return this.comboRepository.findById(id);
   }
 
-  async findAll(): Promise<CombosEntity[]> {
-    return this.comboRepository.findAll();
+  async findOneRaw(condition: Partial<Combo>): Promise<Combo | null> {
+    return this.comboRepository.findOne(condition);
   }
 
-  async findOne(id: string): Promise<CombosEntity> {
-    const combo = await this.comboRepository.findById(id);
+  async findBySlugRaw(slug: string): Promise<Combo | null> {
+    return this.comboRepository.findBySlug(slug);
+  }
+
+  async findAllRaw(
+    condition?: Partial<Combo>,
+    order?: Record<string, 'ASC' | 'DESC'>,
+    relations?: string[],
+  ): Promise<Combo[]> {
+    return this.comboRepository.findAll(condition, order, relations);
+  }
+
+  async save(entity: Partial<Combo>): Promise<Combo> {
+    return this.comboRepository.create(entity);
+  }
+
+  async updateRaw(id: string, entity: Partial<Combo>): Promise<Combo | null> {
+    return this.comboRepository.update(id, entity);
+  }
+
+  async deleteRaw(id: string): Promise<boolean> {
+    return this.comboRepository.delete(id);
+  }
+
+  async findPaginated(options: any, where?: Record<string, any>): Promise<[Combo[], number]> {
+    return this.comboRepository.findPaginated(options, where);
+  }
+
+  // ==========================================
+  // NHÓM 2: CÁC HÀM NGHIỆP VỤ THỰC TẾ (BUSINESS LOGIC)
+  // ==========================================
+
+  async create(createComboDto: CreateComboDto): Promise<Combo> {
+    return this.save(createComboDto as Partial<Combo>);
+  }
+
+  async findAll(): Promise<Combo[]> {
+    return this.findAllRaw();
+  }
+
+  async findOne(id: string): Promise<Combo> {
+    const combo = await this.findById(id);
     if (!combo) {
       throw new BusinessException(ErrorEnum.COMBO_NOT_FOUND);
     }
     return combo;
   }
 
-  async findBySlug(slug: string): Promise<CombosEntity> {
-    const combo = await this.comboRepository.findBySlug(slug);
+  async findBySlug(slug: string): Promise<Combo> {
+    const combo = await this.findBySlugRaw(slug);
     if (!combo) {
       throw new BusinessException(ErrorEnum.COMBO_NOT_FOUND);
     }
@@ -42,7 +86,7 @@ export class ComboService {
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
 
-    const [data, totalItems] = await this.comboRepository.findPaginated({
+    const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
       orderBy: filterObject?.orderby,
@@ -53,6 +97,6 @@ export class ComboService {
 
   async remove(id: string): Promise<void> {
     await this.findOne(id);
-    await this.comboRepository.delete(id);
+    await this.deleteRaw(id);
   }
 }

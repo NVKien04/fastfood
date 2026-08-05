@@ -5,7 +5,7 @@ import { UserEntity } from '#src/entities/user.entity';
 import { AuthorizationGuard } from '#src/guards/authorization.guard';
 import { JwtAuthGuard } from '#src/guards/jwt.guard';
 import { LocalAuthGuard } from '#src/guards/local-auth.guard';
-import { UserRepository } from '#src/modules/user/repository/user.repository';
+import { UserTypeOrmRepository } from '#src/modules/user/infrastructure/user.typeorm.repository';
 import { AuthService } from './auth.service';
 import { UserService } from '#src/modules/user/user.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -23,7 +23,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtStrategy,
     {
       provide: 'IUserRepository',
-      useClass: UserRepository,
+      useClass: UserTypeOrmRepository,
     },
   ],
   exports: [AuthService],

@@ -4,7 +4,7 @@ import { CombosEntity } from '#src/entities/combos.entity';
 import { ComboItemsEntity } from '#src/entities/combo-items.entity';
 import { ComboController } from './combo.controller';
 import { ComboService } from './combo.service';
-import { ComboRepository } from './repository/combo.repository';
+import { ComboTypeOrmRepository } from './infrastructure/combo.typeorm.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CombosEntity, ComboItemsEntity])],
@@ -13,7 +13,7 @@ import { ComboRepository } from './repository/combo.repository';
     ComboService,
     {
       provide: 'IComboRepository',
-      useClass: ComboRepository,
+      useClass: ComboTypeOrmRepository,
     },
   ],
   exports: [ComboService],

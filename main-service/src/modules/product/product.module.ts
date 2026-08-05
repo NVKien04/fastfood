@@ -1,6 +1,6 @@
 import { ProductController } from './product.controller';
 import { ProductEntity } from '#src/entities/product.entity';
-import { ProductRepository } from './repository/product.repository';
+import { ProductTypeOrmRepository } from './infrastructure/product.typeorm.repository';
 import { ProductService } from './product.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,7 +18,7 @@ import { IngredientModule } from '#src/modules/ingredient/ingredient.module';
     ProductService,
     {
       provide: 'IProductRepository',
-      useClass: ProductRepository,
+      useClass: ProductTypeOrmRepository,
     },
   ],
   exports: [ProductService],

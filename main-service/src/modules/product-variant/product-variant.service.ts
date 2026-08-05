@@ -2,7 +2,6 @@ import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pa
 import { CreateProductVariantDto } from '#src/modules/product/dto/create-product.dto';
 import type { IProductVariantRepository } from '#src/modules/product-variant/repository/product-variant.repository.interface';
 import { Inject, Injectable } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class ProductVariantService {
@@ -11,7 +10,7 @@ export class ProductVariantService {
     private readonly productVariantRepository: IProductVariantRepository,
   ) {}
 
-  async create(data: CreateProductVariantDto, productId: string, manager?: EntityManager): Promise<any> {
+  async create(data: CreateProductVariantDto, productId: string, manager?: unknown): Promise<any> {
     return await this.productVariantRepository.create({ ...data, productId }, manager);
   }
 

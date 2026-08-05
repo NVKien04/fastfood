@@ -12,8 +12,9 @@ export class ProductIngredientRepository implements IProductIngredientRepository
     private readonly repo: Repository<ProductIngredientsEntity>,
   ) {}
 
-  private getRepo(manager?: EntityManager): Repository<ProductIngredientsEntity> {
-    return manager ? manager.getRepository(ProductIngredientsEntity) : this.repo;
+  private getRepo(manager?: unknown): Repository<ProductIngredientsEntity> {
+    const em = manager as EntityManager | undefined;
+    return em ? em.getRepository(ProductIngredientsEntity) : this.repo;
   }
 
   async findAll(
@@ -35,10 +36,7 @@ export class ProductIngredientRepository implements IProductIngredientRepository
     return this.repo.findOne({ where: { id } as FindOptionsWhere<ProductIngredientsEntity> });
   }
 
-  async create(
-    entity: DeepPartial<ProductIngredientsEntity>,
-    manager?: EntityManager,
-  ): Promise<ProductIngredientsEntity> {
+  async create(entity: DeepPartial<ProductIngredientsEntity>, manager?: unknown): Promise<ProductIngredientsEntity> {
     const repo = this.getRepo(manager);
     const obj = repo.create(entity);
     return repo.save(obj);
@@ -47,7 +45,7 @@ export class ProductIngredientRepository implements IProductIngredientRepository
   async update(
     id: string,
     entity: DeepPartial<ProductIngredientsEntity>,
-    manager?: EntityManager,
+    manager?: unknown,
   ): Promise<ProductIngredientsEntity | null> {
     const repo = this.getRepo(manager);
     const result = await repo.update(id as any, entity);
@@ -55,19 +53,19 @@ export class ProductIngredientRepository implements IProductIngredientRepository
     return null;
   }
 
-  async softDelete(id: string, manager?: EntityManager): Promise<DeleteResult> {
+  async softDelete(id: string, manager?: unknown): Promise<DeleteResult> {
     const repo = this.getRepo(manager);
     return repo.softDelete(id);
   }
 
-  async delete(id: string, manager?: EntityManager): Promise<DeleteResult> {
+  async delete(id: string, manager?: unknown): Promise<DeleteResult> {
     const repo = this.getRepo(manager);
     return repo.delete(id as any);
   }
 
   async createMany(
     entity: DeepPartial<ProductIngredientsEntity>[],
-    manager?: EntityManager,
+    manager?: unknown,
   ): Promise<ProductIngredientsEntity[]> {
     const repo = this.getRepo(manager);
     const entities = repo.create(entity);
