@@ -1,10 +1,10 @@
 import { UserCouponsEntity } from '#src/entities/user-coupons.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserController } from './user.controller';
+import { UserController } from './presentation/controllers/user.controller';
 import { UserEntity } from '#src/entities/user.entity';
-import { UserTypeOrmRepository } from './infrastructure/user.typeorm.repository';
-import { UserService } from './user.service';
+import { UserTypeOrmRepository } from './infrastructure/repositories/user.typeorm.repository';
+import { UserService } from './application/services/user.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, UserCouponsEntity])],

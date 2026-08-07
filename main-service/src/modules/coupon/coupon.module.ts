@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CouponsEntity } from '#src/entities/coupons.entity';
-import { CouponController } from './coupon.controller';
-import { CouponService } from './coupon.service';
-import { CouponTypeOrmRepository } from './infrastructure/coupon.typeorm.repository';
+import { CouponController } from './presentation/controllers/coupon.controller';
+import { CouponService } from './application/services/coupon.service';
+import { CouponTypeOrmRepository } from './infrastructure/repositories/coupon.typeorm.repository';
 import { OrdersEntity } from '#src/entities/orders.entity';
 
 @Module({

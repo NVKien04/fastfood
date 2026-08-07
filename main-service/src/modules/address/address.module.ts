@@ -1,11 +1,11 @@
 import { AddressesEntity } from '#src/entities/addresses.entity';
-import { AddressTypeOrmRepository } from './infrastructure/address.typeorm.repository';
-import { AddressService } from './address.service';
+import { AddressTypeOrmRepository } from './infrastructure/repositories/address.typeorm.repository';
+import { AddressService } from './application/services/address.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '#src/modules/user/user.module';
-import { AddressController } from './address.controller';
-import { ProviceService } from './provice.service';
+import { AddressController } from './presentation/controllers/address.controller';
+import { ProviceService } from './application/services/provice.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
