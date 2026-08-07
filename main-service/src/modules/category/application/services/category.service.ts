@@ -24,8 +24,8 @@ export class CategoryService {
     return this.repo.findById(id);
   }
 
-  async findOne(condition: Partial<Category>): Promise<Category | null> {
-    return this.repo.findOne(condition);
+  async findOne(condition: Partial<Category>, relations?: string[]): Promise<Category | null> {
+    return this.repo.findOne(condition, relations);
   }
 
   async findAll(
@@ -103,18 +103,18 @@ export class CategoryService {
       orderBy: filterObject?.orderby,
     });
 
-    if (totalItems) {
-      throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
-    }
-
     return buildPaginationResponse(data, totalItems, page, limit);
   }
 
-  async geyWidthProduct(id: number): Promise<Category | null> {
-    return await this.findById(id);
+  async getWithProducts(id: number): Promise<Category | null> {
+    return this.findOne({ id }, ['products']);
   }
 
   async getById(categoryId: number): Promise<Category | null> {
     return this.findById(categoryId);
+  }
+
+  async getBySlug(slug: string): Promise<Category | null> {
+    return this.findOne({ slug });
   }
 }

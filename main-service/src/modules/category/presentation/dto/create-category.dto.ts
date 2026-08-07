@@ -7,10 +7,10 @@ export class CreateCategoryDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ description: 'Slug của danh mục', example: 'pizza' })
+  @ApiPropertyOptional({ description: 'Slug của danh mục (tự sinh từ name nếu để trống)', example: 'pizza' })
   @IsString()
-  @IsNotEmpty()
-  slug: string;
+  @IsOptional()
+  slug?: string;
 
   @ApiPropertyOptional({ description: 'Mô tả danh mục', example: 'Các loại pizza ngon nhất' })
   @IsOptional()

@@ -34,7 +34,16 @@ export class AuthService {
     return this.userService.changePassword(userId, data);
   }
 
+  async cleanExpiredTokens(): Promise<void> {
+    try {
+      await this.refreshTokenRepository.deleteExpiredTokens();
+    } catch (error) {
+      console.error('Lỗi khi tự động dọn dẹp Refresh Token hết hạn:', error);
+    }
+  }
+
   async login(data: LoginDto) {
+    await this.cleanExpiredTokens();
     const result = await this.validateUser(data.email, data.password);
     const payload: JwtPayLoad = {
       userId: result.id,
@@ -66,6 +75,7 @@ export class AuthService {
 
   async refresh(token: string) {
     try {
+      await this.cleanExpiredTokens();
       const payload = await this.jwtService.verifyAsync<JwtPayLoad>(token, {
         secret: this.JWT_REFRESH_SECRET,
       });

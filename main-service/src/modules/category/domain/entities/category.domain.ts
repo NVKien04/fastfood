@@ -1,3 +1,5 @@
+import { Product } from '#src/modules/product/domain/entities/product.domain';
+
 export class Category {
   id: number;
   name: string;
@@ -8,6 +10,7 @@ export class Category {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+  products?: Product[];
 
   constructor(partial: Partial<Category>) {
     Object.assign(this, partial);

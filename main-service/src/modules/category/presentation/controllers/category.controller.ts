@@ -32,6 +32,20 @@ export class CategoryController {
     };
   }
 
+  @Get('slug/:slug')
+  @ApiOperation({ summary: 'Lấy chi tiết danh mục theo Slug' })
+  @ApiResponse({ status: 200, description: 'Lấy thông tin thành công' })
+  @ApiResponse({ status: 404, description: 'Danh mục không tồn tại' })
+  async getBySlug(@Param('slug') slug: string) {
+    const category = await this.categoryService.getBySlug(slug);
+    if (!category) {
+      throw new NotFoundException('Danh mục không tồn tại');
+    }
+    return {
+      data: category,
+    };
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Lấy chi tiết danh mục theo ID' })
   @ApiResponse({ status: 200, description: 'Lấy thông tin thành công' })

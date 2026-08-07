@@ -5,4 +5,5 @@ export interface IRefreshTokenRepository {
   findByToken(token: string): Promise<RefreshToken | null>;
   deleteByToken(token: string, manager?: unknown): Promise<boolean>;
   deleteByUserId(userId: string, manager?: unknown): Promise<boolean>;
+  deleteExpiredTokens(manager?: unknown): Promise<void>;
 }

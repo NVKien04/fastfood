@@ -41,4 +41,9 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     const result = await repo.delete({ userId });
     return !!(result.affected && result.affected > 0);
   }
+
+  async deleteExpiredTokens(manager?: unknown): Promise<void> {
+    const repo = this.getRepo(manager);
+    await repo.createQueryBuilder().delete().where('expiresAt < :now', { now: new Date() }).execute();
+  }
 }

@@ -1,5 +1,6 @@
 import { CategoryEntity } from '#src/entities/category.entity';
 import { Category } from '../../domain/entities/category.domain';
+import { ProductMapper } from '#src/modules/product/infrastructure/mappers/product.mapper';
 
 export class CategoryMapper {
   static toDomain(ormEntity: CategoryEntity): Category {
@@ -15,6 +16,7 @@ export class CategoryMapper {
       createdAt: ormEntity.createdAt,
       updatedAt: ormEntity.updatedAt,
       deletedAt: ormEntity.deletedAt,
+      products: ormEntity.products ? ProductMapper.toDomainList(ormEntity.products) : undefined,
     });
   }
 
