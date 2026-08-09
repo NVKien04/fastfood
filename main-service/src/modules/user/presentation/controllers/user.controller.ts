@@ -16,27 +16,21 @@ export class UserController {
 
   @Auth(RoleEnum.ADMIN)
   @ApiBearerAuth()
-  @Get('')
+  @Get()
   @ApiOperation({ summary: 'Lấy tất cả danh sách người dùng (Admin)' })
   @ApiResponse({ status: 200, description: 'Lấy danh sách người dùng thành công', type: [UserResponseDto] })
   async getAll() {
-    const users = await this.userService.getAllUser();
-    return {
-      data: users,
-    };
+    return await this.userService.getAllUser();
   }
 
   @Auth()
   @ApiBearerAuth()
-  @Get(['profile', 'me'])
+  @Get('info')
   @ApiOperation({ summary: 'Lấy thông tin cá nhân người dùng đang đăng nhập' })
   @ApiResponse({ status: 200, description: 'Lấy thông tin cá nhân thành công', type: UserResponseDto })
   @ApiResponse({ status: 401, description: 'Chưa xác thực' })
   async getInfo(@GetUser() user: AuthUser) {
-    const data = await this.userService.getProfile(user.userId);
-    return {
-      data,
-    };
+    return await this.userService.getInfo(user.userId);
   }
 
   @Auth(RoleEnum.ADMIN)
@@ -47,10 +41,7 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Lấy thông tin thành công', type: UserResponseDto })
   @ApiResponse({ status: 404, description: 'Không tìm thấy người dùng' })
   async getById(@Param('id') id: string) {
-    const data = await this.userService.getProfile(id);
-    return {
-      data,
-    };
+    return await this.userService.getInfo(id);
   }
 
   @Auth(RoleEnum.ADMIN)
@@ -83,15 +74,12 @@ export class UserController {
     return await this.userService.getPage(filterObject);
   }
 
-  @Auth()
-  @ApiBearerAuth()
-  @Get('test-auth-user')
-  @ApiOperation({ summary: 'Kiểm tra thông tin AuthUser từ Token' })
-  @ApiResponse({ status: 200, description: 'Test AuthUser thành công' })
-  testAuthUser(@GetUser() user: AuthUser) {
-    return {
-      message: 'Test AuthUser thành công',
-      user,
-    };
-  }
+  // @Auth()
+  // @ApiBearerAuth()
+  // @Get('test-auth-user')
+  // @ApiOperation({ summary: 'Kiểm tra thông tin AuthUser từ Token' })
+  // @ApiResponse({ status: 200, description: 'Test AuthUser thành công' })
+  // testAuthUser(@GetUser() user: AuthUser) {
+  //   return user;
+  // }
 }

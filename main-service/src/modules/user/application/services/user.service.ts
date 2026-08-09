@@ -135,7 +135,7 @@ export class UserService {
     return user;
   }
 
-  async getProfile(userId: string): Promise<UserResponseDto> {
+  async getInfo(userId: string): Promise<UserResponseDto> {
     const user = await this.getById(userId);
     return UserMapper.toResponse(user);
   }
