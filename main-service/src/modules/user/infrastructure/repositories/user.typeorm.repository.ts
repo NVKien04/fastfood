@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { UserEntity } from '#src/entities/user.entity';
-import { PaginationOptions } from '#src/common/core/pagination';
+import { UserEntity } from '@/entities/user.entity';
+import { PaginationOptions } from '@/common/core/pagination';
 import { User } from '../../domain/entities/user.domain';
 import { IUserRepository } from '../../domain/repositories/user.repository.interface';
 import { UserMapper } from '../mappers/user.mapper';
@@ -30,16 +30,21 @@ export class UserTypeOrmRepository implements IUserRepository {
 
   async findOne(condition: Partial<User>, relations?: string[]): Promise<User | null> {
     const where = UserMapper.toOrmEntity(condition) as FindOptionsWhere<UserEntity>;
+    if (!where || Object.keys(where).length === 0) {
+      return null;
+    }
     const entity = await this.repo.findOne({ where, relations: relations ?? [] });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
   async findById(id: string): Promise<User | null> {
+    if (!id) return null;
     const entity = await this.repo.findOne({ where: { id } as FindOptionsWhere<UserEntity> });
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
   async findByEmail(email: string): Promise<User | null> {
+    if (!email) return null;
     const entity = await this.repo.findOne({ where: { email } as FindOptionsWhere<UserEntity> });
     return entity ? UserMapper.toDomain(entity) : null;
   }
@@ -53,6 +58,9 @@ export class UserTypeOrmRepository implements IUserRepository {
 
   async update(id: string, entityData: Partial<User>): Promise<User | null> {
     const ormPayload = UserMapper.toOrmEntity(entityData);
+    if (!ormPayload || Object.keys(ormPayload).length === 0) {
+      return this.findById(id);
+    }
     const result = await this.repo.update(id, ormPayload);
     if (result.affected && result.affected > 0) {
       return this.findById(id);
@@ -81,14 +89,25 @@ export class UserTypeOrmRepository implements IUserRepository {
     const entity = 'users';
     const qb = this.repo.createQueryBuilder(entity);
 
-    if (where) {
+    if (where && Object.keys(where).length > 0) {
       qb.where(where);
     }
 
     qb.take(options.take).skip(options.skip);
 
     if (options.orderBy) {
-      qb.orderBy(`${entity}.${options.orderBy}`, options.orderDirection ?? 'ASC');
+      let sortField = options.orderBy;
+      let sortDir: 'ASC' | 'DESC' = options.orderDirection ?? 'ASC';
+
+      if (options.orderBy.includes(':')) {
+        const [field, dir] = options.orderBy.split(':');
+        sortField = field;
+        if (dir && (dir.toUpperCase() === 'ASC' || dir.toUpperCase() === 'DESC')) {
+          sortDir = dir.toUpperCase() as 'ASC' | 'DESC';
+        }
+      }
+
+      qb.orderBy(`${entity}.${sortField}`, sortDir);
     }
 
     const [entities, total] = await qb.getManyAndCount();

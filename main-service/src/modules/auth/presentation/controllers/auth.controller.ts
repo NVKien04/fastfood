@@ -1,13 +1,17 @@
 import { Body, Controller, Post, Request, Res, UnauthorizedException } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../../application/services/auth.service';
 import { type Response } from 'express';
-import { CookieName } from '#src/common/constants/auth.constant';
+import { CookieName } from '@/common/constants/auth.constant';
 import { LoginDto } from '../dto/login.dto';
-import { CreateUserDto } from '#src/modules/user/presentation/dto/create-user.dto';
+import { LoginResponseDto } from '../dto/login-response.dto';
+import { CreateUserDto } from '@/modules/user/presentation/dto/create-user.dto';
+import { UserResponseDto } from '@/modules/user/presentation/dto/response-user.dto';
 import { ChangePasswordDto } from '../dto/change-password.dto';
-import { Auth } from '#src/common/decorators/auth.decorator';
-import { RoleEnum } from '#src/enums/role.enum';
+import { Auth } from '@/common/decorators/auth.decorator';
+import { RoleEnum } from '@/enums/role.enum';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   private readonly JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN;
@@ -38,6 +42,8 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiOperation({ summary: 'Đăng ký tài khoản mới' })
+  @ApiResponse({ status: 201, description: 'Đăng ký thành công', type: UserResponseDto })
   async register(@Body() userDto: CreateUserDto) {
     const user = await this.authService.register(userDto);
     return {
@@ -46,6 +52,9 @@ export class AuthController {
   }
 
   @Post('login')
+  @ApiOperation({ summary: 'Đăng nhập hệ thống' })
+  @ApiResponse({ status: 200, description: 'Đăng nhập thành công', type: LoginResponseDto })
+  @ApiResponse({ status: 401, description: 'Email hoặc mật khẩu không chính xác' })
   async Login(@Body() data: LoginDto, @Res({ passthrough: true }) res: Response) {
     const tokens = await this.authService.login(data);
     this.setAuthCookie(res, tokens.refreshToken);
@@ -53,6 +62,8 @@ export class AuthController {
   }
 
   @Post('logout')
+  @ApiOperation({ summary: 'Đăng xuất hệ thống' })
+  @ApiResponse({ status: 200, description: 'Đăng xuất thành công' })
   async Logout(@Request() req: any, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies?.['refreshToken'];
     if (refreshToken) {
@@ -63,6 +74,9 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @ApiOperation({ summary: 'Làm mới Access Token bằng Refresh Token từ cookie' })
+  @ApiResponse({ status: 200, description: 'Cấp mới token thành công', type: LoginResponseDto })
+  @ApiResponse({ status: 401, description: 'Không tìm thấy hoặc Refresh Token không hợp lệ' })
   async refresh(@Request() req: any, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies?.['refreshToken'];
     if (!refreshToken) {
@@ -74,7 +88,11 @@ export class AuthController {
   }
 
   @Auth()
+  @ApiBearerAuth()
   @Post('change-password')
+  @ApiOperation({ summary: 'Đổi mật khẩu tài khoản' })
+  @ApiResponse({ status: 200, description: 'Thay đổi mật khẩu thành công' })
+  @ApiResponse({ status: 400, description: 'Mật khẩu cũ không chính xác' })
   async changePassword(@Request() req: any, @Body() data: ChangePasswordDto) {
     const userId = req.user.userId;
     await this.authService.changePassword(userId, data);
@@ -82,7 +100,9 @@ export class AuthController {
   }
 
   @Auth(RoleEnum.CUSTOMER)
+  @ApiBearerAuth()
   @Post('test-customer')
+  @ApiOperation({ summary: 'Test truy cập với quyền CUSTOMER' })
   testCustomer(@Request() req: any) {
     return {
       message: 'Truy cập role CUSTOMER thành công',
@@ -91,7 +111,9 @@ export class AuthController {
   }
 
   @Auth(RoleEnum.ADMIN)
+  @ApiBearerAuth()
   @Post('test-admin')
+  @ApiOperation({ summary: 'Test truy cập với quyền ADMIN' })
   testAdmin(@Request() req: any) {
     return {
       message: 'Truy cập role ADMIN thành công',

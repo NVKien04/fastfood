@@ -1,4 +1,4 @@
-import { PaginationOptions } from '#src/common/core/pagination';
+import { PaginationOptions } from '@/common/core/pagination';
 import { User } from '../entities/user.domain';
 
 export interface IUserRepository {

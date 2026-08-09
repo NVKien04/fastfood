@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AllExceptionFilter } from './common/filter/all-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import dataSource from './data-source';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -11,15 +10,24 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  console.log(dataSource.entityMetadatas.map((e) => e.name));
-
   // app.use(helmet();
 
   const config = new DocumentBuilder()
     .setTitle('FastFood Api')
-    .setDescription('Xậy dụng Api cho website bán đồ ăn nhanh')
+    .setDescription('Xây dựng Api cho website bán đồ ăn nhanh')
     .setVersion('1.0')
     .addTag('FastFood')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Nhập JWT Bearer token',
+        in: 'header',
+      },
+      'bearer',
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
@@ -59,5 +67,6 @@ async function bootstrap() {
   const port = process.env.PORT || 3001;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}/api`);
+  console.log(`Swagger documentation is running on: http://localhost:${port}/swagger`);
 }
 void bootstrap();

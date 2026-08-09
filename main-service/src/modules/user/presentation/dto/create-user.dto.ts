@@ -1,7 +1,7 @@
-// register-user.dto.ts
-import { ApiProperty } from '@nestjs/swagger';
+// create-user.dto.ts
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsString, Length, IsPhoneNumber, Matches, IsEnum } from 'class-validator';
-import { RoleEnum } from '#src/enums/role.enum';
+import { RoleEnum } from '@/enums/role.enum';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -30,24 +30,36 @@ export class CreateUserDto {
   @Length(2, 50)
   name: string;
 
-  @ApiProperty() @IsEnum(RoleEnum) @IsOptional() role?: RoleEnum;
+  @ApiPropertyOptional({
+    enum: RoleEnum,
+    enumName: 'RoleEnum',
+    example: RoleEnum.CUSTOMER,
+    description: 'Vai trò người dùng',
+  })
+  @IsEnum(RoleEnum)
+  @IsOptional()
+  role?: RoleEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: '0987654321',
-    required: false,
     description: 'Số điện thoại (VN)',
   })
   @IsOptional()
   @IsPhoneNumber('VN', { message: 'Số điện thoại không hợp lệ' })
   phone?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'https://avatar.com/user.png',
-    required: false,
+    description: 'URL ảnh đại diện',
   })
   @IsOptional()
   @IsString()
   avatar?: string;
 
-  @ApiProperty() @IsString() provider: string;
+  @ApiProperty({
+    example: 'local',
+    description: 'Phương thức đăng ký/đăng nhập (local, google, facebook)',
+  })
+  @IsString()
+  provider: string;
 }

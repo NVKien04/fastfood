@@ -1,13 +1,13 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from '../../presentation/dto/create-user.dto';
-import { RoleEnum } from '#src/enums/role.enum';
-import { HashUtil } from '#src/utils/hash.util';
+import { RoleEnum } from '@/enums/role.enum';
+import { HashUtil } from '@/utils/hash.util';
 import { UserMapper } from '../../infrastructure/mappers/user.mapper';
 import { UserResponseDto } from '../../presentation/dto/response-user.dto';
 import { UpdateUserDto } from '../../presentation/dto/update-user.dto';
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
-import { BusinessException } from '#src/common/exception/biz.exception';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
+import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
 
 import { User } from '../../domain/entities/user.domain';
 import type { IUserRepository } from '../../domain/repositories/user.repository.interface';
@@ -127,12 +127,17 @@ export class UserService {
     return UserMapper.toResponse(user);
   }
 
-  async getById(userId: string): Promise<User | null> {
+  async getById(userId: string): Promise<User> {
     const user = await this.findById(userId);
     if (!user) {
       throw new BusinessException(ErrorEnum.USER_NOT_FOUND);
     }
     return user;
+  }
+
+  async getProfile(userId: string): Promise<UserResponseDto> {
+    const user = await this.getById(userId);
+    return UserMapper.toResponse(user);
   }
 
   async getPage(filterObject: any): Promise<PaginationResponse<any>> {

@@ -1,44 +1,93 @@
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
-import { Auth } from '#src/common/decorators/auth.decorator';
-import { RoleEnum } from '#src/enums/role.enum';
+import { UserFilterDto } from '../dto/user-filter.dto';
+import { UserResponseDto } from '../dto/response-user.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Auth } from '@/common/decorators/auth.decorator';
+import { RoleEnum } from '@/enums/role.enum';
 import { UserService } from '../../application/services/user.service';
-import { GetUser } from '#src/common/decorators/getUser.decorator';
-import type { AuthUser } from '#src/common/constants/auth.constant';
+import { GetUser } from '@/common/decorators/getUser.decorator';
+import type { AuthUser } from '@/common/constants/auth.constant';
 
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Auth(RoleEnum.ADMIN)
+  @ApiBearerAuth()
   @Get('')
+  @ApiOperation({ summary: 'Lấy tất cả danh sách người dùng (Admin)' })
+  @ApiResponse({ status: 200, description: 'Lấy danh sách người dùng thành công', type: [UserResponseDto] })
   async getAll() {
     const users = await this.userService.getAllUser();
     return {
       data: users,
     };
   }
+
+  @Auth()
+  @ApiBearerAuth()
+  @Get(['profile', 'me'])
+  @ApiOperation({ summary: 'Lấy thông tin cá nhân người dùng đang đăng nhập' })
+  @ApiResponse({ status: 200, description: 'Lấy thông tin cá nhân thành công', type: UserResponseDto })
+  @ApiResponse({ status: 401, description: 'Chưa xác thực' })
+  async getInfo(@GetUser() user: AuthUser) {
+    const data = await this.userService.getProfile(user.userId);
+    return {
+      data,
+    };
+  }
+
   @Auth(RoleEnum.ADMIN)
+  @ApiBearerAuth()
+  @Get(':id')
+  @ApiOperation({ summary: 'Lấy thông tin người dùng theo ID (Admin)' })
+  @ApiParam({ name: 'id', description: 'ID của người dùng', type: String })
+  @ApiResponse({ status: 200, description: 'Lấy thông tin thành công', type: UserResponseDto })
+  @ApiResponse({ status: 404, description: 'Không tìm thấy người dùng' })
+  async getById(@Param('id') id: string) {
+    const data = await this.userService.getProfile(id);
+    return {
+      data,
+    };
+  }
+
+  @Auth(RoleEnum.ADMIN)
+  @ApiBearerAuth()
   @Delete(':id')
+  @ApiOperation({ summary: 'Xóa người dùng theo ID (Admin)' })
+  @ApiParam({ name: 'id', description: 'ID của người dùng', type: String })
+  @ApiResponse({ status: 200, description: 'Xóa người dùng thành công' })
+  @ApiResponse({ status: 404, description: 'Không tìm thấy người dùng' })
   async delete(@Param('id') id: string) {
     return await this.userService.delete(id);
   }
 
   @Auth(RoleEnum.CUSTOMER)
+  @ApiBearerAuth()
   @Patch('update')
+  @ApiOperation({ summary: 'Cập nhật thông tin cá nhân' })
+  @ApiResponse({ status: 200, description: 'Cập nhật thành công', type: UserResponseDto })
   async update(@GetUser() user: AuthUser, @Body() updateUserDto: UpdateUserDto) {
     const id = user.userId;
     return await this.userService.update(id, updateUserDto);
   }
 
   @Auth(RoleEnum.ADMIN)
+  @ApiBearerAuth()
   @Post('get-page')
-  async getPage(@Body() filterObject: any) {
+  @ApiOperation({ summary: 'Lấy danh sách người dùng phân trang (Admin)' })
+  @ApiResponse({ status: 200, description: 'Lấy danh sách phân trang thành công', type: [UserResponseDto] })
+  async getPage(@Body() filterObject: UserFilterDto) {
     return await this.userService.getPage(filterObject);
   }
 
   @Auth()
+  @ApiBearerAuth()
   @Get('test-auth-user')
+  @ApiOperation({ summary: 'Kiểm tra thông tin AuthUser từ Token' })
+  @ApiResponse({ status: 200, description: 'Test AuthUser thành công' })
   testAuthUser(@GetUser() user: AuthUser) {
     return {
       message: 'Test AuthUser thành công',

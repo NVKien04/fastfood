@@ -1,21 +1,41 @@
-/**
- * DTO chuẩn cho mọi response thành công.
- *
- * Format:
- *   { success: true, data: { ... } }
- *
- * Pagination bổ sung field `meta`:
- *   { success: true, data: [...], meta: { totalItems, ... } }
- */
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class PaginationMetaDto {
+  @ApiProperty({ example: 100, description: 'Tổng số phần tử' })
+  totalItems: number;
+
+  @ApiProperty({ example: 10, description: 'Số lượng phần tử trên trang hiện tại' })
+  itemCount: number;
+
+  @ApiProperty({ example: 10, description: 'Số phần tử hiển thị tối đa trên 1 trang' })
+  itemsPerPage: number;
+
+  @ApiProperty({ example: 10, description: 'Tổng số trang' })
+  totalPages: number;
+
+  @ApiProperty({ example: 1, description: 'Trang hiện tại' })
+  currentPage: number;
+}
+
 export class ApiResponseDto<T = any> {
+  @ApiProperty({ example: true, description: 'Trạng thái thành công' })
   success: boolean = true;
+
   data?: T | null;
-  meta?: PaginationMeta;
+
+  @ApiPropertyOptional({ type: PaginationMetaDto, description: 'Thông tin phân trang (nếu có)' })
+  meta?: PaginationMetaDto;
+
+  @ApiProperty({ example: '2026-08-09T00:00:00.000Z', description: 'Thời gian phản hồi' })
   timestamp: string;
+
+  @ApiProperty({ example: '/api/users/profile', description: 'Đường dẫn API request' })
   path: string;
+
+  @ApiProperty({ example: '15ms', description: 'Thời gian thực thi' })
   takenTime: string;
 
-  constructor(data?: T, meta?: PaginationMeta) {
+  constructor(data?: T, meta?: PaginationMetaDto) {
     this.data = data ?? undefined;
     if (meta) {
       this.meta = meta;
@@ -24,12 +44,4 @@ export class ApiResponseDto<T = any> {
     this.path = '';
     this.takenTime = '';
   }
-}
-
-export interface PaginationMeta {
-  totalItems: number;
-  itemCount: number;
-  itemsPerPage: number;
-  totalPages: number;
-  currentPage: number;
 }
