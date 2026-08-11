@@ -151,8 +151,8 @@ erDiagram
 #### Bảng `product_ingredients`
 
 - **id** (`UUID`, PK)
-- **productId** (`UUID`, FK -> `product.id`)
-- **ingredientId** (`Int`, FK -> `ingredients.id`)
+- **productId** (`Varchar`, Not Null): ID sản phẩm (cột khóa ngoại thuần, không có FK constraint).
+- **ingredientId** (`Int`, Not Null): ID nguyên liệu (cột khóa ngoại thuần, không có FK constraint).
 - **isDefault** (`Int`): Có phải nguyên liệu mặc định của món không.
 - **quantity** (`Int`): Số lượng định lượng.
 

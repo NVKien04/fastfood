@@ -2,6 +2,7 @@ import { DEFAULT_API_MAIN_CONFIG } from './config/base.config';
 import { setupInterceptors } from './config/interceptors';
 import { AuthApiModule } from './module/Auth.api';
 import { UserApiModule } from './module/User.api';
+import { ProductApiModule } from './module/Product.api';
 import { useAuthStore } from '../../../stores/auth.store';
 
 export class ApiMain {
@@ -9,6 +10,7 @@ export class ApiMain {
 
   readonly user = new UserApiModule(DEFAULT_API_MAIN_CONFIG);
   readonly auth = new AuthApiModule(DEFAULT_API_MAIN_CONFIG);
+  readonly product = new ProductApiModule(DEFAULT_API_MAIN_CONFIG);
 
   private constructor() {
     // ─── onRefresh ──────────────────────────────────────────────────
@@ -37,6 +39,7 @@ export class ApiMain {
     // Đăng ký interceptors cho tất cả các module
     setupInterceptors(this.user.api.instance, onRefresh, onLogout);
     setupInterceptors(this.auth.api.instance, onRefresh, onLogout);
+    setupInterceptors(this.product.api.instance, onRefresh, onLogout);
   }
 
   static get instance() {

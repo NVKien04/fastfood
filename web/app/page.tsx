@@ -47,13 +47,21 @@ export default function Home() {
               <p className="text-gray-500">{user?.email}</p>
             </div>
 
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="w-full border-gray-200 hover:bg-gray-50"
-            >
-              Đăng xuất
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 w-full">
+              <Button
+                onClick={() => router.push('/product')}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
+              >
+                Xem Thực Đơn Sản Phẩm 🍕
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="flex-1 border-gray-200 hover:bg-gray-50"
+              >
+                Đăng xuất
+              </Button>
+            </div>
           </>
         )}
 

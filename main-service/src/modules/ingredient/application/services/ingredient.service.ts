@@ -23,6 +23,10 @@ export class IngredientService {
     return this.ingredientRepository.findById(id);
   }
 
+  async findByIds(ids: number[]): Promise<Ingredient[]> {
+    return this.ingredientRepository.findByIds(ids);
+  }
+
   async findOne(condition: Partial<Ingredient>): Promise<Ingredient | null> {
     return this.ingredientRepository.findOne(condition);
   }

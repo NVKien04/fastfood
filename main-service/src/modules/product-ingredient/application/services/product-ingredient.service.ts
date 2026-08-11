@@ -1,6 +1,7 @@
-import { CreateProductIngredientDto } from '#src/modules/product/presentation/dto/create-product.dto';
 import type { IProductIngredientRepository } from '../../domain/repositories/product-ingredient.repository.interface';
 import { Inject, Injectable } from '@nestjs/common';
+import { ProductIngredientsEntity } from '#src/entities/product_ingredients.entity';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class ProductIngredientService {
@@ -9,7 +10,11 @@ export class ProductIngredientService {
     private readonly productIngredientRepository: IProductIngredientRepository,
   ) {}
 
-  async create(data: CreateProductIngredientDto, productId: string, manager?: unknown): Promise<any> {
+  async create(
+    data: Record<string, unknown>,
+    productId: string,
+    manager?: unknown,
+  ): Promise<ProductIngredientsEntity> {
     return await this.productIngredientRepository.create(
       {
         ...data,
@@ -19,7 +24,11 @@ export class ProductIngredientService {
     );
   }
 
-  async deleteByProductId(productId: string, manager?: unknown): Promise<any> {
+  async deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult> {
     return await this.productIngredientRepository.deleteByProductId(productId, manager);
+  }
+
+  async findByProductId(productId: string): Promise<ProductIngredientsEntity[]> {
+    return await this.productIngredientRepository.findByProductId(productId);
   }
 }

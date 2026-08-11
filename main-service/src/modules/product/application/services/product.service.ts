@@ -1,5 +1,11 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
+import { buildPaginationResponse, PaginationOptions, PaginationResponse } from '#src/common/core/pagination';
 import { CreateProductDto } from '../../presentation/dto/create-product.dto';
+import { ProductFilterDto } from '../../presentation/dto/product-filter.dto';
+import {
+  ProductDetailResponseDto,
+  ProductVariantResponseDto,
+  ProductIngredientResponseDto,
+} from '../../presentation/dto/product-detail-response.dto';
 import { Product } from '../../domain/entities/product.domain';
 import type { IProductRepository } from '../../domain/repositories/product.repository.interface';
 import { Fn } from '#src/utils/fn';
@@ -7,10 +13,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CategoryService } from '#src/modules/category/application/services/category.service';
 import { UpdateProductDto } from '../../presentation/dto/update-product.dto';
 import { ProductVariantService } from '#src/modules/product-variant/application/services/product-variant.service';
-import { ProductIngredientService } from '#src/modules/product-ingredient/application/services/product-ingredient.service';
 import { IngredientService } from '#src/modules/ingredient/application/services/ingredient.service';
 import { BusinessException } from '#src/common/exception/biz.exception';
 import { ErrorEnum } from '#src/common/constants/error-code.constant';
+import { Ingredient } from '#src/modules/ingredient/domain/entities/ingredient.domain';
+import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
 
 @Injectable()
 export class ProductService {
@@ -19,7 +26,6 @@ export class ProductService {
     private readonly repo: IProductRepository,
     private readonly categoryService: CategoryService,
     private readonly productVariantService: ProductVariantService,
-    private readonly productIngredientService: ProductIngredientService,
     private readonly ingredientService: IngredientService,
   ) {}
 
@@ -59,7 +65,7 @@ export class ProductService {
     return this.repo.softDelete(id, manager);
   }
 
-  async findPaginated(options: any, where?: Record<string, any>): Promise<[Product[], number]> {
+  async findPaginated(options: PaginationOptions, where?: Record<string, unknown>): Promise<[Product[], number]> {
     return this.repo.findPaginated(options, where);
   }
 
@@ -67,60 +73,72 @@ export class ProductService {
   // NHÓM 2: CÁC HÀM NGHIỆP VỤ THỰC TẾ (BUSINESS LOGIC)
   // ==========================================
 
+  /**
+   * Tạo mới sản phẩm kèm variants trong một transaction.
+   * Tự sinh slug từ name, kiểm tra trùng slug và danh mục.
+   */
   async create(productDto: CreateProductDto): Promise<Product | null> {
     return this.executeTransaction(async (manager) => {
       const category = await this.categoryService.getById(productDto.categoryId);
       if (!category) {
         throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
       }
+
       const productSlug = Fn.changeNameToSlug(productDto.name);
       const existedProduct = await this.findOne({ slug: productSlug });
       if (existedProduct) {
         throw new BusinessException(ErrorEnum.PRODUCT_SLUG_EXISTED);
       }
-      const createProductData: Partial<Product> = {
-        name: productDto.name,
-        slug: productSlug,
-        description: productDto.description,
-        basePrice: productDto.basePrice,
-        sortOrder: productDto.sortOrder,
-        img: productDto.img,
-        isFeatured: productDto.isFeatured ?? 1,
-        categoryId: productDto.categoryId,
-        isActive: 1,
-      };
-      const product = await this.save(createProductData, manager);
 
-      if (productDto.variants && productDto.variants.length > 0 && product) {
+      const product = await this.save(
+        {
+          name: productDto.name,
+          slug: productSlug,
+          description: productDto.description,
+          basePrice: productDto.basePrice,
+          sortOrder: productDto.sortOrder ?? 0,
+          img: productDto.img,
+          isFeatured: productDto.isFeatured ?? 0,
+          categoryId: productDto.categoryId,
+          isActive: 1,
+        },
+        manager,
+      );
+
+      // Tạo variants
+      if (productDto.variants && productDto.variants.length > 0) {
         for (const variant of productDto.variants) {
           await this.productVariantService.create(variant, product.id, manager);
         }
       }
-      if (productDto.ingredients && productDto.ingredients.length > 0 && product) {
-        for (const ingredient of productDto.ingredients) {
-          const existedIngredient = await this.ingredientService.findById(ingredient.ingredientId);
-          if (!existedIngredient) {
-            throw new BusinessException(ErrorEnum.INGREDIENT_NOT_FOUND);
-          }
-          await this.productIngredientService.create(ingredient, product.id, manager);
-        }
-      }
+
       return product;
     });
   }
 
-  async getPage(filterObject: any): Promise<PaginationResponse<any>> {
+  /**
+   * Lấy danh sách sản phẩm phân trang.
+   * Filter: isActive (mặc định chỉ lấy active), isFeatured (tuỳ chọn), categoryId (tuỳ chọn).
+   */
+  async getPage(filterObject: ProductFilterDto): Promise<PaginationResponse<Product>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
 
-    const where = { isFeatured: 1 };
+    const where: Record<string, unknown> = { isActive: 1 };
+    if (filterObject?.isFeatured !== undefined) {
+      where['isFeatured'] = Number(filterObject.isFeatured);
+    }
+    if (filterObject?.categoryId !== undefined) {
+      where['categoryId'] = Number(filterObject.categoryId);
+    }
 
     const [data, totalItems] = await this.findPaginated(
       {
         skip,
         take: limit,
         orderBy: filterObject?.orderby,
+        orderDirection: filterObject?.orderDirection,
       },
       where,
     );
@@ -128,6 +146,10 @@ export class ProductService {
     return buildPaginationResponse(data, totalItems, page, limit);
   }
 
+  /**
+   * Cập nhật sản phẩm và variants trong transaction.
+   * Truyền variants mới sẽ xóa cũ và tạo lại (replace strategy).
+   */
   async update(productId: string, updateData: UpdateProductDto): Promise<Product | null> {
     return this.executeTransaction(async (manager) => {
       const product = await this.findById(productId);
@@ -167,27 +189,11 @@ export class ProductService {
         await this.updateRaw(productId, updatePayload, manager);
       }
 
-      // Cập nhật variants nếu được truyền vào
+      // Replace variants nếu được truyền vào
       if (updateData.variants !== undefined) {
         await this.productVariantService.deleteByProductId(productId, manager);
-        if (updateData.variants.length > 0) {
-          for (const variant of updateData.variants) {
-            await this.productVariantService.create(variant, productId, manager);
-          }
-        }
-      }
-
-      // Cập nhật ingredients nếu được truyền vào
-      if (updateData.ingredients !== undefined) {
-        await this.productIngredientService.deleteByProductId(productId, manager);
-        if (updateData.ingredients.length > 0) {
-          for (const ingredient of updateData.ingredients) {
-            const existedIngredient = await this.ingredientService.findById(ingredient.ingredientId);
-            if (!existedIngredient) {
-              throw new BusinessException(ErrorEnum.INGREDIENT_NOT_FOUND);
-            }
-            await this.productIngredientService.create(ingredient, productId, manager);
-          }
+        for (const variant of updateData.variants) {
+          await this.productVariantService.create(variant, productId, manager);
         }
       }
 
@@ -195,7 +201,10 @@ export class ProductService {
     });
   }
 
-  async delete(productId: string) {
+  /**
+   * Xóa mềm sản phẩm theo ID.
+   */
+  async delete(productId: string): Promise<boolean> {
     const product = await this.findById(productId);
     if (!product) {
       throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
@@ -203,7 +212,85 @@ export class ProductService {
     return this.softDeleteRaw(productId);
   }
 
-  async getById(productId: string): Promise<Product | null> {
-    return this.findById(productId);
+  /**
+   * Lấy chi tiết sản phẩm theo ID, bao gồm variants và ingredients theo danh mục.
+   */
+  async getDetail(productId: string): Promise<ProductDetailResponseDto> {
+    const product = await this.findById(productId);
+    if (!product) {
+      throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
+    }
+    return this.buildDetail(product);
+  }
+
+  /**
+   * Lấy chi tiết sản phẩm theo slug, bao gồm variants và ingredients theo danh mục.
+   */
+  async getDetailBySlug(slug: string): Promise<ProductDetailResponseDto> {
+    const product = await this.findOne({ slug });
+    if (!product) {
+      throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
+    }
+    return this.buildDetail(product);
+  }
+
+  // ==========================================
+  // PRIVATE HELPERS
+  // ==========================================
+
+  /**
+   * Lấy variants và ingredients (dựa theo categoryId của sản phẩm) song song.
+   */
+  private async buildDetail(product: Product): Promise<ProductDetailResponseDto> {
+    const [variants, categoryIngredients] = await Promise.all([
+      this.productVariantService.findByProductId(product.id),
+      this.ingredientService.findByCategoryId(product.categoryId),
+    ]);
+
+    return this.toDetailDto(product, variants, categoryIngredients);
+  }
+
+  private toDetailDto(
+    product: Product,
+    rawVariants: ProductVariantsEntity[],
+    categoryIngredients: Ingredient[],
+  ): ProductDetailResponseDto {
+    const variants: ProductVariantResponseDto[] = rawVariants.map((v) => ({
+      id: v.id,
+      name: v.name,
+      size: v.size,
+      type: v.type,
+      modifiedPrice: v.modifiedPrice,
+      sortOrder: v.sortOrder,
+      isActive: v.isActive,
+    }));
+
+    const ingredients: ProductIngredientResponseDto[] = categoryIngredients.map((ing) => ({
+      id: ing.id,
+      name: ing.name,
+      imageUrl: ing.imageUrl,
+      description: ing.description,
+      price: ing.price,
+      isRequired: Number(ing.isRequired ?? 1),
+      isActive: Number(ing.isActive ?? 1),
+      categoryId: ing.categoryId,
+    }));
+
+    return {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      description: product.description,
+      basePrice: product.basePrice,
+      sortOrder: product.sortOrder,
+      img: product.img,
+      isFeatured: product.isFeatured,
+      categoryId: product.categoryId,
+      isActive: product.isActive,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt,
+      variants,
+      ingredients,
+    };
   }
 }

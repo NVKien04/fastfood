@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, In, Repository } from 'typeorm';
 import { IngredientsEntity } from '#src/entities/ingredients.entity';
 import { PaginationOptions } from '#src/common/core/pagination';
 import { Ingredient } from '../../domain/entities/ingredient.domain';
@@ -39,6 +39,14 @@ export class IngredientTypeOrmRepository implements IIngredientRepository {
   async findById(id: number): Promise<Ingredient | null> {
     const entity = await this.repo.findOne({ where: { id } as FindOptionsWhere<IngredientsEntity> });
     return entity ? IngredientMapper.toDomain(entity) : null;
+  }
+
+  async findByIds(ids: number[]): Promise<Ingredient[]> {
+    if (ids.length === 0) return [];
+    const entities = await this.repo.find({
+      where: { id: In(ids) } as FindOptionsWhere<IngredientsEntity>,
+    });
+    return IngredientMapper.toDomainList(entities);
   }
 
   async create(entityData: Partial<Ingredient>): Promise<Ingredient> {

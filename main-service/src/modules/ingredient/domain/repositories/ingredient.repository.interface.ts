@@ -9,6 +9,7 @@ export interface IIngredientRepository {
   ): Promise<Ingredient[]>;
   findOne(condition: Partial<Ingredient>, relations?: string[]): Promise<Ingredient | null>;
   findById(id: number): Promise<Ingredient | null>;
+  findByIds(ids: number[]): Promise<Ingredient[]>;
   create(entity: Partial<Ingredient>): Promise<Ingredient>;
   update(id: number, entity: Partial<Ingredient>): Promise<Ingredient | null>;
   softDelete(id: number): Promise<boolean>;

@@ -257,6 +257,263 @@ export interface UpdateCategoryDto {
   isActive?: number;
 }
 
+export interface ProductFilterDto {
+  /**
+   * Trang hiện tại
+   * @default 1
+   * @example 1
+   */
+  page?: number;
+  /**
+   * Số lượng phần tử trên mỗi trang
+   * @default 10
+   * @example 10
+   */
+  limit?: number;
+  /**
+   * Trường dùng để sắp xếp
+   * @example "sortOrder"
+   */
+  orderby?: string;
+  /**
+   * Hướng sắp xếp (ASC hoặc DESC)
+   * @example "ASC"
+   */
+  orderDirection?: string;
+  /**
+   * Lọc theo ID danh mục
+   * @example 1
+   */
+  categoryId?: number;
+  /**
+   * Lọc theo sản phẩm nổi bật (1: có, 0: không)
+   * @example 1
+   */
+  isFeatured?: number;
+}
+
+export interface CreateProductVariantDto {
+  /**
+   * Tên biến thể
+   * @example "Nhỏ - Mỏng"
+   */
+  name: string;
+  /**
+   * Kích thước
+   * @example "12cm"
+   */
+  size: '12cm' | '15cm' | '17cm' | '1 Miếng' | '2 Miếng';
+  /**
+   * Loại đế/vỏ
+   * @example "vừa"
+   */
+  type: 'nhỏ' | 'vừa' | 'lớn';
+  /**
+   * Giá chênh lệch so với giá gốc (VND)
+   * @default 0
+   * @example 5000
+   */
+  modifiedPrice?: number;
+  /**
+   * Thứ tự hiển thị
+   * @default 0
+   * @example 0
+   */
+  sortOrder?: number;
+}
+
+export interface CreateProductDto {
+  /**
+   * Tên sản phẩm
+   * @example "Pizza Hải Sản"
+   */
+  name: string;
+  /**
+   * Mô tả chi tiết sản phẩm
+   * @example "Pizza phủ hải sản tươi ngon"
+   */
+  description?: string;
+  /**
+   * Giá cơ bản (VND)
+   * @example 180000
+   */
+  basePrice: number;
+  /**
+   * Thứ tự hiển thị
+   * @default 0
+   * @example 0
+   */
+  sortOrder?: number;
+  /**
+   * URL hình ảnh sản phẩm
+   * @example "https://cdn.example.com/pizza.jpg"
+   */
+  img: string;
+  /**
+   * Sản phẩm nổi bật (1: có, 0: không)
+   * @default 0
+   * @example 1
+   */
+  isFeatured?: number;
+  /**
+   * ID danh mục
+   * @example 1
+   */
+  categoryId: number;
+  /** Danh sách biến thể kèm theo */
+  variants?: CreateProductVariantDto[];
+}
+
+export interface ProductVariantResponseDto {
+  /**
+   * ID biến thể (auto-increment)
+   * @example 1
+   */
+  id: number;
+  /**
+   * Tên biến thể
+   * @example "Nhỏ - Mỏng"
+   */
+  name: string;
+  /**
+   * Kích thước
+   * @example "12cm"
+   */
+  size: '12cm' | '15cm' | '17cm' | '1 Miếng' | '2 Miếng';
+  /**
+   * Loại đế/vỏ
+   * @example "vừa"
+   */
+  type: 'nhỏ' | 'vừa' | 'lớn';
+  /**
+   * Giá chênh lệch so với giá gốc (VND)
+   * @example 5000
+   */
+  modifiedPrice: number;
+  /**
+   * Thứ tự hiển thị
+   * @example 0
+   */
+  sortOrder: number;
+  /**
+   * Trạng thái kích hoạt (1: hoạt động, 0: tắt)
+   * @example 1
+   */
+  isActive: number;
+}
+
+export interface ProductIngredientResponseDto {
+  /**
+   * ID nguyên liệu
+   * @example 1
+   */
+  id: number;
+  /**
+   * Tên nguyên liệu
+   * @example "Phô mai Mozzarella"
+   */
+  name: string;
+  /**
+   * URL ảnh nguyên liệu
+   * @example "https://cdn.example.com/cheese.jpg"
+   */
+  imageUrl: string;
+  /**
+   * Mô tả nguyên liệu
+   * @example "Phô mai béo ngậy"
+   */
+  description: string;
+  /**
+   * Giá mua thêm nguyên liệu (VND)
+   * @example 10000
+   */
+  price: number;
+  /**
+   * Bắt buộc phải có (1: có, 0: không)
+   * @example 1
+   */
+  isRequired: number;
+  /**
+   * Trạng thái kích hoạt (1: hoạt động, 0: tắt)
+   * @example 1
+   */
+  isActive: number;
+  /**
+   * ID danh mục
+   * @example 2
+   */
+  categoryId: number;
+}
+
+export interface ProductDetailResponseDto {
+  /**
+   * ID sản phẩm (UUID)
+   * @example "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+   */
+  id: string;
+  /**
+   * Tên sản phẩm
+   * @example "Pizza Hải Sản"
+   */
+  name: string;
+  /**
+   * Slug SEO-friendly
+   * @example "pizza-hai-san"
+   */
+  slug: string;
+  /**
+   * Mô tả sản phẩm
+   * @example "Pizza phủ hải sản tươi ngon"
+   */
+  description?: string;
+  /**
+   * Giá gốc (VND)
+   * @example 180000
+   */
+  basePrice: number;
+  /**
+   * Thứ tự hiển thị
+   * @example 0
+   */
+  sortOrder: number;
+  /**
+   * URL hình ảnh sản phẩm
+   * @example "https://cdn.example.com/pizza.jpg"
+   */
+  img: string;
+  /**
+   * Sản phẩm nổi bật (1: có, 0: không)
+   * @example 1
+   */
+  isFeatured: number;
+  /**
+   * ID danh mục
+   * @example 2
+   */
+  categoryId: number;
+  /**
+   * Trạng thái kích hoạt (1: hoạt động, 0: tắt)
+   * @example 1
+   */
+  isActive: number;
+  /** Danh sách biến thể của sản phẩm */
+  variants: ProductVariantResponseDto[];
+  /** Danh sách nguyên liệu/topping thuộc danh mục sản phẩm */
+  ingredients: ProductIngredientResponseDto[];
+  /**
+   * Thời điểm tạo
+   * @format date-time
+   */
+  createdAt: string;
+  /**
+   * Thời điểm cập nhật lần cuối
+   * @format date-time
+   */
+  updatedAt: string;
+}
+
+export type UpdateProductDto = object;
+
 export interface CreateIngredientDto {
   /**
    * Tên nguyên liệu
@@ -550,6 +807,16 @@ export type CategoryControllerUpdateData = any;
 export type CategoryControllerDeleteData = any;
 
 export type ProductControllerGetPageData = any;
+
+export type ProductControllerCreateData = any;
+
+export type ProductControllerGetBySlugData = ProductDetailResponseDto;
+
+export type ProductControllerGetByIdData = ProductDetailResponseDto;
+
+export type ProductControllerUpdateData = any;
+
+export type ProductControllerDeleteData = any;
 
 export type IngredientControllerGetPageData = any;
 

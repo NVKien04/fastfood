@@ -68,6 +68,10 @@ export class ProductVariantRepository implements IProductVariantRepository {
     return repo.delete({ productId } as any);
   }
 
+  async findByProductId(productId: string): Promise<ProductVariantsEntity[]> {
+    return this.repo.find({ where: { productId } as FindOptionsWhere<ProductVariantsEntity> });
+  }
+
   async createMany(entity: DeepPartial<ProductVariantsEntity>[], manager?: unknown): Promise<ProductVariantsEntity[]> {
     const repo = this.getRepo(manager);
     const entities = repo.create(entity);

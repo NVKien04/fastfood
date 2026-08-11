@@ -2,6 +2,8 @@ import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pa
 import { CreateProductVariantDto } from '#src/modules/product/presentation/dto/create-product.dto';
 import type { IProductVariantRepository } from '../../domain/repositories/product-variant.repository.interface';
 import { Inject, Injectable } from '@nestjs/common';
+import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class ProductVariantService {
@@ -10,15 +12,19 @@ export class ProductVariantService {
     private readonly productVariantRepository: IProductVariantRepository,
   ) {}
 
-  async create(data: CreateProductVariantDto, productId: string, manager?: unknown): Promise<any> {
+  async create(data: CreateProductVariantDto, productId: string, manager?: unknown): Promise<ProductVariantsEntity> {
     return await this.productVariantRepository.create({ ...data, productId }, manager);
   }
 
-  async deleteByProductId(productId: string, manager?: unknown): Promise<any> {
+  async deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult> {
     return await this.productVariantRepository.deleteByProductId(productId, manager);
   }
 
-  async getPage(filterObject: any): Promise<PaginationResponse<any>> {
+  async findByProductId(productId: string): Promise<ProductVariantsEntity[]> {
+    return await this.productVariantRepository.findByProductId(productId);
+  }
+
+  async getPage(filterObject: Record<string, unknown>): Promise<PaginationResponse<ProductVariantsEntity>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
@@ -26,7 +32,7 @@ export class ProductVariantService {
     const [data, totalItems] = await this.productVariantRepository.findPaginated({
       skip,
       take: limit,
-      orderBy: filterObject?.orderby,
+      orderBy: filterObject?.orderby as string | undefined,
     });
 
     return buildPaginationResponse(data, totalItems, page, limit);

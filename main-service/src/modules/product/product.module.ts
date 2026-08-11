@@ -7,9 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryModule } from '#src/modules/category/category.module';
 import { OrderItemsEntity } from '#src/entities/order-items.entity';
 import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
-import { ProductIngredientsEntity } from '#src/entities/product_ingredients.entity';
 import { ProductVariantModule } from '#src/modules/product-variant/product-variant.module';
-import { ProductIngredientModule } from '#src/modules/product-ingredient/product-ingredient.module';
 import { IngredientModule } from '#src/modules/ingredient/ingredient.module';
 
 @Module({
@@ -23,10 +21,9 @@ import { IngredientModule } from '#src/modules/ingredient/ingredient.module';
   ],
   exports: [ProductService],
   imports: [
-    TypeOrmModule.forFeature([ProductEntity, OrderItemsEntity, ProductVariantsEntity, ProductIngredientsEntity]),
+    TypeOrmModule.forFeature([ProductEntity, OrderItemsEntity, ProductVariantsEntity]),
     CategoryModule,
     ProductVariantModule,
-    ProductIngredientModule,
     IngredientModule,
   ],
 })

@@ -22,6 +22,7 @@ export interface IProductVariantRepository {
   softDelete(id: number, manager?: unknown): Promise<DeleteResult>;
   delete(id: number, manager?: unknown): Promise<DeleteResult>;
   deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult>;
+  findByProductId(productId: string): Promise<ProductVariantsEntity[]>;
   createMany(entity: DeepPartial<ProductVariantsEntity>[], manager?: unknown): Promise<ProductVariantsEntity[]>;
   findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[ProductVariantsEntity[], number]>;
 }

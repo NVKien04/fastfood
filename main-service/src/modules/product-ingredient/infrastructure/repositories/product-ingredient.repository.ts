@@ -68,6 +68,10 @@ export class ProductIngredientRepository implements IProductIngredientRepository
     return repo.delete({ productId } as any);
   }
 
+  async findByProductId(productId: string): Promise<ProductIngredientsEntity[]> {
+    return this.repo.find({ where: { productId } as FindOptionsWhere<ProductIngredientsEntity> });
+  }
+
   async createMany(
     entity: DeepPartial<ProductIngredientsEntity>[],
     manager?: unknown,
