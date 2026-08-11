@@ -1,30 +1,55 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { ApiMain } from '@/services/apis/main/api.main';
+import { useAuthStore } from '@/stores/auth.store';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login submitted:', { email, password });
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await ApiMain.instance.auth.login({ email, password });
+
+      if (response.kind === 'OK' && response.data.accessToken) {
+        // Lưu token vào store
+        useAuthStore.getState().setAccessToken(response.data.accessToken);
+        // Chuyển hướng về trang chủ
+        router.push('/');
+      } else if (response.kind === 'ERROR') {
+        setError(response.error || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+      } else {
+        setError('Đăng nhập thất bại.');
+      }
+    } catch (err: unknown) {
+      setError('Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-center items-center bg-brand-canvas px-4 py-12 md:py-24 font-sans select-none">
+    <div className="flex-1 flex flex-col justify-center items-center bg-brand-canvas px-4 py-12 md:py-24 font-sans select-none h-screen">
       {/* Brand Header */}
       <div className="flex items-center gap-2 mb-8 animate-fade-in">
         {/* Asterisk radial-spike mark SVG */}
         <svg viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7 text-brand-primary animate-pulse">
-          {/* Hand-drawn geometric style 8-spoke asterisk */}
           <path d="M12 2c-.6 0-1 .4-1 1v7.6L5.4 6c-.4-.4-1.1-.4-1.5 0s-.4 1.1 0 1.5L9.5 13H3c-.6 0-1 .4-1 1s.4 1 1 1h6.5l-5.6 5.6c-.4.4-.4 1.1 0 1.5s1.1.4 1.5 0l5.6-5.6V21c0 .6.4 1 1 1s1-.4 1-1v-7.6l5.6 5.6c.4.4 1.1.4 1.5 0s.4-1.1 0-1.5L14.5 15H21c.6 0 1-.4 1-1s-.4-1-1-1h-6.5l5.6-5.6c.4-.4.4-1.1 0-1.5s-1.1-.4-1.5 0L13 10.6V3c0-.6-.4-1-1-1z" />
         </svg>
-        <span className="text-2xl font-bold text-brand-ink tracking-tight">Claude</span>
+        <span className="text-2xl font-bold text-brand-ink tracking-tight">FastFood</span>
       </div>
 
       {/* Login Card */}
@@ -38,6 +63,10 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           <CardContent className="p-0 flex flex-col gap-5">
+            {error && (
+              <div className="bg-red-50 text-red-500 text-sm p-3 rounded-md border border-red-100">{error}</div>
+            )}
+
             {/* Email Field */}
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center">
@@ -85,9 +114,10 @@ export default function LoginPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-brand-primary hover:bg-brand-primary-active text-white text-base font-medium h-auto py-3 px-6 rounded-lg shadow-sm active:translate-y-[1px] transition-all cursor-pointer"
+              disabled={loading}
+              className="w-full bg-brand-primary hover:bg-brand-primary-active text-white text-base font-medium h-auto py-3 px-6 rounded-lg shadow-sm active:translate-y-[1px] transition-all cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Sign In
+              {loading ? 'Signing in...' : 'Sign In'}
             </Button>
 
             {/* Sign Up Link */}
@@ -102,11 +132,6 @@ export default function LoginPage() {
           </CardFooter>
         </form>
       </Card>
-
-      {/* Footer Branding (Subtle) */}
-      <div className="mt-12 text-center text-xs text-brand-muted-soft font-medium tracking-wide uppercase">
-        © {new Date().getFullYear()} Anthropic PBC
-      </div>
     </div>
   );
 }
