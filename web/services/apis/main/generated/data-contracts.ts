@@ -103,6 +103,35 @@ export interface UpdateUserDto {
   provider?: string;
 }
 
+export interface CreateAddressDto {
+  /**
+   * Tên đường, số nhà
+   * @example "123 Đường Nguyễn Trãi"
+   */
+  street: string;
+  /**
+   * Thành phố / Tỉnh
+   * @example "Hà Nội"
+   */
+  city: string;
+  /**
+   * Quận / Huyện
+   * @example "Thanh Xuân"
+   */
+  district: string;
+  /**
+   * Phường / Xã
+   * @example "Khương Trung"
+   */
+  ward?: string;
+  /**
+   * Đặt làm địa chỉ mặc định không? (0: không, 1: có)
+   * @default 1
+   * @example 1
+   */
+  isDefault?: number;
+}
+
 export interface UserFilterDto {
   /**
    * Trang hiện tại (mặc định 1)
@@ -123,6 +152,35 @@ export interface UserFilterDto {
   orderby?: string;
   /** Điều kiện lọc bổ sung */
   filter?: object;
+}
+
+export interface UpdateAddressDto {
+  /**
+   * Tên đường, số nhà
+   * @example "123 Đường Nguyễn Trãi"
+   */
+  street?: string;
+  /**
+   * Thành phố / Tỉnh
+   * @example "Hà Nội"
+   */
+  city?: string;
+  /**
+   * Quận / Huyện
+   * @example "Thanh Xuân"
+   */
+  district?: string;
+  /**
+   * Phường / Xã
+   * @example "Khương Trung"
+   */
+  ward?: string;
+  /**
+   * Đặt làm địa chỉ mặc định không? (0: không, 1: có)
+   * @default 1
+   * @example 1
+   */
+  isDefault?: number;
 }
 
 export interface CreateUserDto {
@@ -606,64 +664,6 @@ export interface UpdateIngredientDto {
   categoryId?: number;
 }
 
-export interface CreateAddressDto {
-  /**
-   * Tên đường, số nhà
-   * @example "123 Đường Nguyễn Trãi"
-   */
-  street: string;
-  /**
-   * Thành phố / Tỉnh
-   * @example "Hà Nội"
-   */
-  city: string;
-  /**
-   * Quận / Huyện
-   * @example "Thanh Xuân"
-   */
-  district: string;
-  /**
-   * Phường / Xã
-   * @example "Khương Trung"
-   */
-  ward?: string;
-  /**
-   * Đặt làm địa chỉ mặc định không? (0: không, 1: có)
-   * @default 1
-   * @example 1
-   */
-  isDefault?: number;
-}
-
-export interface UpdateAddressDto {
-  /**
-   * Tên đường, số nhà
-   * @example "123 Đường Nguyễn Trãi"
-   */
-  street?: string;
-  /**
-   * Thành phố / Tỉnh
-   * @example "Hà Nội"
-   */
-  city?: string;
-  /**
-   * Quận / Huyện
-   * @example "Thanh Xuân"
-   */
-  district?: string;
-  /**
-   * Phường / Xã
-   * @example "Khương Trung"
-   */
-  ward?: string;
-  /**
-   * Đặt làm địa chỉ mặc định không? (0: không, 1: có)
-   * @default 1
-   * @example 1
-   */
-  isDefault?: number;
-}
-
 export interface CreateCouponDto {
   /**
    * Mã coupon
@@ -778,7 +778,19 @@ export type UserControllerDeleteData = any;
 
 export type UserControllerUpdateData = UserResponseDto;
 
+export type UserControllerAddAddressData = any;
+
 export type UserControllerGetPageData = UserResponseDto[];
+
+export type AddressControllerGetPageData = any;
+
+export type AddressControllerCreateData = any;
+
+export type AddressControllerGetMyAddressesData = any;
+
+export type AddressControllerUpdateData = any;
+
+export type AddressControllerDeleteData = any;
 
 export type AuthControllerRegisterData = UserResponseDto;
 
@@ -827,16 +839,6 @@ export type IngredientControllerGetByIdData = any;
 export type IngredientControllerUpdateData = any;
 
 export type IngredientControllerDeleteData = any;
-
-export type AddressControllerGetPageData = any;
-
-export type AddressControllerCreateData = any;
-
-export type AddressControllerGetMyAddressesData = any;
-
-export type AddressControllerUpdateData = any;
-
-export type AddressControllerDeleteData = any;
 
 export type CouponControllerGetPageData = any;
 

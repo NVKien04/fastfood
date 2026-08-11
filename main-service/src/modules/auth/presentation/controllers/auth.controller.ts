@@ -39,6 +39,18 @@ export class AuthController {
   private setAuthCookie(res: Response, refreshToken: string) {
     const maxAgeRefreshToken = Number(this.JWT_REFRESH_EXPIRES_IN?.slice(0, -1)) * 60 * 1000 || 7 * 24 * 60 * 60 * 1000;
     this.createCookie(res, 'refreshToken', refreshToken, maxAgeRefreshToken);
+    // Cookie phụ không httpOnly để FE biết user đã đăng nhập (không chứa dữ liệu nhạy cảm)
+    this.setLoggedInCookie(res, maxAgeRefreshToken);
+  }
+
+  private setLoggedInCookie(res: Response, maxAge: number) {
+    res.cookie('logged_in', 'true', {
+      maxAge,
+      path: '/',
+      httpOnly: false,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    });
   }
 
   @Post('register')
@@ -70,6 +82,7 @@ export class AuthController {
       await this.authService.logout(refreshToken);
     }
     this.clearCookie('refreshToken', res);
+    this.clearCookie('logged_in', res);
     return { message: 'Logout successful' };
   }
 

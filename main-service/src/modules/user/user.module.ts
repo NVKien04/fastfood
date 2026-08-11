@@ -5,9 +5,13 @@ import { UserController } from './presentation/controllers/user.controller';
 import { UserEntity } from '@/entities/user.entity';
 import { UserTypeOrmRepository } from './infrastructure/repositories/user.typeorm.repository';
 import { UserService } from './application/services/user.service';
+import { AddressModule } from '../address/address.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, UserCouponsEntity])],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, UserCouponsEntity]),
+    AddressModule,
+  ],
   controllers: [UserController],
   providers: [
     UserService,

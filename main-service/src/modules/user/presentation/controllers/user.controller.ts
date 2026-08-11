@@ -6,13 +6,18 @@ import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@ne
 import { Auth } from '@/common/decorators/auth.decorator';
 import { RoleEnum } from '@/enums/role.enum';
 import { UserService } from '../../application/services/user.service';
+import { AddressService } from '#src/modules/address/application/services/address.service';
 import { GetUser } from '@/common/decorators/getUser.decorator';
 import type { AuthUser } from '@/common/constants/auth.constant';
+import { CreateAddressDto } from '#src/modules/address/presentation/dto/create-address.dto';
 
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly addressService: AddressService,
+  ) {}
 
   @Auth(RoleEnum.ADMIN)
   @ApiBearerAuth()
@@ -55,7 +60,7 @@ export class UserController {
     return await this.userService.delete(id);
   }
 
-  @Auth(RoleEnum.CUSTOMER)
+  @Auth(RoleEnum.CUSTOMER, RoleEnum.ADMIN)
   @ApiBearerAuth()
   @Patch('update')
   @ApiOperation({ summary: 'Cập nhật thông tin cá nhân' })
@@ -63,6 +68,19 @@ export class UserController {
   async update(@GetUser() user: AuthUser, @Body() updateUserDto: UpdateUserDto) {
     const id = user.userId;
     return await this.userService.update(id, updateUserDto);
+  }
+
+  @Auth(RoleEnum.CUSTOMER, RoleEnum.ADMIN)
+  @ApiBearerAuth()
+  @Post('address')
+  @ApiOperation({ summary: 'Thêm địa chỉ giao hàng cho người dùng' })
+  @ApiResponse({ status: 201, description: 'Thêm địa chỉ giao hàng thành công' })
+  async addAddress(@GetUser() user: AuthUser, @Body() createAddressDto: CreateAddressDto) {
+    const address = await this.addressService.create(user.userId, createAddressDto);
+    return {
+      data: address,
+      message: 'Thêm địa chỉ giao hàng thành công',
+    };
   }
 
   @Auth(RoleEnum.ADMIN)
@@ -73,13 +91,4 @@ export class UserController {
   async getPage(@Body() filterObject: UserFilterDto) {
     return await this.userService.getPage(filterObject);
   }
-
-  // @Auth()
-  // @ApiBearerAuth()
-  // @Get('test-auth-user')
-  // @ApiOperation({ summary: 'Kiểm tra thông tin AuthUser từ Token' })
-  // @ApiResponse({ status: 200, description: 'Test AuthUser thành công' })
-  // testAuthUser(@GetUser() user: AuthUser) {
-  //   return user;
-  // }
 }

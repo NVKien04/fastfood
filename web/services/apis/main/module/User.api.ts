@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from 'axios';
 import { Users } from '../generated/Users';
 import { apiFormat, apiFormatPaginated } from '../../api';
 import { BaseResponse } from '../../api.type';
-import { UpdateUserDto, UserFilterDto, UserResponseDto } from '../generated/data-contracts';
+import { UpdateUserDto, UserFilterDto, UserResponseDto, CreateAddressDto } from '../generated/data-contracts';
 
 export class UserApiModule {
   public api: Users<string>;
@@ -38,6 +38,20 @@ export class UserApiModule {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       console.error('Error updating profile:', error);
+      return { kind: 'ERROR', data: null, error: message };
+    }
+  };
+
+  /**
+   * Thêm địa chỉ giao hàng cho người dùng
+   */
+  addAddress = async (data: CreateAddressDto): Promise<BaseResponse<unknown>> => {
+    try {
+      const response = await this.api.userControllerAddAddress(data);
+      return apiFormat<unknown>(response);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error adding address:', error);
       return { kind: 'ERROR', data: null, error: message };
     }
   };

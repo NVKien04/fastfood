@@ -1,6 +1,6 @@
 import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
 import { CreateAddressDto } from '../../presentation/dto/create-address.dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { UserService } from '#src/modules/user/application/services/user.service';
 import { BusinessException } from '#src/common/exception/biz.exception';
 import { ErrorEnum } from '#src/common/constants/error-code.constant';
@@ -13,6 +13,7 @@ export class AddressService {
   constructor(
     @Inject('IAddressRepository')
     private readonly addressRepository: IAddressRepository,
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
 

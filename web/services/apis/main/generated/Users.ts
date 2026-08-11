@@ -10,7 +10,9 @@
  */
 
 import {
+  CreateAddressDto,
   UpdateUserDto,
+  UserControllerAddAddressData,
   UserControllerDeleteData,
   UserControllerGetAllData,
   UserControllerGetByIdData,
@@ -106,6 +108,24 @@ export class Users<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
       secure: true,
       type: ContentType.Json,
       format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Users
+   * @name UserControllerAddAddress
+   * @summary Thêm địa chỉ giao hàng cho người dùng
+   * @request POST:/api/users/address
+   * @secure
+   */
+  userControllerAddAddress = (data: CreateAddressDto, params: RequestParams = {}) =>
+    this.request<UserControllerAddAddressData, any>({
+      path: `/api/users/address`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       ...params,
     });
   /**
