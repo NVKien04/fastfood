@@ -63,6 +63,11 @@ export class ProductIngredientRepository implements IProductIngredientRepository
     return repo.delete(id as any);
   }
 
+  async deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult> {
+    const repo = this.getRepo(manager);
+    return repo.delete({ productId } as any);
+  }
+
   async createMany(
     entity: DeepPartial<ProductIngredientsEntity>[],
     manager?: unknown,

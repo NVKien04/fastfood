@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { CategoryEntity } from './category.entity';
 import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';
-import { ProductIngredientsEntity } from './product_ingredients.entity';
 import { OrderItemsIngredientsEntity } from './order-item-ingredients.entity';
 
 @Entity('ingredients')
@@ -58,9 +57,6 @@ export class IngredientsEntity {
 
   @OneToMany(() => CartItemIngredientsEntity, (cartItemIngredientsEntity) => cartItemIngredientsEntity.ingredient_obj)
   cartItemIngredients: CartItemIngredientsEntity[];
-
-  @OneToMany(() => ProductIngredientsEntity, (product) => product.ingredient_obj)
-  productIngredients: ProductIngredientsEntity[];
 
   @OneToMany(() => OrderItemsIngredientsEntity, (oii) => oii.ingredient_obj)
   orderItemIngredients: OrderItemsIngredientsEntity[];

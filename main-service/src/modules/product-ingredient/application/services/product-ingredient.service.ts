@@ -18,4 +18,8 @@ export class ProductIngredientService {
       manager,
     );
   }
+
+  async deleteByProductId(productId: string, manager?: unknown): Promise<any> {
+    return await this.productIngredientRepository.deleteByProductId(productId, manager);
+  }
 }

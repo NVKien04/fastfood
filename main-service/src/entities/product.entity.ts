@@ -13,7 +13,6 @@ import { CategoryEntity } from './category.entity';
 import { CartItemsEntity } from './cart-items.entity';
 import { ReviewEntity } from './reviews.entity';
 import { ProductVariantsEntity } from './product_variants.entity';
-import { ProductIngredientsEntity } from './product_ingredients.entity';
 import { OrderItemsEntity } from './order-items.entity';
 
 @Entity('product')
@@ -24,7 +23,7 @@ export class ProductEntity {
   @Column({ type: 'varchar', nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   slug: string;
 
   @Column({ type: 'text', nullable: true })
@@ -69,9 +68,6 @@ export class ProductEntity {
 
   @OneToMany(() => ProductVariantsEntity, (product) => product.product_obj)
   productVariants: ProductVariantsEntity[];
-
-  @OneToMany(() => ProductIngredientsEntity, (product) => product.product_obj)
-  productIngredients: ProductIngredientsEntity[];
 
   @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.product_obj)
   orderItems: OrderItemsEntity[];

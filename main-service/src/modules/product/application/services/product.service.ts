@@ -97,11 +97,11 @@ export class ProductService {
         }
       }
       if (productDto.ingredients && productDto.ingredients.length > 0 && product) {
-        const ingredients = await this.ingredientService.findByCategoryId(productDto.categoryId);
-        if (ingredients.length === 0) {
-          throw new BusinessException(ErrorEnum.INGREDIENT_NOT_FOUND);
-        }
         for (const ingredient of productDto.ingredients) {
+          const existedIngredient = await this.ingredientService.findById(ingredient.ingredientId);
+          if (!existedIngredient) {
+            throw new BusinessException(ErrorEnum.INGREDIENT_NOT_FOUND);
+          }
           await this.productIngredientService.create(ingredient, product.id, manager);
         }
       }
@@ -129,11 +129,70 @@ export class ProductService {
   }
 
   async update(productId: string, updateData: UpdateProductDto): Promise<Product | null> {
-    const product = await this.findById(productId);
-    if (!product) {
-      throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
-    }
-    return this.updateRaw(productId, updateData);
+    return this.executeTransaction(async (manager) => {
+      const product = await this.findById(productId);
+      if (!product) {
+        throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
+      }
+
+      if (updateData.categoryId) {
+        const category = await this.categoryService.getById(updateData.categoryId);
+        if (!category) {
+          throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
+        }
+      }
+
+      const updatePayload: Partial<Product> = {};
+
+      if (updateData.name !== undefined) {
+        updatePayload.name = updateData.name;
+        const newSlug = Fn.changeNameToSlug(updateData.name);
+        if (newSlug !== product.slug) {
+          const existedProduct = await this.findOne({ slug: newSlug });
+          if (existedProduct && existedProduct.id !== productId) {
+            throw new BusinessException(ErrorEnum.PRODUCT_SLUG_EXISTED);
+          }
+          updatePayload.slug = newSlug;
+        }
+      }
+
+      if (updateData.description !== undefined) updatePayload.description = updateData.description;
+      if (updateData.basePrice !== undefined) updatePayload.basePrice = updateData.basePrice;
+      if (updateData.sortOrder !== undefined) updatePayload.sortOrder = updateData.sortOrder;
+      if (updateData.img !== undefined) updatePayload.img = updateData.img;
+      if (updateData.isFeatured !== undefined) updatePayload.isFeatured = updateData.isFeatured;
+      if (updateData.categoryId !== undefined) updatePayload.categoryId = updateData.categoryId;
+
+      if (Object.keys(updatePayload).length > 0) {
+        await this.updateRaw(productId, updatePayload, manager);
+      }
+
+      // Cập nhật variants nếu được truyền vào
+      if (updateData.variants !== undefined) {
+        await this.productVariantService.deleteByProductId(productId, manager);
+        if (updateData.variants.length > 0) {
+          for (const variant of updateData.variants) {
+            await this.productVariantService.create(variant, productId, manager);
+          }
+        }
+      }
+
+      // Cập nhật ingredients nếu được truyền vào
+      if (updateData.ingredients !== undefined) {
+        await this.productIngredientService.deleteByProductId(productId, manager);
+        if (updateData.ingredients.length > 0) {
+          for (const ingredient of updateData.ingredients) {
+            const existedIngredient = await this.ingredientService.findById(ingredient.ingredientId);
+            if (!existedIngredient) {
+              throw new BusinessException(ErrorEnum.INGREDIENT_NOT_FOUND);
+            }
+            await this.productIngredientService.create(ingredient, productId, manager);
+          }
+        }
+      }
+
+      return this.findById(productId);
+    });
   }
 
   async delete(productId: string) {

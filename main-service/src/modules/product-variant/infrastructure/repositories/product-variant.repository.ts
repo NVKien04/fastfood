@@ -63,6 +63,11 @@ export class ProductVariantRepository implements IProductVariantRepository {
     return repo.delete(id as any);
   }
 
+  async deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult> {
+    const repo = this.getRepo(manager);
+    return repo.delete({ productId } as any);
+  }
+
   async createMany(entity: DeepPartial<ProductVariantsEntity>[], manager?: unknown): Promise<ProductVariantsEntity[]> {
     const repo = this.getRepo(manager);
     const entities = repo.create(entity);

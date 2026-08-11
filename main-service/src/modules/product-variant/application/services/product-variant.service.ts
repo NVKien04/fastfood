@@ -14,6 +14,10 @@ export class ProductVariantService {
     return await this.productVariantRepository.create({ ...data, productId }, manager);
   }
 
+  async deleteByProductId(productId: string, manager?: unknown): Promise<any> {
+    return await this.productVariantRepository.deleteByProductId(productId, manager);
+  }
+
   async getPage(filterObject: any): Promise<PaginationResponse<any>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));

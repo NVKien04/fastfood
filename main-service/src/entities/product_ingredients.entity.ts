@@ -4,12 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { ProductEntity } from './product.entity';
-import { IngredientsEntity } from './ingredients.entity';
 
 @Entity('product_ingredients')
 export class ProductIngredientsEntity {
@@ -19,16 +15,8 @@ export class ProductIngredientsEntity {
   @Column({ type: 'varchar', nullable: false })
   productId: string;
 
-  @ManyToOne(() => ProductEntity, (productEntity) => productEntity.productIngredients)
-  @JoinColumn({ name: 'productId', referencedColumnName: 'id' })
-  product_obj: ProductEntity;
-
   @Column({ type: 'integer', nullable: false })
   ingredientId: number;
-
-  @ManyToOne(() => IngredientsEntity, (ingredientsEntity) => ingredientsEntity.productIngredients)
-  @JoinColumn({ name: 'ingredientId', referencedColumnName: 'id' })
-  ingredient_obj: IngredientsEntity;
 
   @Column({ type: 'integer', nullable: false })
   isDefault: number;
