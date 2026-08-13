@@ -22,7 +22,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     const repo = this.getRepo(manager);
     const obj = repo.create(entity);
     const saved = await repo.save(obj);
-    return RefreshTokenMapper.toDomain(saved);
+    return RefreshTokenMapper.toDomain(saved)!;
   }
 
   async findByToken(token: string): Promise<RefreshToken | null> {

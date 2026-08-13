@@ -3,8 +3,8 @@ import { RefreshToken } from '../../domain/entities/refresh-token.domain';
 import { RefreshTokenResponseDto } from '../../presentation/dto/refresh-token-response.dto';
 
 export class RefreshTokenMapper {
-  static toDomain(entity: RefreshTokensEntity): RefreshToken {
-    if (!entity) return null as any;
+  static toDomain(entity: RefreshTokensEntity): RefreshToken | null {
+    if (!entity) return null;
     return {
       id: entity.id,
       token: entity.token,
@@ -17,7 +17,7 @@ export class RefreshTokenMapper {
 
   static toDomainList(entities: RefreshTokensEntity[]): RefreshToken[] {
     if (!entities) return [];
-    return entities.map((entity) => this.toDomain(entity));
+    return entities.map((entity) => this.toDomain(entity)).filter((item): item is RefreshToken => item !== null);
   }
 
   static toOrmEntity(domainModel: Partial<RefreshToken>): Partial<RefreshTokensEntity> {

@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Request, Res, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../../application/services/auth.service';
 import { type Response } from 'express';
 import { CookieName } from '@/common/constants/auth.constant';
@@ -14,17 +15,19 @@ import { RoleEnum } from '@/enums/role.enum';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  private readonly JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN;
-
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   private createCookie(res: Response, cookieName: CookieName, cookiePayload: string, maxAge: number) {
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     res.cookie(cookieName, cookiePayload, {
       maxAge,
       path: '/',
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
     });
   }
 
@@ -37,19 +40,21 @@ export class AuthController {
   }
 
   private setAuthCookie(res: Response, refreshToken: string) {
-    const maxAgeRefreshToken = Number(this.JWT_REFRESH_EXPIRES_IN?.slice(0, -1)) * 60 * 1000 || 7 * 24 * 60 * 60 * 1000;
+    const jwtRefreshExpiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d');
+    const maxAgeRefreshToken = Number(jwtRefreshExpiresIn?.slice(0, -1)) * 60 * 1000 || 7 * 24 * 60 * 60 * 1000;
     this.createCookie(res, 'refreshToken', refreshToken, maxAgeRefreshToken);
     // Cookie phụ không httpOnly để FE biết user đã đăng nhập (không chứa dữ liệu nhạy cảm)
     this.setLoggedInCookie(res, maxAgeRefreshToken);
   }
 
   private setLoggedInCookie(res: Response, maxAge: number) {
+    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
     res.cookie('logged_in', 'true', {
       maxAge,
       path: '/',
       httpOnly: false,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: isProduction,
     });
   }
 
