@@ -1,5 +1,5 @@
-import { ReviewEntity } from '#src/entities/reviews.entity';
-import { Review } from '../../domain/entities/review.domain';
+import { ReviewEntity } from '@/entities/reviews.entity';
+import { Review } from '@/modules/review/domain/entities/review.domain';
 
 export class ReviewMapper {
   static toDomain(ormEntity: ReviewEntity): Review {

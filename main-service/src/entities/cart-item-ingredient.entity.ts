@@ -8,8 +8,8 @@ import {
   JoinColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { IngredientsEntity } from './ingredients.entity';
-import { CartItemsEntity } from './cart-items.entity';
+import { IngredientsEntity } from '@/entities/ingredients.entity';
+import { CartItemsEntity } from '@/entities/cart-items.entity';
 
 @Entity('cart_item_ingredients')
 export class CartItemIngredientsEntity {

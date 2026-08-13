@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { ComboService } from '../../application/services/combo.service';
-import { CreateComboDto } from '../dto/create-combo.dto';
+import { ComboService } from '@/modules/combo/application/services/combo.service';
+import { CreateComboDto } from '@/modules/combo/presentation/dto/create-combo.dto';
 
 @Controller('combos')
 export class ComboController {

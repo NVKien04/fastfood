@@ -1,5 +1,5 @@
-import { CombosEntity } from '#src/entities/combos.entity';
-import { Combo } from '../../domain/entities/combo.domain';
+import { CombosEntity } from '@/entities/combos.entity';
+import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 
 export class ComboMapper {
   static toDomain(ormEntity: CombosEntity): Combo {

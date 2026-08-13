@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { ReviewEntity } from '#src/entities/reviews.entity';
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Review } from '../../domain/entities/review.domain';
-import { IReviewRepository } from '../../domain/repositories/review.repository.interface';
-import { ReviewMapper } from '../mappers/review.mapper';
+import { ReviewEntity } from '@/entities/reviews.entity';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Review } from '@/modules/review/domain/entities/review.domain';
+import { IReviewRepository } from '@/modules/review/domain/repositories/review.repository.interface';
+import { ReviewMapper } from '@/modules/review/infrastructure/mappers/review.mapper';
 
 @Injectable()
 export class ReviewTypeOrmRepository implements IReviewRepository {

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { CategoryEntity } from '#src/entities/category.entity';
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Category } from '../../domain/entities/category.domain';
-import { ICategoryRepository } from '../../domain/repositories/category.repository.interface';
-import { CategoryMapper } from '../mappers/category.mapper';
+import { CategoryEntity } from '@/entities/category.entity';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Category } from '@/modules/category/domain/entities/category.domain';
+import { ICategoryRepository } from '@/modules/category/domain/repositories/category.repository.interface';
+import { CategoryMapper } from '@/modules/category/infrastructure/mappers/category.mapper';
 
 @Injectable()
 export class CategoryTypeOrmRepository implements ICategoryRepository {

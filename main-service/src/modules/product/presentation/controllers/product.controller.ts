@@ -1,12 +1,12 @@
-import { ProductService } from '../../application/services/product.service';
+import { ProductService } from '@/modules/product/application/services/product.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '#src/common/decorators/auth.decorator';
-import { RoleEnum } from '#src/enums/role.enum';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { UpdateProductDto } from '../dto/update-product.dto';
-import { ProductDetailResponseDto } from '../dto/product-detail-response.dto';
-import { ProductFilterDto } from '../dto/product-filter.dto';
+import { Auth } from '@/common/decorators/auth.decorator';
+import { RoleEnum } from '@/enums/role.enum';
+import { CreateProductDto } from '@/modules/product/presentation/dto/create-product.dto';
+import { UpdateProductDto } from '@/modules/product/presentation/dto/update-product.dto';
+import { ProductDetailResponseDto } from '@/modules/product/presentation/dto/product-detail-response.dto';
+import { ProductFilterDto } from '@/modules/product/presentation/dto/product-filter.dto';
 
 @ApiTags('Product')
 @Controller('product')

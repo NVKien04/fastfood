@@ -9,11 +9,11 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ProductEntity } from './product.entity';
-import { SizeEnum } from '#src/enums/size.enum';
-import { TypeEnum } from '#src/enums/type.enum';
-import { CartItemsEntity } from './cart-items.entity';
-import { OrderItemsEntity } from './order-items.entity';
+import { ProductEntity } from '@/entities/product.entity';
+import { SizeEnum } from '@/enums/size.enum';
+import { TypeEnum } from '@/enums/type.enum';
+import { CartItemsEntity } from '@/entities/cart-items.entity';
+import { OrderItemsEntity } from '@/entities/order-items.entity';
 
 @Entity('product_variants')
 export class ProductVariantsEntity {

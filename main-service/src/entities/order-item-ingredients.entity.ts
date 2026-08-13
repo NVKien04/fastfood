@@ -8,8 +8,8 @@ import {
   ManyToOne,
   DeleteDateColumn,
 } from 'typeorm';
-import { IngredientsEntity } from './ingredients.entity';
-import { OrderItemsEntity } from './order-items.entity';
+import { IngredientsEntity } from '@/entities/ingredients.entity';
+import { OrderItemsEntity } from '@/entities/order-items.entity';
 
 @Entity('order-items-ingredients')
 export class OrderItemsIngredientsEntity {

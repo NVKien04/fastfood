@@ -1,6 +1,6 @@
-import { RefreshTokensEntity } from '#src/entities/refresh-tokens.entity';
-import { RefreshToken } from '../../domain/entities/refresh-token.domain';
-import { RefreshTokenResponseDto } from '../../presentation/dto/refresh-token-response.dto';
+import { RefreshTokensEntity } from '@/entities/refresh-tokens.entity';
+import { RefreshToken } from '@/modules/auth/domain/entities/refresh-token.domain';
+import { RefreshTokenResponseDto } from '@/modules/auth/presentation/dto/refresh-token-response.dto';
 
 export class RefreshTokenMapper {
   static toDomain(entity: RefreshTokensEntity): RefreshToken | null {

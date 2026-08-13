@@ -1,5 +1,5 @@
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Review } from '../entities/review.domain';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Review } from '@/modules/review/domain/entities/review.domain';
 
 export interface IReviewRepository {
   findAll(condition?: Partial<Review>, order?: Record<string, 'ASC' | 'DESC'>, relations?: string[]): Promise<Review[]>;

@@ -1,5 +1,5 @@
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Ingredient } from '../entities/ingredient.domain';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
 
 export interface IIngredientRepository {
   findAll(

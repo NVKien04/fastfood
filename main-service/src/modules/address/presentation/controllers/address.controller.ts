@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '#src/common/decorators/auth.decorator';
-import { CreateAddressDto } from '../dto/create-address.dto';
-import { UpdateAddressDto } from '../dto/update-address.dto';
-import { RoleEnum } from '#src/enums/role.enum';
-import { AddressService } from '../../application/services/address.service';
+import { Auth } from '@/common/decorators/auth.decorator';
+import { CreateAddressDto } from '@/modules/address/presentation/dto/create-address.dto';
+import { UpdateAddressDto } from '@/modules/address/presentation/dto/update-address.dto';
+import { RoleEnum } from '@/enums/role.enum';
+import { AddressService } from '@/modules/address/application/services/address.service';
 
 interface AuthenticatedRequest {
   user: {

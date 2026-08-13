@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { PaginationOptions } from '#src/common/core/pagination';
-import { ProductIngredientsEntity } from '#src/entities/product_ingredients.entity';
-import { IProductIngredientRepository } from '../../domain/repositories/product-ingredient.repository.interface';
+import { PaginationOptions } from '@/common/core/pagination';
+import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
+import { IProductIngredientRepository } from '@/modules/product-ingredient/domain/repositories/product-ingredient.repository.interface';
 
 @Injectable()
 export class ProductIngredientRepository implements IProductIngredientRepository {

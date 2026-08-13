@@ -1,6 +1,6 @@
-import { CategoryEntity } from '#src/entities/category.entity';
-import { Category } from '../../domain/entities/category.domain';
-import { ProductMapper } from '#src/modules/product/infrastructure/mappers/product.mapper';
+import { CategoryEntity } from '@/entities/category.entity';
+import { Category } from '@/modules/category/domain/entities/category.domain';
+import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.mapper';
 
 export class CategoryMapper {
   static toDomain(ormEntity: CategoryEntity): Category {

@@ -8,7 +8,7 @@ import {
   JoinColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { CombosEntity } from './combos.entity';
+import { CombosEntity } from '@/entities/combos.entity';
 
 @Entity('combo_items')
 export class ComboItemsEntity {

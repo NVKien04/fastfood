@@ -1,4 +1,4 @@
-import { ReviewService } from '../../application/services/review.service';
+import { ReviewService } from '@/modules/review/application/services/review.service';
 import { Body, Controller, Post } from '@nestjs/common';
 
 @Controller('review')

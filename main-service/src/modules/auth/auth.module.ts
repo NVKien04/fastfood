@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthController } from './presentation/controllers/auth.controller';
-import { RefreshTokensEntity } from '#src/entities/refresh-tokens.entity';
-import { AuthorizationGuard } from '#src/guards/authorization.guard';
-import { JwtAuthGuard } from '#src/guards/jwt.guard';
-import { LocalAuthGuard } from '#src/guards/local-auth.guard';
-import { UserModule } from '#src/modules/user/user.module';
-import { AuthService } from './application/services/auth.service';
-import { TokenService } from './application/services/token.service';
-import { JwtStrategy } from './presentation/strategies/jwt.strategy';
-import { LocalStrategy } from './presentation/strategies/local.strategy';
-import { RefreshTokenRepository } from './infrastructure/repositories/refresh-token.typeorm.repository';
+import { AuthController } from '@/modules/auth/presentation/controllers/auth.controller';
+import { RefreshTokensEntity } from '@/entities/refresh-tokens.entity';
+import { AuthorizationGuard } from '@/guards/authorization.guard';
+import { JwtAuthGuard } from '@/guards/jwt.guard';
+import { LocalAuthGuard } from '@/guards/local-auth.guard';
+import { UserModule } from '@/modules/user/user.module';
+import { AuthService } from '@/modules/auth/application/services/auth.service';
+import { TokenService } from '@/modules/auth/application/services/token.service';
+import { JwtStrategy } from '@/modules/auth/presentation/strategies/jwt.strategy';
+import { LocalStrategy } from '@/modules/auth/presentation/strategies/local.strategy';
+import { RefreshTokenRepository } from '@/modules/auth/infrastructure/repositories/refresh-token.typeorm.repository';
 
 @Module({
   imports: [UserModule, TypeOrmModule.forFeature([RefreshTokensEntity])],

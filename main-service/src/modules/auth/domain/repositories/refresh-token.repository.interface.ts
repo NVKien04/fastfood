@@ -1,4 +1,4 @@
-import { RefreshToken } from '../entities/refresh-token.domain';
+import { RefreshToken } from '@/modules/auth/domain/entities/refresh-token.domain';
 
 export interface IRefreshTokenRepository {
   create(entity: Partial<RefreshToken>, manager?: unknown): Promise<RefreshToken>;

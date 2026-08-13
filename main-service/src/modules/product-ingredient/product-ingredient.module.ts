@@ -1,6 +1,6 @@
-import { ProductIngredientsEntity } from '#src/entities/product_ingredients.entity';
-import { ProductIngredientRepository } from './infrastructure/repositories/product-ingredient.repository';
-import { ProductIngredientService } from './application/services/product-ingredient.service';
+import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
+import { ProductIngredientRepository } from '@/modules/product-ingredient/infrastructure/repositories/product-ingredient.repository';
+import { ProductIngredientService } from '@/modules/product-ingredient/application/services/product-ingredient.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

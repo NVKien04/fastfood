@@ -9,8 +9,8 @@ import {
   OneToOne,
   OneToMany,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { CartItemsEntity } from './cart-items.entity';
+import { UserEntity } from '@/entities/user.entity';
+import { CartItemsEntity } from '@/entities/cart-items.entity';
 
 @Entity('cart')
 export class CartEntity {

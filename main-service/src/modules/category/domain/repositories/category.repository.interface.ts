@@ -1,5 +1,5 @@
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Category } from '../entities/category.domain';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Category } from '@/modules/category/domain/entities/category.domain';
 
 export interface ICategoryRepository {
   findAll(

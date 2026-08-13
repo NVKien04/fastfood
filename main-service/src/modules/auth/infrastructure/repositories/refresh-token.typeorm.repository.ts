@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { RefreshTokensEntity } from '#src/entities/refresh-tokens.entity';
-import { IRefreshTokenRepository } from '../../domain/repositories/refresh-token.repository.interface';
-import { RefreshToken } from '../../domain/entities/refresh-token.domain';
-import { RefreshTokenMapper } from '../mappers/refresh-token.mapper';
+import { RefreshTokensEntity } from '@/entities/refresh-tokens.entity';
+import { IRefreshTokenRepository } from '@/modules/auth/domain/repositories/refresh-token.repository.interface';
+import { RefreshToken } from '@/modules/auth/domain/entities/refresh-token.domain';
+import { RefreshTokenMapper } from '@/modules/auth/infrastructure/mappers/refresh-token.mapper';
 
 @Injectable()
 export class RefreshTokenRepository implements IRefreshTokenRepository {

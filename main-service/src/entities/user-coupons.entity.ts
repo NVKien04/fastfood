@@ -9,8 +9,8 @@ import {
   DeleteDateColumn,
   Index,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { CouponsEntity } from './coupons.entity';
+import { UserEntity } from '@/entities/user.entity';
+import { CouponsEntity } from '@/entities/coupons.entity';
 
 @Index(['userId', 'couponsId'], { unique: true })
 @Entity('user_coupons')

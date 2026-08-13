@@ -1,13 +1,13 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
-import { BusinessException } from '#src/common/exception/biz.exception';
-import { Fn } from '#src/utils/fn';
+import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { Fn } from '@/utils/fn';
 import { Inject, Injectable } from '@nestjs/common';
 
-import { CreateCategoryDto } from '../../presentation/dto/create-category.dto';
-import { UpdateCategoryDto } from '../../presentation/dto/update-category.dto';
-import { Category } from '../../domain/entities/category.domain';
-import type { ICategoryRepository } from '../../domain/repositories/category.repository.interface';
+import { CreateCategoryDto } from '@/modules/category/presentation/dto/create-category.dto';
+import { UpdateCategoryDto } from '@/modules/category/presentation/dto/update-category.dto';
+import { Category } from '@/modules/category/domain/entities/category.domain';
+import type { ICategoryRepository } from '@/modules/category/domain/repositories/category.repository.interface';
 
 @Injectable()
 export class CategoryService {

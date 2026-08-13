@@ -9,9 +9,9 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { CategoryEntity } from './category.entity';
-import { CartItemIngredientsEntity } from './cart-item-ingredient.entity';
-import { OrderItemsIngredientsEntity } from './order-item-ingredients.entity';
+import { CategoryEntity } from '@/entities/category.entity';
+import { CartItemIngredientsEntity } from '@/entities/cart-item-ingredient.entity';
+import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
 
 @Entity('ingredients')
 export class IngredientsEntity {

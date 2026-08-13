@@ -3,29 +3,29 @@ import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ApiResponseInterceptor } from './common/interceptors/response.interceptor';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { StartTimingMiddleware } from './common/middleware/start-timing.middleware';
+import { ApiResponseInterceptor } from '@/common/interceptors/response.interceptor';
+import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
+import { StartTimingMiddleware } from '@/common/middleware/start-timing.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { StringValue } from 'ms';
 
 // Domain Modules
-import { UserModule } from './modules/user/user.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { CategoryModule } from './modules/category/category.module';
-import { ProductModule } from './modules/product/product.module';
-import { IngredientModule } from './modules/ingredient/ingredient.module';
-import { AddressModule } from './modules/address/address.module';
-import { CouponModule } from './modules/coupon/coupon.module';
-import { ReviewModule } from './modules/review/review.module';
-import { CartModule } from './modules/cart/cart.module';
-import { OrderModule } from './modules/order/order.module';
-import { ProductVariantModule } from './modules/product-variant/product-variant.module';
-import { ProductIngredientModule } from './modules/product-ingredient/product-ingredient.module';
-import { UserCouponModule } from './modules/user-coupon/user-coupon.module';
-import { NotificationModule } from './modules/notification/notification.module';
-import { ComboModule } from './modules/combo/combo.module';
-import { RedisModule } from './modules/redis/redis.module';
+import { UserModule } from '@/modules/user/user.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { CategoryModule } from '@/modules/category/category.module';
+import { ProductModule } from '@/modules/product/product.module';
+import { IngredientModule } from '@/modules/ingredient/ingredient.module';
+import { AddressModule } from '@/modules/address/address.module';
+import { CouponModule } from '@/modules/coupon/coupon.module';
+import { ReviewModule } from '@/modules/review/review.module';
+import { CartModule } from '@/modules/cart/cart.module';
+import { OrderModule } from '@/modules/order/order.module';
+import { ProductVariantModule } from '@/modules/product-variant/product-variant.module';
+import { ProductIngredientModule } from '@/modules/product-ingredient/product-ingredient.module';
+import { UserCouponModule } from '@/modules/user-coupon/user-coupon.module';
+import { NotificationModule } from '@/modules/notification/notification.module';
+import { ComboModule } from '@/modules/combo/combo.module';
+import { RedisModule } from '@/modules/redis/redis.module';
 
 @Module({
   imports: [

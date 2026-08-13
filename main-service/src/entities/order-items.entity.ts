@@ -9,11 +9,11 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ProductEntity } from './product.entity';
-import { OrdersEntity } from './orders.entity';
-import { ProductVariantsEntity } from './product_variants.entity';
-import { OrderItemsIngredientsEntity } from './order-item-ingredients.entity';
-import { CombosEntity } from './combos.entity';
+import { ProductEntity } from '@/entities/product.entity';
+import { OrdersEntity } from '@/entities/orders.entity';
+import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
+import { CombosEntity } from '@/entities/combos.entity';
 
 @Entity('order-items')
 export class OrderItemsEntity {

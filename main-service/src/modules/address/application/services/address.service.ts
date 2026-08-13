@@ -1,12 +1,12 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
-import { CreateAddressDto } from '../../presentation/dto/create-address.dto';
+import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
+import { CreateAddressDto } from '@/modules/address/presentation/dto/create-address.dto';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { UserService } from '#src/modules/user/application/services/user.service';
-import { BusinessException } from '#src/common/exception/biz.exception';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
+import { UserService } from '@/modules/user/application/services/user.service';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
 
-import { Address } from '../../domain/entities/address.domain';
-import type { IAddressRepository } from '../../domain/repositories/address.repository.interface';
+import { Address } from '@/modules/address/domain/entities/address.domain';
+import type { IAddressRepository } from '@/modules/address/domain/repositories/address.repository.interface';
 
 @Injectable()
 export class AddressService {

@@ -1,12 +1,12 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
-import { CreateIngredientDto } from '../../presentation/dto/create-ingredient.dto';
-import { UpdateIngredientDto } from '../../presentation/dto/update-ingredient.dto';
-import { BusinessException } from '#src/common/exception/biz.exception';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
+import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
+import { CreateIngredientDto } from '@/modules/ingredient/presentation/dto/create-ingredient.dto';
+import { UpdateIngredientDto } from '@/modules/ingredient/presentation/dto/update-ingredient.dto';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
 import { Inject, Injectable } from '@nestjs/common';
 
-import { Ingredient } from '../../domain/entities/ingredient.domain';
-import type { IIngredientRepository } from '../../domain/repositories/ingredient.repository.interface';
+import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
+import type { IIngredientRepository } from '@/modules/ingredient/domain/repositories/ingredient.repository.interface';
 
 @Injectable()
 export class IngredientService {

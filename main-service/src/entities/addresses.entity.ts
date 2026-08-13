@@ -9,8 +9,8 @@ import {
   DeleteDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { OrdersEntity } from './orders.entity';
+import { UserEntity } from '@/entities/user.entity';
+import { OrdersEntity } from '@/entities/orders.entity';
 
 @Entity('addresses')
 export class AddressesEntity {

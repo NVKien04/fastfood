@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { ProductEntity } from '#src/entities/product.entity';
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Product } from '../../domain/entities/product.domain';
-import { IProductRepository } from '../../domain/repositories/product.repository.interface';
-import { ProductMapper } from '../mappers/product.mapper';
+import { ProductEntity } from '@/entities/product.entity';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Product } from '@/modules/product/domain/entities/product.domain';
+import { IProductRepository } from '@/modules/product/domain/repositories/product.repository.interface';
+import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.mapper';
 
 @Injectable()
 export class ProductTypeOrmRepository implements IProductRepository {

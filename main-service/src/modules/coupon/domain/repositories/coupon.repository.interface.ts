@@ -1,5 +1,5 @@
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Coupon } from '../entities/coupon.domain';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
 
 export interface ICouponRepository {
   findAll(condition?: Partial<Coupon>, order?: Record<string, 'ASC' | 'DESC'>, relations?: string[]): Promise<Coupon[]>;

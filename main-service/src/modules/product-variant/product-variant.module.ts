@@ -1,6 +1,6 @@
-import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
-import { ProductVariantRepository } from './infrastructure/repositories/product-variant.repository';
-import { ProductVariantService } from './application/services/product-variant.service';
+import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { ProductVariantRepository } from '@/modules/product-variant/infrastructure/repositories/product-variant.repository';
+import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

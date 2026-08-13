@@ -1,5 +1,5 @@
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Address } from '../entities/address.domain';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Address } from '@/modules/address/domain/entities/address.domain';
 
 export interface IAddressRepository {
   findAll(

@@ -8,8 +8,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { NotificationType } from '#src/enums/notification-type.enum';
+import { UserEntity } from '@/entities/user.entity';
+import { NotificationType } from '@/enums/notification-type.enum';
 
 @Entity('notifications')
 export class NotificationEntity {

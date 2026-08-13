@@ -1,11 +1,11 @@
 import { UserCouponsEntity } from '@/entities/user-coupons.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserController } from './presentation/controllers/user.controller';
+import { UserController } from '@/modules/user/presentation/controllers/user.controller';
 import { UserEntity } from '@/entities/user.entity';
-import { UserTypeOrmRepository } from './infrastructure/repositories/user.typeorm.repository';
-import { UserService } from './application/services/user.service';
-import { AddressModule } from '../address/address.module';
+import { UserTypeOrmRepository } from '@/modules/user/infrastructure/repositories/user.typeorm.repository';
+import { UserService } from '@/modules/user/application/services/user.service';
+import { AddressModule } from '@/modules/address/address.module';
 
 @Module({
   imports: [

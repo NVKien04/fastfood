@@ -1,5 +1,5 @@
-import DataSource from '../data-source';
-import { MasterSeed } from './seeders/master.seed';
+import DataSource from '@/data-source';
+import { MasterSeed } from '@/database/seeders/master.seed';
 
 async function bootstrap() {
   console.log('🔌 Initializing Database DataSource...');

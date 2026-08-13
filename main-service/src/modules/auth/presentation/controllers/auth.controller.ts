@@ -1,14 +1,14 @@
 import { Body, Controller, Post, Request, Res, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { AuthService } from '../../application/services/auth.service';
+import { AuthService } from '@/modules/auth/application/services/auth.service';
 import { type Response } from 'express';
 import { CookieName } from '@/common/constants/auth.constant';
-import { LoginDto } from '../dto/login.dto';
-import { LoginResponseDto } from '../dto/login-response.dto';
+import { LoginDto } from '@/modules/auth/presentation/dto/login.dto';
+import { LoginResponseDto } from '@/modules/auth/presentation/dto/login-response.dto';
 import { CreateUserDto } from '@/modules/user/presentation/dto/create-user.dto';
 import { UserResponseDto } from '@/modules/user/presentation/dto/response-user.dto';
-import { ChangePasswordDto } from '../dto/change-password.dto';
+import { ChangePasswordDto } from '@/modules/auth/presentation/dto/change-password.dto';
 import { Auth } from '@/common/decorators/auth.decorator';
 import { RoleEnum } from '@/enums/role.enum';
 

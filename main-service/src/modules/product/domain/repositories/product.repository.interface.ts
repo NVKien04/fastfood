@@ -1,5 +1,5 @@
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Product } from '../entities/product.domain';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Product } from '@/modules/product/domain/entities/product.domain';
 
 export interface IProductRepository {
   findAll(

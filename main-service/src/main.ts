@@ -1,7 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from '@/app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { AllExceptionFilter } from './common/filter/all-exception.filter';
+import { AllExceptionFilter } from '@/common/filter/all-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 

@@ -1,4 +1,4 @@
-import { Product } from '#src/modules/product/domain/entities/product.domain';
+import { Product } from '@/modules/product/domain/entities/product.domain';
 
 export class Category {
   id: number;

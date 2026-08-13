@@ -1,5 +1,5 @@
-import { CouponsEntity } from '#src/entities/coupons.entity';
-import { Coupon } from '../../domain/entities/coupon.domain';
+import { CouponsEntity } from '@/entities/coupons.entity';
+import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
 
 export class CouponMapper {
   static toDomain(ormEntity: CouponsEntity): Coupon {

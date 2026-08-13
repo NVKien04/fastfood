@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { CategoryEntity } from '#src/entities/category.entity';
-import { categories } from './data';
+import { CategoryEntity } from '@/entities/category.entity';
+import { categories } from '@/database/seeders/data';
 
 export async function CategoriesSeed(dataSource: DataSource) {
   const repo = dataSource.getRepository(CategoryEntity);

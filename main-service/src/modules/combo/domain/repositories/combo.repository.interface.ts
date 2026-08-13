@@ -1,5 +1,5 @@
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Combo } from '../entities/combo.domain';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 
 export interface IComboRepository {
   findAll(condition?: Partial<Combo>, order?: Record<string, 'ASC' | 'DESC'>, relations?: string[]): Promise<Combo[]>;

@@ -1,5 +1,5 @@
-import { IngredientsEntity } from '#src/entities/ingredients.entity';
-import { Ingredient } from '../../domain/entities/ingredient.domain';
+import { IngredientsEntity } from '@/entities/ingredients.entity';
+import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
 
 export class IngredientMapper {
   static toDomain(ormEntity: IngredientsEntity): Ingredient {

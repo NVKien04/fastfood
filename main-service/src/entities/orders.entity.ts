@@ -1,6 +1,6 @@
-import { OrderStatus } from '#src/enums/order-status.enum.ts';
-import { PaymentMethod } from '#src/enums/payment-method.enum';
-import { PaymentStatus } from '#src/enums/payment-status.enum';
+import { OrderStatus } from '@/enums/order-status.enum.ts';
+import { PaymentMethod } from '@/enums/payment-method.enum';
+import { PaymentStatus } from '@/enums/payment-status.enum';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -13,10 +13,10 @@ import {
   OneToOne,
   OneToMany,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { AddressesEntity } from './addresses.entity';
-import { ReviewEntity } from './reviews.entity';
-import { OrderItemsEntity } from './order-items.entity';
+import { UserEntity } from '@/entities/user.entity';
+import { AddressesEntity } from '@/entities/addresses.entity';
+import { ReviewEntity } from '@/entities/reviews.entity';
+import { OrderItemsEntity } from '@/entities/order-items.entity';
 
 @Entity('orders')
 export class OrdersEntity {

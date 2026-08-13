@@ -9,9 +9,9 @@ import {
   DeleteDateColumn,
   OneToOne,
 } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { ProductEntity } from './product.entity';
-import { OrdersEntity } from './orders.entity';
+import { UserEntity } from '@/entities/user.entity';
+import { ProductEntity } from '@/entities/product.entity';
+import { OrdersEntity } from '@/entities/orders.entity';
 
 @Entity('reviews')
 export class ReviewEntity {

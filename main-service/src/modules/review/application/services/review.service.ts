@@ -1,11 +1,11 @@
-import { buildPaginationResponse, PaginationResponse } from '#src/common/core/pagination';
+import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateReviewDto } from '../../presentation/dto/create-review.dto';
-import { BusinessException } from '#src/common/exception/biz.exception';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
+import { CreateReviewDto } from '@/modules/review/presentation/dto/create-review.dto';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
 
-import { Review } from '../../domain/entities/review.domain';
-import type { IReviewRepository } from '../../domain/repositories/review.repository.interface';
+import { Review } from '@/modules/review/domain/entities/review.domain';
+import type { IReviewRepository } from '@/modules/review/domain/repositories/review.repository.interface';
 
 @Injectable()
 export class ReviewService {

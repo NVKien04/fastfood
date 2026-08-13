@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, In, Repository } from 'typeorm';
-import { IngredientsEntity } from '#src/entities/ingredients.entity';
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Ingredient } from '../../domain/entities/ingredient.domain';
-import { IIngredientRepository } from '../../domain/repositories/ingredient.repository.interface';
-import { IngredientMapper } from '../mappers/ingredient.mapper';
+import { IngredientsEntity } from '@/entities/ingredients.entity';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
+import { IIngredientRepository } from '@/modules/ingredient/domain/repositories/ingredient.repository.interface';
+import { IngredientMapper } from '@/modules/ingredient/infrastructure/mappers/ingredient.mapper';
 
 @Injectable()
 export class IngredientTypeOrmRepository implements IIngredientRepository {

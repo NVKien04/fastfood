@@ -1,6 +1,6 @@
-import { OrderItemsIngredientsEntity } from '#src/entities/order-item-ingredients.entity';
-import { OrderItemsEntity } from '#src/entities/order-items.entity';
-import { OrdersEntity } from '#src/entities/orders.entity';
+import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
+import { OrderItemsEntity } from '@/entities/order-items.entity';
+import { OrdersEntity } from '@/entities/orders.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

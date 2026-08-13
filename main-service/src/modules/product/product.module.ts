@@ -1,14 +1,14 @@
-import { ProductController } from './presentation/controllers/product.controller';
-import { ProductEntity } from '#src/entities/product.entity';
-import { ProductTypeOrmRepository } from './infrastructure/repositories/product.typeorm.repository';
-import { ProductService } from './application/services/product.service';
+import { ProductController } from '@/modules/product/presentation/controllers/product.controller';
+import { ProductEntity } from '@/entities/product.entity';
+import { ProductTypeOrmRepository } from '@/modules/product/infrastructure/repositories/product.typeorm.repository';
+import { ProductService } from '@/modules/product/application/services/product.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CategoryModule } from '#src/modules/category/category.module';
-import { OrderItemsEntity } from '#src/entities/order-items.entity';
-import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
-import { ProductVariantModule } from '#src/modules/product-variant/product-variant.module';
-import { IngredientModule } from '#src/modules/ingredient/ingredient.module';
+import { CategoryModule } from '@/modules/category/category.module';
+import { OrderItemsEntity } from '@/entities/order-items.entity';
+import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { ProductVariantModule } from '@/modules/product-variant/product-variant.module';
+import { IngredientModule } from '@/modules/ingredient/ingredient.module';
 
 @Module({
   controllers: [ProductController],

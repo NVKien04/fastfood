@@ -1,4 +1,4 @@
-import { RoleEnum } from '#src/enums/role.enum';
+import { RoleEnum } from '@/enums/role.enum';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,12 +9,12 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { AddressesEntity } from './addresses.entity';
-import { UserCouponsEntity } from './user-coupons.entity';
-import { ReviewEntity } from './reviews.entity';
-import { OrdersEntity } from './orders.entity';
-import { CartEntity } from './cart.entity';
-import { NotificationEntity } from './notification.entity';
+import { AddressesEntity } from '@/entities/addresses.entity';
+import { UserCouponsEntity } from '@/entities/user-coupons.entity';
+import { ReviewEntity } from '@/entities/reviews.entity';
+import { OrdersEntity } from '@/entities/orders.entity';
+import { CartEntity } from '@/entities/cart.entity';
+import { NotificationEntity } from '@/entities/notification.entity';
 
 @Entity('users')
 export class UserEntity {

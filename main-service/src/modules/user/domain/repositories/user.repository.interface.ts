@@ -1,5 +1,5 @@
 import { PaginationOptions } from '@/common/core/pagination';
-import { User } from '../entities/user.domain';
+import { User } from '@/modules/user/domain/entities/user.domain';
 
 export interface IUserRepository {
   findAll(condition?: Partial<User>, order?: Record<string, 'ASC' | 'DESC'>, relations?: string[]): Promise<User[]>;

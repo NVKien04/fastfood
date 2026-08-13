@@ -1,12 +1,12 @@
 import { DataSource } from 'typeorm';
-import { CategoryEntity } from '#src/entities/category.entity';
-import { IngredientsEntity } from '#src/entities/ingredients.entity';
-import { ProductEntity } from '#src/entities/product.entity';
-import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
-import { CombosEntity } from '#src/entities/combos.entity';
-import { ProductIngredientsEntity } from '#src/entities/product_ingredients.entity';
+import { CategoryEntity } from '@/entities/category.entity';
+import { IngredientsEntity } from '@/entities/ingredients.entity';
+import { ProductEntity } from '@/entities/product.entity';
+import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { CombosEntity } from '@/entities/combos.entity';
+import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
 
-import { categories, ingredients, products, productVariants, combos, productIngredients } from './data';
+import { categories, ingredients, products, productVariants, combos, productIngredients } from '@/database/seeders/data';
 
 export async function MasterSeed(dataSource: DataSource) {
   console.log('🌱 --- Starting Database Seeding ---');

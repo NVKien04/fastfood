@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { CouponsEntity } from '#src/entities/coupons.entity';
-import { PaginationOptions } from '#src/common/core/pagination';
-import { Coupon } from '../../domain/entities/coupon.domain';
-import { ICouponRepository } from '../../domain/repositories/coupon.repository.interface';
-import { CouponMapper } from '../mappers/coupon.mapper';
+import { CouponsEntity } from '@/entities/coupons.entity';
+import { PaginationOptions } from '@/common/core/pagination';
+import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
+import { ICouponRepository } from '@/modules/coupon/domain/repositories/coupon.repository.interface';
+import { CouponMapper } from '@/modules/coupon/infrastructure/mappers/coupon.mapper';
 
 @Injectable()
 export class CouponTypeOrmRepository implements ICouponRepository {

@@ -2,8 +2,8 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nes
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiResponseDto } from '#src/common/dto/api-response.dto';
-import { BYPASS_KEY } from '#src/common/decorators/bypass.decorator';
+import { ApiResponseDto } from '@/common/dto/api-response.dto';
+import { BYPASS_KEY } from '@/common/decorators/bypass.decorator';
 
 @Injectable()
 export class ApiResponseInterceptor<T> implements NestInterceptor<T, ApiResponseDto<T>> {

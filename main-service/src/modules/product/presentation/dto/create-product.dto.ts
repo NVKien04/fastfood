@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
-import { SizeEnum } from '#src/enums/size.enum';
-import { TypeEnum } from '#src/enums/type.enum';
+import { SizeEnum } from '@/enums/size.enum';
+import { TypeEnum } from '@/enums/type.enum';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Sub-DTOs

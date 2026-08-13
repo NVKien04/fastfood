@@ -1,23 +1,25 @@
-import { buildPaginationResponse, PaginationOptions, PaginationResponse } from '#src/common/core/pagination';
-import { CreateProductDto } from '../../presentation/dto/create-product.dto';
-import { ProductFilterDto } from '../../presentation/dto/product-filter.dto';
+import { buildPaginationResponse, PaginationOptions, PaginationResponse } from '@/common/core/pagination';
+import { CreateProductDto } from '@/modules/product/presentation/dto/create-product.dto';
+import { ProductFilterDto } from '@/modules/product/presentation/dto/product-filter.dto';
 import {
   ProductDetailResponseDto,
   ProductVariantResponseDto,
   ProductIngredientResponseDto,
-} from '../../presentation/dto/product-detail-response.dto';
-import { Product } from '../../domain/entities/product.domain';
-import type { IProductRepository } from '../../domain/repositories/product.repository.interface';
-import { Fn } from '#src/utils/fn';
+} from '@/modules/product/presentation/dto/product-detail-response.dto';
+import { Product } from '@/modules/product/domain/entities/product.domain';
+import type { IProductRepository } from '@/modules/product/domain/repositories/product.repository.interface';
+import { Fn } from '@/utils/fn';
 import { Inject, Injectable } from '@nestjs/common';
-import { CategoryService } from '#src/modules/category/application/services/category.service';
-import { UpdateProductDto } from '../../presentation/dto/update-product.dto';
-import { ProductVariantService } from '#src/modules/product-variant/application/services/product-variant.service';
-import { IngredientService } from '#src/modules/ingredient/application/services/ingredient.service';
-import { BusinessException } from '#src/common/exception/biz.exception';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
-import { Ingredient } from '#src/modules/ingredient/domain/entities/ingredient.domain';
-import { ProductVariantsEntity } from '#src/entities/product_variants.entity';
+import { CategoryService } from '@/modules/category/application/services/category.service';
+import { UpdateProductDto } from '@/modules/product/presentation/dto/update-product.dto';
+import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
+import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
+import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
+import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { RedisService } from '@/modules/redis/redis.service';
+import { REDIS_KEYS, REDIS_TTL } from '@/common/constants/redis.constaint';
 
 @Injectable()
 export class ProductService {
@@ -27,7 +29,12 @@ export class ProductService {
     private readonly categoryService: CategoryService,
     private readonly productVariantService: ProductVariantService,
     private readonly ingredientService: IngredientService,
+    private readonly redisService: RedisService,
   ) {}
+
+  private clearProductCache() {
+    return this.redisService.delByPattern(REDIS_KEYS.PRODUCT.PATTERN);
+  }
 
   // ==========================================
   // NHÓM 1: CÁC HÀM WRAPPER (ỦY QUYỀN REPOSITORY)
@@ -77,20 +84,24 @@ export class ProductService {
    * Tạo mới sản phẩm kèm variants trong một transaction.
    * Tự sinh slug từ name, kiểm tra trùng slug và danh mục.
    */
+  /**
+   * Tạo mới sản phẩm kèm variants trong một transaction.
+   * Tự sinh slug từ name, kiểm tra trùng slug và danh mục.
+   */
   async create(productDto: CreateProductDto): Promise<Product | null> {
-    return this.executeTransaction(async (manager) => {
-      const category = await this.categoryService.getById(productDto.categoryId);
-      if (!category) {
-        throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
-      }
+    const category = await this.categoryService.getById(productDto.categoryId);
+    if (!category) {
+      throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
+    }
 
-      const productSlug = Fn.changeNameToSlug(productDto.name);
-      const existedProduct = await this.findOne({ slug: productSlug });
-      if (existedProduct) {
-        throw new BusinessException(ErrorEnum.PRODUCT_SLUG_EXISTED);
-      }
+    const productSlug = Fn.changeNameToSlug(productDto.name);
+    const existedProduct = await this.findOne({ slug: productSlug });
+    if (existedProduct) {
+      throw new BusinessException(ErrorEnum.PRODUCT_SLUG_EXISTED);
+    }
 
-      const product = await this.save(
+    const product = await this.executeTransaction(async (manager) => {
+      const createdProduct = await this.save(
         {
           name: productDto.name,
           slug: productSlug,
@@ -108,12 +119,18 @@ export class ProductService {
       // Tạo variants
       if (productDto.variants && productDto.variants.length > 0) {
         for (const variant of productDto.variants) {
-          await this.productVariantService.create(variant, product.id, manager);
+          await this.productVariantService.create(variant, createdProduct.id, manager);
         }
       }
 
-      return product;
+      return createdProduct;
     });
+
+    if (product) {
+      this.clearProductCache();
+    }
+
+    return product;
   }
 
   /**
@@ -121,6 +138,12 @@ export class ProductService {
    * Filter: isActive (mặc định chỉ lấy active), isFeatured (tuỳ chọn), categoryId (tuỳ chọn).
    */
   async getPage(filterObject: ProductFilterDto): Promise<PaginationResponse<Product>> {
+    const cacheKey = `${REDIS_KEYS.PRODUCT.PAGE}${JSON.stringify(filterObject ?? {})}`;
+    const cached = await this.redisService.get<PaginationResponse<Product>>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
@@ -143,7 +166,9 @@ export class ProductService {
       where,
     );
 
-    return buildPaginationResponse(data, totalItems, page, limit);
+    const response = buildPaginationResponse(data, totalItems, page, limit);
+    await this.redisService.set(cacheKey, response, REDIS_TTL.PRODUCT_PAGE);
+    return response;
   }
 
   /**
@@ -151,54 +176,54 @@ export class ProductService {
    * Truyền variants mới sẽ xóa cũ và tạo lại (replace strategy).
    */
   async update(productId: string, updateData: UpdateProductDto): Promise<Product | null> {
-    return this.executeTransaction(async (manager) => {
-      const product = await this.findById(productId);
-      if (!product) {
-        throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
-      }
+    const product = await this.findById(productId);
+    if (!product) {
+      throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
+    }
 
-      if (updateData.categoryId) {
-        const category = await this.categoryService.getById(updateData.categoryId);
-        if (!category) {
-          throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
+    if (updateData.categoryId) {
+      const category = await this.categoryService.getById(updateData.categoryId);
+      if (!category) {
+        throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
+      }
+    }
+
+    const { variants, name, ...scalarFields } = updateData;
+    const updatePayload: Partial<Product> = { ...scalarFields };
+
+    if (name !== undefined) {
+      updatePayload.name = name;
+      const newSlug = Fn.changeNameToSlug(name);
+      if (newSlug !== product.slug) {
+        const existedProduct = await this.findOne({ slug: newSlug });
+        if (existedProduct && existedProduct.id !== productId) {
+          throw new BusinessException(ErrorEnum.PRODUCT_SLUG_EXISTED);
         }
+        updatePayload.slug = newSlug;
       }
+    }
 
-      const updatePayload: Partial<Product> = {};
-
-      if (updateData.name !== undefined) {
-        updatePayload.name = updateData.name;
-        const newSlug = Fn.changeNameToSlug(updateData.name);
-        if (newSlug !== product.slug) {
-          const existedProduct = await this.findOne({ slug: newSlug });
-          if (existedProduct && existedProduct.id !== productId) {
-            throw new BusinessException(ErrorEnum.PRODUCT_SLUG_EXISTED);
-          }
-          updatePayload.slug = newSlug;
-        }
-      }
-
-      if (updateData.description !== undefined) updatePayload.description = updateData.description;
-      if (updateData.basePrice !== undefined) updatePayload.basePrice = updateData.basePrice;
-      if (updateData.sortOrder !== undefined) updatePayload.sortOrder = updateData.sortOrder;
-      if (updateData.img !== undefined) updatePayload.img = updateData.img;
-      if (updateData.isFeatured !== undefined) updatePayload.isFeatured = updateData.isFeatured;
-      if (updateData.categoryId !== undefined) updatePayload.categoryId = updateData.categoryId;
-
+    const updatedProduct = await this.executeTransaction(async (manager) => {
       if (Object.keys(updatePayload).length > 0) {
         await this.updateRaw(productId, updatePayload, manager);
       }
 
       // Replace variants nếu được truyền vào
-      if (updateData.variants !== undefined) {
+      if (variants !== undefined) {
         await this.productVariantService.deleteByProductId(productId, manager);
-        for (const variant of updateData.variants) {
+        for (const variant of variants) {
           await this.productVariantService.create(variant, productId, manager);
         }
       }
 
       return this.findById(productId);
     });
+
+    if (updatedProduct) {
+      this.clearProductCache();
+    }
+
+    return updatedProduct;
   }
 
   /**
@@ -209,29 +234,49 @@ export class ProductService {
     if (!product) {
       throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
     }
-    return this.softDeleteRaw(productId);
+    const result = await this.softDeleteRaw(productId);
+    if (result) {
+      this.clearProductCache();
+    }
+    return result;
   }
 
   /**
    * Lấy chi tiết sản phẩm theo ID, bao gồm variants và ingredients theo danh mục.
    */
   async getDetail(productId: string): Promise<ProductDetailResponseDto> {
+    const cacheKey = `${REDIS_KEYS.PRODUCT.DETAIL_ID}${productId}`;
+    const cached = await this.redisService.get<ProductDetailResponseDto>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const product = await this.findById(productId);
     if (!product) {
       throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
     }
-    return this.buildDetail(product);
+    const detail = await this.buildDetail(product);
+    await this.redisService.set(cacheKey, detail, REDIS_TTL.PRODUCT_DETAIL);
+    return detail;
   }
 
   /**
    * Lấy chi tiết sản phẩm theo slug, bao gồm variants và ingredients theo danh mục.
    */
   async getDetailBySlug(slug: string): Promise<ProductDetailResponseDto> {
+    const cacheKey = `${REDIS_KEYS.PRODUCT.DETAIL_SLUG}${slug}`;
+    const cached = await this.redisService.get<ProductDetailResponseDto>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const product = await this.findOne({ slug });
     if (!product) {
       throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
     }
-    return this.buildDetail(product);
+    const detail = await this.buildDetail(product);
+    await this.redisService.set(cacheKey, detail, REDIS_TTL.PRODUCT_DETAIL);
+    return detail;
   }
 
   // ==========================================

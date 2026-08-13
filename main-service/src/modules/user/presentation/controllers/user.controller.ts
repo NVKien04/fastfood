@@ -1,15 +1,15 @@
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { UserFilterDto } from '../dto/user-filter.dto';
-import { UserResponseDto } from '../dto/response-user.dto';
+import { UpdateUserDto } from '@/modules/user/presentation/dto/update-user.dto';
+import { UserFilterDto } from '@/modules/user/presentation/dto/user-filter.dto';
+import { UserResponseDto } from '@/modules/user/presentation/dto/response-user.dto';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '@/common/decorators/auth.decorator';
 import { RoleEnum } from '@/enums/role.enum';
-import { UserService } from '../../application/services/user.service';
-import { AddressService } from '#src/modules/address/application/services/address.service';
+import { UserService } from '@/modules/user/application/services/user.service';
+import { AddressService } from '@/modules/address/application/services/address.service';
 import { GetUser } from '@/common/decorators/getUser.decorator';
 import type { AuthUser } from '@/common/constants/auth.constant';
-import { CreateAddressDto } from '#src/modules/address/presentation/dto/create-address.dto';
+import { CreateAddressDto } from '@/modules/address/presentation/dto/create-address.dto';
 
 @ApiTags('Users')
 @Controller('users')

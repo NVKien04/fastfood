@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '#src/common/decorators/auth.decorator';
-import { CreateIngredientDto } from '../dto/create-ingredient.dto';
-import { UpdateIngredientDto } from '../dto/update-ingredient.dto';
-import { RoleEnum } from '#src/enums/role.enum';
-import { IngredientService } from '../../application/services/ingredient.service';
+import { Auth } from '@/common/decorators/auth.decorator';
+import { CreateIngredientDto } from '@/modules/ingredient/presentation/dto/create-ingredient.dto';
+import { UpdateIngredientDto } from '@/modules/ingredient/presentation/dto/update-ingredient.dto';
+import { RoleEnum } from '@/enums/role.enum';
+import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 
 @ApiTags('Ingredient')
 @Controller('ingredient')

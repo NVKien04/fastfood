@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CombosEntity } from '#src/entities/combos.entity';
-import { ComboItemsEntity } from '#src/entities/combo-items.entity';
-import { ComboController } from './presentation/controllers/combo.controller';
-import { ComboService } from './application/services/combo.service';
-import { ComboTypeOrmRepository } from './infrastructure/repositories/combo.typeorm.repository';
+import { CombosEntity } from '@/entities/combos.entity';
+import { ComboItemsEntity } from '@/entities/combo-items.entity';
+import { ComboController } from '@/modules/combo/presentation/controllers/combo.controller';
+import { ComboService } from '@/modules/combo/application/services/combo.service';
+import { ComboTypeOrmRepository } from '@/modules/combo/infrastructure/repositories/combo.typeorm.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CombosEntity, ComboItemsEntity])],

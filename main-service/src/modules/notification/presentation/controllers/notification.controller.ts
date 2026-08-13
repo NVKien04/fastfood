@@ -1,7 +1,7 @@
 import { Controller, Get, Patch, Delete, Param, Request } from '@nestjs/common';
-import { NotificationService } from '../../application/services/notification.service';
-import { Auth } from '#src/common/decorators/auth.decorator';
-import { RoleEnum } from '#src/enums/role.enum';
+import { NotificationService } from '@/modules/notification/application/services/notification.service';
+import { Auth } from '@/common/decorators/auth.decorator';
+import { RoleEnum } from '@/enums/role.enum';
 
 interface AuthenticatedRequest {
   user: {

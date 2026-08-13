@@ -1,8 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ApiErrorResponseDto, ValidationFieldError } from '#src/common/dto/api-error-response.dto';
-import { BusinessException } from '#src/common/exception/biz.exception';
-import { ErrorEnum } from '#src/common/constants/error-code.constant';
+import { ApiErrorResponseDto, ValidationFieldError } from '@/common/dto/api-error-response.dto';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
