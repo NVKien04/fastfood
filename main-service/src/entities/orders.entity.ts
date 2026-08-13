@@ -1,4 +1,4 @@
-import { OrderStatus } from '@/enums/order-status.enum.ts';
+import { OrderStatus } from '@/enums/order-status.enum';
 import { PaymentMethod } from '@/enums/payment-method.enum';
 import { PaymentStatus } from '@/enums/payment-status.enum';
 import {

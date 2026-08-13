@@ -1,20 +1,36 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { ApiMain } from '@/services/apis/main/api.main';
-import { ProductDetailResponseDto, ProductFilterDto } from '@/services/apis/main/generated/data-contracts';
+import {
+  ProductDetailResponseDto,
+  ProductFilterDto,
+  ProductIngredientResponseDto,
+  ProductVariantResponseDto,
+} from '@/services/apis/main/generated/data-contracts';
+import { CategoryResponseDto } from '@/services/apis/main/module/Category.api';
 import { PaginationMeta } from '@/services/apis/api.type';
 import { ProductDetailModal, formatVND } from './ProductDetailModal';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Utensils, ChevronLeft, ChevronRight, Search, Loader2, Plus } from 'lucide-react';
+import { Utensils, ChevronLeft, ChevronRight, Search, Loader2, Plus, ShoppingBag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useCartStore } from '@/stores/cart.store';
 
 export const ProductList: React.FC = () => {
   const [products, setProducts] = React.useState<ProductDetailResponseDto[]>([]);
+  const [categories, setCategories] = React.useState<CategoryResponseDto[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = React.useState<number | null>(null);
   const [pagination, setPagination] = React.useState<PaginationMeta | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [categoryLoading, setCategoryLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
+
+  // Cart state from Zustand
+  const cartItems = useCartStore((s) => s.items);
+  const cartTotalCount = useCartStore((s) => s.getTotalCount());
+  const cartTotalPrice = useCartStore((s) => s.getTotalPrice());
 
   // Filter State
   const [page, setPage] = React.useState<number>(1);
@@ -26,6 +42,20 @@ export const ProductList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
   const [detailLoading, setDetailLoading] = React.useState<boolean>(false);
 
+  // Fetch category list
+  const fetchCategories = React.useCallback(async () => {
+    setCategoryLoading(true);
+    const response = await ApiMain.instance.category.getCategories({ page: 1, limit: 100 });
+    if (response.kind === 'OK' && response.data) {
+      setCategories(response.data);
+    }
+    setCategoryLoading(false);
+  }, []);
+
+  React.useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
   // Fetch product list
   const fetchProducts = React.useCallback(async () => {
     setLoading(true);
@@ -34,6 +64,7 @@ export const ProductList: React.FC = () => {
     const filter: ProductFilterDto = {
       page,
       limit,
+      ...(selectedCategoryId ? { categoryId: selectedCategoryId } : {}),
     };
 
     const response = await ApiMain.instance.product.getProducts(filter);
@@ -45,13 +76,28 @@ export const ProductList: React.FC = () => {
       setError(response.error || 'Khởi tạo danh sách sản phẩm thất bại');
     }
     setLoading(false);
-  }, [page, limit]);
+  }, [page, limit, selectedCategoryId]);
 
   React.useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Client-side search filtering (if needed)
+  // Map categoryId to name for fast lookup
+  const categoryMap = React.useMemo(() => {
+    const map = new Map<number, string>();
+    categories.forEach((cat) => {
+      map.set(cat.id, cat.name);
+    });
+    return map;
+  }, [categories]);
+
+  // Handle category change
+  const handleSelectCategory = (id: number | null) => {
+    setSelectedCategoryId(id);
+    setPage(1);
+  };
+
+  // Client-side search filtering
   const filteredProducts = React.useMemo(() => {
     if (!searchQuery.trim()) return products;
     return products.filter((p) => p.name?.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -62,8 +108,6 @@ export const ProductList: React.FC = () => {
     setDetailLoading(true);
     // Fetch full detail (including variants & ingredients)
     const res = await ApiMain.instance.product.getById(product.id);
-
-    console.log(res);
 
     if (res.kind === 'OK' && res.data) {
       setSelectedProduct(res.data);
@@ -77,17 +121,23 @@ export const ProductList: React.FC = () => {
 
   const handleAddToCartFromModal = (item: {
     product: ProductDetailResponseDto;
+    variant?: ProductVariantResponseDto | null;
+    selectedIngredients?: ProductIngredientResponseDto[];
     quantity: number;
     totalPrice: number;
   }) => {
-    // Demo toast or notification for add to cart
-    alert(`Đã thêm ${item.quantity}x ${item.product.name} vào giỏ hàng (${formatVND(item.totalPrice)})!`);
+    useCartStore.getState().addItem({
+      product: item.product,
+      variant: item.variant,
+      selectedIngredients: item.selectedIngredients,
+      quantity: item.quantity,
+    });
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+    <div className="w-full max-w-7xl mx-auto px-4 py-8 relative">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2">
             <span>Thực Đơn Món Ăn</span>
@@ -96,16 +146,72 @@ export const ProductList: React.FC = () => {
           <p className="text-sm text-gray-500 mt-1">Khám phá hương vị tuyệt hảo từ nguyên liệu tươi ngon nhất</p>
         </div>
 
-        {/* Search Input */}
-        <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Tìm kiếm món ăn..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-10 rounded-xl border-gray-200 focus:border-red-500 focus:ring-red-500/20 bg-white"
-          />
+        {/* Search Input & Cart Button */}
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-72">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Tìm kiếm món ăn..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-10 rounded-xl border-gray-200 focus:border-red-500 focus:ring-red-500/20 bg-white"
+            />
+          </div>
+
+          <Link
+            href="/checkout"
+            className="relative p-2.5 rounded-xl bg-white border border-gray-200 hover:border-red-500 text-gray-700 hover:text-red-600 transition-all flex items-center justify-center shrink-0 shadow-sm"
+            title="Xem giỏ hàng"
+          >
+            <ShoppingBag className="w-5 h-5" />
+            {cartTotalCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+                {cartTotalCount}
+              </span>
+            )}
+          </Link>
+        </div>
+      </div>
+
+      {/* Category Filter Bar */}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <button
+            onClick={() => handleSelectCategory(null)}
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border whitespace-nowrap ${
+              selectedCategoryId === null
+                ? 'bg-red-600 text-white border-red-600 shadow-md shadow-red-600/20 scale-[1.02]'
+                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+            }`}
+          >
+            <Utensils className="w-3.5 h-3.5" />
+            <span>Tất cả món</span>
+          </button>
+
+          {categoryLoading ? (
+            <div className="flex items-center gap-2 text-xs text-gray-400 pl-2">
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-red-600" />
+              <span>Đang tải danh mục...</span>
+            </div>
+          ) : (
+            categories.map((cat) => {
+              const isSelected = selectedCategoryId === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => handleSelectCategory(cat.id)}
+                  className={`px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 border whitespace-nowrap ${
+                    isSelected
+                      ? 'bg-red-600 text-white border-red-600 shadow-md shadow-red-600/20 scale-[1.02]'
+                      : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                  }`}
+                >
+                  <span>{cat.name}</span>
+                </button>
+              );
+            })
+          )}
         </div>
       </div>
 
@@ -125,7 +231,7 @@ export const ProductList: React.FC = () => {
       ) : filteredProducts.length === 0 ? (
         <div className="min-h-[300px] flex flex-col items-center justify-center text-center p-8 bg-gray-50 rounded-2xl border border-gray-100">
           <Utensils className="w-12 h-12 text-gray-300 mb-3" />
-          <p className="text-gray-600 font-medium">Không tìm thấy món ăn nào phù hợp</p>
+          <p className="text-gray-600 font-medium">Không tìm thấy món ăn nào phù hợp trong danh mục này</p>
         </div>
       ) : (
         <>
@@ -137,16 +243,24 @@ export const ProductList: React.FC = () => {
                 className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden hover:-translate-y-1"
               >
                 <div>
-                  {/* Image Placeholder Container (Temporarily no product image) */}
+                  {/* Image Container */}
                   <div className="relative w-full aspect-square bg-gradient-to-br from-orange-50 via-amber-50 to-red-50 flex flex-col items-center justify-center p-6 border-b border-gray-50 group-hover:from-orange-100 group-hover:to-red-100 transition-colors">
                     <div className="w-28 h-28 rounded-full bg-white/90 shadow-sm border border-orange-100 flex flex-col items-center justify-center gap-1.5 p-3 text-center transition-transform group-hover:scale-105">
                       <Utensils className="w-8 h-8 text-red-500/80" />
                       <span className="text-[10px] font-medium text-gray-400 leading-tight">Chưa có ảnh</span>
                     </div>
 
+                    {/* Featured Badge */}
                     {product.isFeatured === 1 && (
                       <Badge className="absolute top-3 left-3 bg-red-600 text-white font-bold text-[10px] uppercase tracking-wider px-2 py-0.5 shadow-sm">
                         Nổi bật
+                      </Badge>
+                    )}
+
+                    {/* Category Pill Tag */}
+                    {categoryMap.get(product.categoryId) && (
+                      <Badge variant="outline" className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border-orange-200 text-orange-800 text-[10px] font-bold px-2 py-0.5 shadow-sm">
+                        {categoryMap.get(product.categoryId)}
                       </Badge>
                     )}
                   </div>
@@ -235,6 +349,25 @@ export const ProductList: React.FC = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Floating Cart Pill Button */}
+      {cartTotalCount > 0 && (
+        <Link
+          href="/checkout"
+          className="fixed bottom-6 right-6 z-50 bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-3.5 rounded-full shadow-2xl shadow-red-600/40 flex items-center gap-3 transition-all hover:scale-105 active:scale-95"
+        >
+          <div className="relative">
+            <ShoppingBag className="w-5 h-5" />
+            <span className="absolute -top-2 -right-2 bg-amber-400 text-gray-900 font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-red-600">
+              {cartTotalCount}
+            </span>
+          </div>
+          <span className="text-sm">Xem giỏ hàng</span>
+          <span className="bg-red-700/80 text-white text-xs font-black px-2.5 py-1 rounded-full">
+            {formatVND(cartTotalPrice)}
+          </span>
+        </Link>
       )}
 
       {/* Product Detail Modal */}

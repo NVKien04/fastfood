@@ -17,8 +17,8 @@ export interface ProductDetailModalProps {
   onClose: () => void;
   onAddToCart?: (item: {
     product: ProductDetailResponseDto;
-    variant: ProductVariantResponseDto | null;
-    selectedIngredients: ProductIngredientResponseDto[];
+    variant?: ProductVariantResponseDto | null;
+    selectedIngredients?: ProductIngredientResponseDto[];
     quantity: number;
     totalPrice: number;
   }) => void;

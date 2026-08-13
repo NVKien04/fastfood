@@ -3,6 +3,10 @@ import { setupInterceptors } from './config/interceptors';
 import { AuthApiModule } from './module/Auth.api';
 import { UserApiModule } from './module/User.api';
 import { ProductApiModule } from './module/Product.api';
+import { CategoryApiModule } from './module/Category.api';
+import { UploadApiModule } from './module/Upload.api';
+import { OrderApiModule } from './module/Order.api';
+import { CartApiModule } from './module/Cart.api';
 import { useAuthStore } from '../../../stores/auth.store';
 
 export class ApiMain {
@@ -11,6 +15,10 @@ export class ApiMain {
   readonly user = new UserApiModule(DEFAULT_API_MAIN_CONFIG);
   readonly auth = new AuthApiModule(DEFAULT_API_MAIN_CONFIG);
   readonly product = new ProductApiModule(DEFAULT_API_MAIN_CONFIG);
+  readonly category = new CategoryApiModule(DEFAULT_API_MAIN_CONFIG);
+  readonly upload = new UploadApiModule(DEFAULT_API_MAIN_CONFIG);
+  readonly order = new OrderApiModule(DEFAULT_API_MAIN_CONFIG);
+  readonly cart = new CartApiModule(DEFAULT_API_MAIN_CONFIG);
 
   private constructor() {
     // ─── onRefresh ──────────────────────────────────────────────────
@@ -40,6 +48,10 @@ export class ApiMain {
     setupInterceptors(this.user.api.instance, onRefresh, onLogout);
     setupInterceptors(this.auth.api.instance, onRefresh, onLogout);
     setupInterceptors(this.product.api.instance, onRefresh, onLogout);
+    setupInterceptors(this.category.api.instance, onRefresh, onLogout);
+    setupInterceptors(this.upload.http.instance, onRefresh, onLogout);
+    setupInterceptors(this.order.http.instance, onRefresh, onLogout);
+    setupInterceptors(this.cart.http.instance, onRefresh, onLogout);
   }
 
   static get instance() {

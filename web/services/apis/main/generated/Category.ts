@@ -30,10 +30,12 @@ export class Category<SecurityDataType = unknown> extends HttpClient<SecurityDat
    * @summary Lấy danh sách danh mục phân trang
    * @request POST:/api/category/get-page
    */
-  categoryControllerGetPage = (params: RequestParams = {}) =>
-    this.request<CategoryControllerGetPageData, any>({
+  categoryControllerGetPage = (data?: Record<string, unknown>, params: RequestParams = {}) =>
+    this.request<CategoryControllerGetPageData, unknown>({
       path: `/api/category/get-page`,
       method: 'POST',
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**

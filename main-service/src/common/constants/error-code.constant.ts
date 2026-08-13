@@ -43,6 +43,11 @@ export enum ErrorEnum {
   // ========== Combo ==========
   COMBO_NOT_FOUND = 'COMBO_NOT_FOUND',
 
+  // ========== File & Storage ==========
+  FILE_UPLOAD_FAILED = 'FILE_UPLOAD_FAILED',
+  INVALID_FILE_TYPE = 'INVALID_FILE_TYPE',
+  FILE_TOO_LARGE = 'FILE_TOO_LARGE',
+
   // ========== General ==========
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   INTERNAL_ERROR = 'INTERNAL_ERROR',
@@ -99,6 +104,17 @@ export const ERROR_MAP: Record<ErrorEnum, ErrorDetail> = {
 
   // Combo
   [ErrorEnum.COMBO_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, message: 'Combo not found' },
+
+  // File & Storage
+  [ErrorEnum.FILE_UPLOAD_FAILED]: { httpStatus: HttpStatus.BAD_REQUEST, message: 'Failed to upload file' },
+  [ErrorEnum.INVALID_FILE_TYPE]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'Invalid file type. Allowed types: jpg, png, webp, gif, svg',
+  },
+  [ErrorEnum.FILE_TOO_LARGE]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'File size exceeds maximum allowed limit',
+  },
 
   // General
   [ErrorEnum.VALIDATION_ERROR]: { httpStatus: HttpStatus.BAD_REQUEST, message: 'Validation failed' },

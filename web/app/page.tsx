@@ -20,15 +20,11 @@ export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans min-h-screen">
       <main className="flex w-full max-w-xl flex-col items-center justify-center p-8 bg-white rounded-xl shadow-sm border border-gray-100 text-center gap-6">
-
         {!accessToken ? (
           <>
             <h1 className="text-2xl font-bold text-gray-800">Bạn chưa đăng nhập</h1>
             <p className="text-gray-500 mb-4">Vui lòng đăng nhập để trải nghiệm ứng dụng.</p>
-            <Button
-              onClick={() => router.push('/login')}
-              className="bg-brand-primary hover:bg-brand-primary-active"
-            >
+            <Button onClick={() => router.push('/login')} className="bg-brand-primary hover:bg-brand-primary-active">
               Đi đến trang Đăng nhập
             </Button>
           </>
@@ -41,9 +37,7 @@ export default function Home() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-1">
-                Xin chào, {user?.fullName || 'Người dùng'}!
-              </h1>
+              <h1 className="text-2xl font-bold text-gray-800 mb-1">Xin chào, {user?.fullName || 'Người dùng'}!</h1>
               <p className="text-gray-500">{user?.email}</p>
             </div>
 
@@ -54,17 +48,12 @@ export default function Home() {
               >
                 Xem Thực Đơn Sản Phẩm 🍕
               </Button>
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                className="flex-1 border-gray-200 hover:bg-gray-50"
-              >
+              <Button onClick={handleLogout} variant="outline" className="flex-1 border-gray-200 hover:bg-gray-50">
                 Đăng xuất
               </Button>
             </div>
           </>
         )}
-
       </main>
     </div>
   );
