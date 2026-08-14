@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { CategoryEntity } from '@/entities/category.entity';
 import { CartItemsEntity } from '@/entities/cart-items.entity';
-import { ReviewEntity } from '@/entities/reviews.entity';
 import { ProductVariantsEntity } from '@/entities/product_variants.entity';
 import { OrderItemsEntity } from '@/entities/order-items.entity';
 
@@ -62,9 +61,6 @@ export class ProductEntity {
 
   @OneToMany(() => CartItemsEntity, (cartItem) => cartItem.product_obj)
   cartItems: CartItemsEntity[];
-
-  @OneToMany(() => ReviewEntity, (review) => review.product_obj)
-  reviews: ReviewEntity[];
 
   @OneToMany(() => ProductVariantsEntity, (product) => product.product_obj)
   productVariants: ProductVariantsEntity[];

@@ -77,6 +77,11 @@ export class CreateOrderDto {
   @IsOptional()
   notes?: string;
 
+  @ApiPropertyOptional({ description: 'Mã giảm giá áp dụng cho đơn hàng', example: 'FASTFOOD20' })
+  @IsString()
+  @IsOptional()
+  couponCode?: string;
+
   @ApiPropertyOptional({ description: 'Phương thức thanh toán', enum: PaymentMethod, example: PaymentMethod.COD })
   @IsEnum(PaymentMethod)
   @IsOptional()

@@ -10,12 +10,10 @@ import {
   JoinColumn,
   DeleteDateColumn,
   ManyToOne,
-  OneToOne,
   OneToMany,
 } from 'typeorm';
 import { UserEntity } from '@/entities/user.entity';
 import { AddressesEntity } from '@/entities/addresses.entity';
-import { ReviewEntity } from '@/entities/reviews.entity';
 import { OrderItemsEntity } from '@/entities/order-items.entity';
 
 @Entity('orders')
@@ -96,9 +94,6 @@ export class OrdersEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
-
-  @OneToOne(() => ReviewEntity, (review) => review.order)
-  review: ReviewEntity;
 
   @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.order_obj)
   orderItems: OrderItemsEntity[];

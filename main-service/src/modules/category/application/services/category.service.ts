@@ -24,8 +24,24 @@ export class CategoryService {
     return this.repo.findById(id);
   }
 
+  async findByIdOrThrow(id: number): Promise<Category> {
+    const category = await this.findById(id);
+    if (!category) {
+      throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
+    }
+    return category;
+  }
+
   async findOne(condition: Partial<Category>, relations?: string[]): Promise<Category | null> {
     return this.repo.findOne(condition, relations);
+  }
+
+  async findOneOrThrow(condition: Partial<Category>, relations?: string[]): Promise<Category> {
+    const category = await this.findOne(condition, relations);
+    if (!category) {
+      throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
+    }
+    return category;
   }
 
   async findAll(
@@ -72,10 +88,8 @@ export class CategoryService {
   }
 
   async update(updateCategoryDto: UpdateCategoryDto, id: number): Promise<Category | null> {
-    const category = await this.findById(id);
-    if (!category) {
-      throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
-    }
+    await this.findByIdOrThrow(id);
+
     const payload: Partial<Category> = {
       ...updateCategoryDto,
       isActive: updateCategoryDto.isActive !== undefined ? Boolean(updateCategoryDto.isActive) : undefined,
@@ -85,10 +99,7 @@ export class CategoryService {
   }
 
   async delete(categoryId: number): Promise<boolean> {
-    const category = await this.findById(categoryId);
-    if (!category) {
-      throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
-    }
+    await this.findByIdOrThrow(categoryId);
     return await this.softDeleteRaw(categoryId);
   }
 

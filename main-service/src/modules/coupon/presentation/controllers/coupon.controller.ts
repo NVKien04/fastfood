@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '@/common/decorators/auth.decorator';
-import type { filterObj } from '@/common/core/filterObj';
 import { CreateCouponDto } from '@/modules/coupon/presentation/dto/create-coupon.dto';
 import { UpdateCouponDto } from '@/modules/coupon/presentation/dto/update-coupon.dto';
+import { CouponFilterDto } from '@/modules/coupon/presentation/dto/coupon-filter.dto';
+import { ApplyCouponDto } from '@/modules/coupon/presentation/dto/apply-coupon.dto';
 import { RoleEnum } from '@/enums/role.enum';
 import { CouponService } from '@/modules/coupon/application/services/coupon.service';
 
@@ -12,17 +13,44 @@ import { CouponService } from '@/modules/coupon/application/services/coupon.serv
 export class CouponController {
   constructor(private readonly couponService: CouponService) {}
 
+  // ==========================================
+  // PUBLIC ENDPOINTS (GUEST & USER CHECKOUT)
+  // ==========================================
+
+  @Post('apply')
+  @ApiOperation({ summary: 'Kiểm tra và áp dụng mã giảm giá khi thanh toán (Công khai)' })
+  @ApiResponse({ status: 200, description: 'Áp dụng mã giảm giá thành công' })
+  @ApiResponse({ status: 400, description: 'Mã không hợp lệ, hết hạn hoặc chưa đủ điều kiện' })
+  async applyCoupon(@Body() dto: ApplyCouponDto) {
+    const result = await this.couponService.validateAndCalculateDiscount(dto.code, dto.subTotal);
+    return {
+      data: {
+        code: result.coupon.code,
+        name: result.coupon.name,
+        discount: result.discount,
+        finalTotal: result.finalTotal,
+      },
+      message: 'Áp dụng mã giảm giá thành công',
+    };
+  }
+
+  // ==========================================
+  // ADMIN & CRUD ENDPOINTS
+  // ==========================================
+
   @Post('get-page')
-  @ApiOperation({ summary: 'Lấy danh sách mã giảm giá phân trang' })
+  @Auth(RoleEnum.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Lấy danh sách mã giảm giá phân trang (Admin)' })
   @ApiResponse({ status: 200, description: 'Lấy dữ liệu thành công' })
-  async getPage(@Body() filterObject: filterObj) {
+  async getPage(@Body() filterObject: CouponFilterDto) {
     return await this.couponService.getPage(filterObject);
   }
 
   @Post()
   @Auth(RoleEnum.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Tạo mới mã giảm giá' })
+  @ApiOperation({ summary: 'Tạo mới mã giảm giá (Admin)' })
   @ApiResponse({ status: 201, description: 'Tạo thành công' })
   async create(@Body() createCouponDto: CreateCouponDto) {
     const coupon = await this.couponService.create(createCouponDto);
@@ -38,9 +66,6 @@ export class CouponController {
   @ApiResponse({ status: 404, description: 'Mã giảm giá không tồn tại' })
   async getById(@Param('id') id: string) {
     const coupon = await this.couponService.getById(id);
-    if (!coupon) {
-      throw new NotFoundException('Mã giảm giá không tồn tại');
-    }
     return {
       data: coupon,
     };
@@ -49,7 +74,7 @@ export class CouponController {
   @Patch(':id')
   @Auth(RoleEnum.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Cập nhật mã giảm giá' })
+  @ApiOperation({ summary: 'Cập nhật mã giảm giá (Admin)' })
   @ApiResponse({ status: 200, description: 'Cập nhật thành công' })
   @ApiResponse({ status: 404, description: 'Mã giảm giá không tồn tại' })
   async update(@Param('id') id: string, @Body() updateCouponDto: UpdateCouponDto) {
@@ -63,7 +88,7 @@ export class CouponController {
   @Delete(':id')
   @Auth(RoleEnum.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Xóa mã giảm giá' })
+  @ApiOperation({ summary: 'Xóa mã giảm giá (Admin)' })
   @ApiResponse({ status: 200, description: 'Xóa thành công' })
   @ApiResponse({ status: 404, description: 'Mã giảm giá không tồn tại' })
   async delete(@Param('id') id: string) {

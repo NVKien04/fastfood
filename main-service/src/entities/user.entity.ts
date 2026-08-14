@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { AddressesEntity } from '@/entities/addresses.entity';
 import { UserCouponsEntity } from '@/entities/user-coupons.entity';
-import { ReviewEntity } from '@/entities/reviews.entity';
 import { OrdersEntity } from '@/entities/orders.entity';
 import { CartEntity } from '@/entities/cart.entity';
 import { NotificationEntity } from '@/entities/notification.entity';
@@ -60,9 +59,6 @@ export class UserEntity {
 
   @OneToMany(() => UserCouponsEntity, (userCoupon) => userCoupon.user_obj)
   userCoupons: UserCouponsEntity[];
-
-  @OneToMany(() => ReviewEntity, (review) => review.user_obj)
-  reviews: ReviewEntity[];
 
   @OneToMany(() => OrdersEntity, (order) => order.user_obj)
   orders: OrdersEntity[];

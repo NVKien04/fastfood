@@ -39,6 +39,18 @@ export class CouponTypeOrmRepository implements ICouponRepository {
     return entity ? CouponMapper.toDomain(entity) : null;
   }
 
+  async findByCode(code: string): Promise<Coupon | null> {
+    const entity = await this.repo.findOne({
+      where: { code: code.toUpperCase() } as FindOptionsWhere<CouponsEntity>,
+    });
+    return entity ? CouponMapper.toDomain(entity) : null;
+  }
+
+  async incrementUsage(id: string): Promise<boolean> {
+    const result = await this.repo.increment({ id }, 'currentUses', 1);
+    return Boolean(result.affected && result.affected > 0);
+  }
+
   async create(entityData: Partial<Coupon>): Promise<Coupon> {
     const ormPayload = CouponMapper.toOrmEntity(entityData);
     const obj = this.repo.create(ormPayload);
@@ -72,7 +84,7 @@ export class CouponTypeOrmRepository implements ICouponRepository {
     return CouponMapper.toDomainList(saved);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Coupon[], number]> {
+  async findPaginated(options: PaginationOptions, where?: Record<string, unknown>): Promise<[Coupon[], number]> {
     const entity = 'coupons';
     const qb = this.repo.createQueryBuilder(entity);
 

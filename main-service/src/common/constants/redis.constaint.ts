@@ -47,11 +47,6 @@ export const REDIS_KEYS = {
     DETAIL: 'cache:order:detail:',
     PATTERN: 'cache:order:*',
   },
-  REVIEW: {
-    PREFIX: 'cache:review:',
-    BY_PRODUCT: 'cache:review:product:',
-    PATTERN: 'cache:review:*',
-  },
   SEARCH: {
     PREFIX: 'cache:search:',
     SUGGEST: 'cache:search:suggest:',
@@ -73,6 +68,5 @@ export const REDIS_TTL = {
   COUPON: 1800, // 30 phút
   CART: 604800, // 7 ngày
   ORDER: 300, // 5 phút
-  REVIEW: 3600, // 1h
   SEARCH: 300, // 5 phút
 };

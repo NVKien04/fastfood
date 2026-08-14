@@ -1,21 +1,89 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { OrdersEntity } from '@/entities/orders.entity';
+import { OrderItemsEntity } from '@/entities/order-items.entity';
+import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
 import { Order } from '../../domain/entities/order.domain';
 import { IOrderRepository } from '../../domain/repositories/order.repository.interface';
 import { OrderMapper } from '../mappers/order.mapper';
 import { OrderFilterDto } from '../../presentation/dto/order-filter.dto';
 import { OrderStatus } from '@/enums/order-status.enum';
 import { PaymentStatus } from '@/enums/payment-status.enum';
+import { BusinessException } from '@/common/exception/biz.exception';
+import { ErrorEnum } from '@/common/constants/error-code.constant';
 import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
 
 @Injectable()
 export class OrderTypeOrmRepository implements IOrderRepository {
+  private readonly logger = new Logger(OrderTypeOrmRepository.name);
+
   constructor(
+    private readonly dataSource: DataSource,
     @InjectRepository(OrdersEntity)
     private readonly orderRepo: Repository<OrdersEntity>,
   ) {}
+
+  /**
+   * Lưu toàn bộ Aggregate Root của Order (Order, OrderItems, OrderItemIngredients) vào Database
+   */
+  async saveOrder(order: Order): Promise<Order> {
+    const savedOrderId = await this.dataSource.transaction(async (manager) => {
+      const orderEntity = manager.getRepository(OrdersEntity).create({
+        orderNumber: order.orderNumber,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        paymentMethod: order.paymentMethod ?? undefined,
+        subTotal: order.subTotal,
+        deliveryFee: order.deliveryFee,
+        discount: order.discount,
+        total: order.total,
+        notes: order.notes ?? undefined,
+        userId: order.userId ?? undefined,
+        addressId: order.addressId ?? undefined,
+        guestName: order.guestName ?? undefined,
+        guestPhone: order.guestPhone ?? undefined,
+        guestAddress: order.guestAddress ?? undefined,
+      });
+
+      const savedOrder = await manager.save(OrdersEntity, orderEntity);
+
+      if (order.orderItems && order.orderItems.length > 0) {
+        for (const item of order.orderItems) {
+          const orderItem = manager.getRepository(OrderItemsEntity).create({
+            orderId: savedOrder.id,
+            productId: item.productId ?? undefined,
+            productVariantId: item.productVariantId ?? undefined,
+            comboId: item.comboId ?? undefined,
+            quantity: item.quantity,
+            price: item.price ?? 0,
+          });
+
+          const savedOrderItem = await manager.save(OrderItemsEntity, orderItem);
+
+          if (item.ingredients && item.ingredients.length > 0) {
+            for (const ing of item.ingredients) {
+              const itemIng = manager.getRepository(OrderItemsIngredientsEntity).create({
+                orderItemId: savedOrderItem.id,
+                ingredientId: ing.ingredientId,
+                quantity: ing.quantity,
+              });
+              await manager.save(OrderItemsIngredientsEntity, itemIng);
+            }
+          }
+        }
+      }
+
+      this.logger.log(`✅ Saved Order #${savedOrder.orderNumber} successfully!`);
+      return savedOrder.id;
+    });
+
+    const fullOrder = await this.findById(savedOrderId);
+    if (!fullOrder) {
+      throw new BusinessException(ErrorEnum.ORDER_NOT_FOUND);
+    }
+    return fullOrder;
+  }
 
   async findById(id: string): Promise<Order | null> {
     const entity = await this.orderRepo.findOne({

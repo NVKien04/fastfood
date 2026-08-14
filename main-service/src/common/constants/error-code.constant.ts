@@ -32,13 +32,12 @@ export enum ErrorEnum {
   // ========== Coupon ==========
   COUPON_NOT_FOUND = 'COUPON_NOT_FOUND',
   COUPON_EXPIRED = 'COUPON_EXPIRED',
+  COUPON_OUT_OF_USES = 'COUPON_OUT_OF_USES',
+  COUPON_MIN_AMOUNT_NOT_REACHED = 'COUPON_MIN_AMOUNT_NOT_REACHED',
+  COUPON_NOT_STARTED = 'COUPON_NOT_STARTED',
 
   // ========== Address ==========
   ADDRESS_NOT_FOUND = 'ADDRESS_NOT_FOUND',
-
-  // ========== Review ==========
-  REVIEW_ALREADY_EXISTS = 'REVIEW_ALREADY_EXISTS',
-  ORDER_NOT_FOUND_OR_REVIEWED = 'ORDER_NOT_FOUND_OR_REVIEWED',
 
   // ========== Combo ==========
   COMBO_NOT_FOUND = 'COMBO_NOT_FOUND',
@@ -91,16 +90,21 @@ export const ERROR_MAP: Record<ErrorEnum, ErrorDetail> = {
   // Coupon
   [ErrorEnum.COUPON_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, message: 'Coupon not found' },
   [ErrorEnum.COUPON_EXPIRED]: { httpStatus: HttpStatus.BAD_REQUEST, message: 'Coupon has expired' },
+  [ErrorEnum.COUPON_OUT_OF_USES]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'Coupon usage limit has been reached',
+  },
+  [ErrorEnum.COUPON_MIN_AMOUNT_NOT_REACHED]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'Order amount does not meet the minimum requirement for this coupon',
+  },
+  [ErrorEnum.COUPON_NOT_STARTED]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'Coupon is not yet active',
+  },
 
   // Address
   [ErrorEnum.ADDRESS_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, message: 'Address not found' },
-
-  // Review
-  [ErrorEnum.REVIEW_ALREADY_EXISTS]: { httpStatus: HttpStatus.CONFLICT, message: 'Order has already been reviewed' },
-  [ErrorEnum.ORDER_NOT_FOUND_OR_REVIEWED]: {
-    httpStatus: HttpStatus.NOT_FOUND,
-    message: 'Order not found or already reviewed',
-  },
 
   // Combo
   [ErrorEnum.COMBO_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, message: 'Combo not found' },

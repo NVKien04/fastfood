@@ -1,10 +1,31 @@
 import { OrderStatus } from '@/enums/order-status.enum';
 import { PaymentMethod } from '@/enums/payment-method.enum';
 import { PaymentStatus } from '@/enums/payment-status.enum';
-import { OrderItemsEntity } from '@/entities/order-items.entity';
+
+export interface OrderItemIngredient {
+  id?: string;
+  orderItemId?: string;
+  ingredientId: number;
+  quantity: number;
+  ingredientName?: string;
+  ingredientPrice?: number;
+}
+
+export interface OrderItem {
+  id?: string;
+  orderId?: string;
+  productId?: string | null;
+  productVariantId?: number | null;
+  comboId?: string | null;
+  quantity: number;
+  price?: number | null;
+  productName?: string;
+  variantName?: string;
+  ingredients?: OrderItemIngredient[];
+}
 
 export interface Order {
-  id: string;
+  id?: string;
   orderNumber: string;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
@@ -19,8 +40,8 @@ export interface Order {
   guestName?: string | null;
   guestPhone?: string | null;
   guestAddress?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   deletedAt?: Date | null;
-  orderItems?: OrderItemsEntity[];
+  orderItems?: OrderItem[];
 }

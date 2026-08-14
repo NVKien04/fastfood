@@ -3,23 +3,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrdersEntity } from '@/entities/orders.entity';
 import { OrderItemsEntity } from '@/entities/order-items.entity';
 import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
-import { ProductEntity } from '@/entities/product.entity';
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
-import { IngredientsEntity } from '@/entities/ingredients.entity';
 import { OrderService } from './application/services/order.service';
 import { OrderController } from './presentation/controllers/order.controller';
 import { OrderTypeOrmRepository } from './infrastructure/repositories/order.typeorm.repository';
+import { ProductModule } from '@/modules/product/product.module';
+import { ProductVariantModule } from '@/modules/product-variant/product-variant.module';
+import { IngredientModule } from '@/modules/ingredient/ingredient.module';
+import { CouponModule } from '@/modules/coupon/coupon.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      OrdersEntity,
-      OrderItemsEntity,
-      OrderItemsIngredientsEntity,
-      ProductEntity,
-      ProductVariantsEntity,
-      IngredientsEntity,
-    ]),
+    TypeOrmModule.forFeature([OrdersEntity, OrderItemsEntity, OrderItemsIngredientsEntity]),
+    ProductModule,
+    ProductVariantModule,
+    IngredientModule,
+    CouponModule,
   ],
   controllers: [OrderController],
   providers: [
