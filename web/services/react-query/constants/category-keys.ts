@@ -1,1 +1,1 @@
-export const CATEGORY_LIST = 'CATEGORY_LIST';
+export { CATEGORY_LIST } from '@/constants';

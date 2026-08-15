@@ -11,8 +11,15 @@ import {
   ProductVariantResponseDto,
   ProductIngredientResponseDto,
 } from '@/services/apis/main/generated/data-contracts';
+import { formatVND } from '@/utils';
+import {
+  sortProductVariants,
+  sortProductIngredients,
+  calculateProductUnitPrice,
+  calculateProductTotalPrice,
+} from '@/helpers';
 
-export interface ProductDetailModalProps {
+export type ProductDetailModalProps = {
   product: ProductDetailResponseDto | null;
   isOpen: boolean;
   onClose: () => void;
@@ -23,15 +30,6 @@ export interface ProductDetailModalProps {
     quantity: number;
     totalPrice: number;
   }) => void;
-}
-
-export const formatVND = (price: number): string => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  })
-    .format(price)
-    .replace('₫', 'đ');
 };
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product, isOpen, onClose, onAddToCart }) => {
@@ -42,14 +40,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
 
   // Sắp xếp các biến thể theo giá chênh lệch tăng dần (từ thấp đến cao)
   const sortedVariants = React.useMemo(() => {
-    if (!product?.variants) return [];
-    return [...product.variants].sort((a, b) => (a.modifiedPrice || 0) - (b.modifiedPrice || 0));
+    return sortProductVariants(product?.variants);
   }, [product]);
 
   // Sắp xếp các nguyên liệu/topping theo giá tăng dần (từ thấp đến cao)
   const sortedIngredients = React.useMemo(() => {
-    if (!product?.ingredients) return [];
-    return [...product.ingredients].sort((a, b) => (a.price || 0) - (b.price || 0));
+    return sortProductIngredients(product?.ingredients);
   }, [product]);
 
   // Reset state khi sản phẩm thay đổi
@@ -65,26 +61,28 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
     }
   }, [product, sortedVariants]);
 
-  if (!product) return null;
+  const activeVariant = React.useMemo(() => {
+    return sortedVariants.find((v) => v.id === selectedVariantId) || sortedVariants[0] || null;
+  }, [sortedVariants, selectedVariantId]);
 
-  const activeVariant = sortedVariants.find((v) => v.id === selectedVariantId) || sortedVariants[0] || null;
+  const selectedIngredientsList = React.useMemo(() => {
+    return sortedIngredients.filter((ing) => selectedIngredientIds.includes(ing.id));
+  }, [sortedIngredients, selectedIngredientIds]);
 
-  // Tính tổng giá
-  const basePrice = product.basePrice || 0;
-  const variantModifiedPrice = activeVariant?.modifiedPrice || 0;
+  const unitPrice = React.useMemo(() => {
+    return calculateProductUnitPrice(product, activeVariant, selectedIngredientsList);
+  }, [product, activeVariant, selectedIngredientsList]);
 
-  const selectedIngredientsList = sortedIngredients.filter((ing) => selectedIngredientIds.includes(ing.id));
-  const ingredientsTotalPrice = selectedIngredientsList.reduce((sum, ing) => sum + (ing.price || 0), 0);
+  const totalPrice = React.useMemo(() => {
+    return calculateProductTotalPrice(unitPrice, quantity);
+  }, [unitPrice, quantity]);
 
-  const unitPrice = basePrice + variantModifiedPrice + ingredientsTotalPrice;
-  const totalPrice = unitPrice * quantity;
-
-  const handleToggleIngredient = (id: number) => {
+  const _handleToggleIngredient = React.useCallback((id: number) => {
     setSelectedIngredientIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
-  };
+  }, []);
 
-  const handleAddToCart = () => {
-    if (onAddToCart) {
+  const _handleAddToCart = React.useCallback(() => {
+    if (onAddToCart && product) {
       onAddToCart({
         product,
         variant: activeVariant,
@@ -94,7 +92,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
       });
     }
     onClose();
-  };
+  }, [onAddToCart, product, activeVariant, selectedIngredientsList, quantity, totalPrice, onClose]);
+
+  if (!product) return null;
+
+  const basePrice = product.basePrice || 0;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -114,7 +116,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
             <X className="w-5 h-5" />
           </button>
 
-          {/* Cột Trái: Placeholder ảnh sản phẩm (Tạm thời chưa có ảnh sản phẩm) */}
+          {/* Cột Trái: Placeholder ảnh sản phẩm */}
           <div className="w-full md:w-5/12 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 p-8 flex flex-col items-center justify-center text-center relative min-h-[240px] md:min-h-full border-b md:border-b-0 md:border-r border-orange-100/60">
             <div className="w-36 h-36 md:w-48 md:h-48 rounded-full bg-white/90 shadow-md border border-orange-100 flex flex-col items-center justify-center gap-2 p-4">
               <Utensils className="w-12 h-12 text-red-500/80" />
@@ -199,7 +201,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                       return (
                         <label
                           key={ing.id}
-                          onClick={() => handleToggleIngredient(ing.id)}
+                          onClick={() => _handleToggleIngredient(ing.id)}
                           className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
                             isChecked
                               ? 'border-amber-500 bg-amber-50/50'
@@ -253,7 +255,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
               {/* Nút Đỏ Thêm vào giỏ hàng */}
               <Button
                 type="button"
-                onClick={handleAddToCart}
+                onClick={_handleAddToCart}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold h-12 rounded-xl text-sm shadow-lg shadow-red-600/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
                 <span>{t('PRODUCT.ADD_TO_CART', 'Thêm vào giỏ hàng')}</span>

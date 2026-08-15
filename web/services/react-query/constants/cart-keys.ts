@@ -1,1 +1,1 @@
-export const CART_DETAIL = 'CART_DETAIL';
+export { CART_DETAIL } from '@/constants';

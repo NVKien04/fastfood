@@ -6,13 +6,8 @@ import vi from '@/locales/vi.json';
 import en from '@/locales/en.json';
 import ja from '@/locales/ja.json';
 
-export const LANGUAGES = [
-  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'ja', name: '日本語', flag: '🇯🇵' },
-] as const;
-
-export type SupportedLanguage = (typeof LANGUAGES)[number]['code'];
+import { LANGUAGES, SupportedLanguage, DEFAULT_LANGUAGE_FALLBACK } from '@/constants';
+export { LANGUAGES, type SupportedLanguage };
 
 export const resources = {
   vi: {
@@ -32,7 +27,7 @@ if (!i18n.isInitialized) {
     .use(initReactI18next)
     .init({
       resources,
-      fallbackLng: 'vi',
+      fallbackLng: DEFAULT_LANGUAGE_FALLBACK,
       supportedLngs: ['vi', 'en', 'ja'],
       defaultNS: 'translation',
       fallbackNS: 'translation',

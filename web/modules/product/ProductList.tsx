@@ -10,7 +10,8 @@ import {
 } from '@/services/apis/main/generated/data-contracts';
 import { useCategoryList } from '@/services/react-query/queries/category';
 import { useProductList, useProductDetail } from '@/services/react-query/queries/product';
-import { ProductDetailModal, formatVND } from './ProductDetailModal';
+import { ProductDetailModal } from './ProductDetailModal';
+import { formatVND } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Utensils, ChevronLeft, ChevronRight, Search, Loader2, Plus, ShoppingBag } from 'lucide-react';

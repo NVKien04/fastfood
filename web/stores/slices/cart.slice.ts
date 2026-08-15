@@ -4,8 +4,11 @@ import {
   ProductIngredientResponseDto,
   ProductVariantResponseDto,
 } from '@/services/apis/main/generated/data-contracts';
+import { generateCartItemId } from '@/helpers/cart.helper';
 
-export interface CartItem {
+export { generateCartItemId };
+
+export type CartItem = {
   id: string;
   product: ProductDetailResponseDto;
   variant?: ProductVariantResponseDto | null;
@@ -13,9 +16,9 @@ export interface CartItem {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-}
+};
 
-export interface CartSlice {
+export type CartSlice = {
   items: CartItem[];
   addItem: (payload: {
     product: ProductDetailResponseDto;
@@ -28,19 +31,6 @@ export interface CartSlice {
   clearCart: () => void;
   getTotalPrice: () => number;
   getTotalCount: () => number;
-}
-
-// Generate unique ID based on product ID, variant ID, and sorted ingredient IDs
-export const generateCartItemId = (
-  productId: string,
-  variantId?: number | null,
-  ingredients: ProductIngredientResponseDto[] = [],
-): string => {
-  const sortedIngIds = ingredients
-    .map((i) => i.id)
-    .sort((a, b) => a - b)
-    .join('-');
-  return `${productId}_${variantId || 'base'}_${sortedIngIds}`;
 };
 
 export const createCartSlice: SliceCreator<CartSlice> = (set, get) => ({
@@ -96,9 +86,7 @@ export const createCartSlice: SliceCreator<CartSlice> = (set, get) => ({
   },
 
   clearCart: () => {
-    set((state) => {
-      state.items = [];
-    });
+    set({ items: [] });
   },
 
   getTotalPrice: () => {
@@ -106,6 +94,6 @@ export const createCartSlice: SliceCreator<CartSlice> = (set, get) => ({
   },
 
   getTotalCount: () => {
-    return get().items.reduce((count, item) => count + item.quantity, 0);
+    return get().items.reduce((total, item) => total + item.quantity, 0);
   },
 });

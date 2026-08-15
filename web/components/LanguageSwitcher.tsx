@@ -2,16 +2,15 @@
 
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { LANGUAGES, SupportedLanguage } from '@/configs/i18n';
+import { LANGUAGES, SupportedLanguage } from '@/constants';
 import { Globe, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
 import { useStore } from '@/stores';
 
-interface LanguageSwitcherProps {
+type LanguageSwitcherProps = {
   variant?: 'compact' | 'full';
   className?: string;
-}
+};
 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'compact', className = '' }) => {
   const { i18n } = useTranslation();

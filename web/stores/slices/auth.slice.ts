@@ -1,14 +1,14 @@
 import { SliceCreator } from '../type';
 
-export interface User {
+export type User = {
   id: string;
   email: string;
   fullName: string;
   avatar?: string;
   roles: string[];
-}
+};
 
-export interface AuthSlice {
+export type AuthSlice = {
   accessToken: string | null;
   user: User | null;
   isInitializing: boolean;
@@ -17,7 +17,7 @@ export interface AuthSlice {
   setUser: (user: User | null) => void;
   setInitializing: (value: boolean) => void;
   clearAuth: () => void;
-}
+};
 
 export const createAuthSlice: SliceCreator<AuthSlice> = (set) => ({
   accessToken: null,

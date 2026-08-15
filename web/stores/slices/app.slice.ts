@@ -1,9 +1,8 @@
 import { SliceCreator } from '../type';
-import i18n, { SupportedLanguage } from '@/configs/i18n';
+import i18n from '@/configs/i18n';
+import { Language, THEME, DEFAULT_LANGUAGE, DEFAULT_THEME } from '@/constants';
 
-export type Language = SupportedLanguage;
-
-export type THEME = 'light' | 'dark' | 'system';
+export type { Language, THEME };
 
 export type AppSlice = {
   locale: Language;
@@ -26,8 +25,8 @@ const applyThemeToDOM = (theme: THEME) => {
 };
 
 export const createAppSlice: SliceCreator<AppSlice> = (set) => ({
-  locale: 'vi',
-  theme: 'light',
+  locale: DEFAULT_LANGUAGE,
+  theme: DEFAULT_THEME,
 
   updateTheme: (payload: AppSlice['theme']) => {
     applyThemeToDOM(payload);

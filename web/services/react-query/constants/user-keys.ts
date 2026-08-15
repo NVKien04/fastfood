@@ -1,2 +1,1 @@
-export const USER_PROFILE = 'USER_PROFILE';
-export const USER_LIST = 'USER_LIST';
+export { USER_PROFILE, USER_LIST } from '@/constants';

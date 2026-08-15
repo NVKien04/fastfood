@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { OrderResponseDto } from '@/services/apis/main/module/Order.api';
 import { useCreateOrder } from '@/services/react-query/mutations/order';
 import { useStore } from '@/stores';
-import { formatVND } from '../product/ProductDetailModal';
+import { DEFAULT_DELIVERY_FEE, PaymentMethodEnum, PaymentMethod } from '@/constants';
+import { formatVND } from '@/utils';
+import { transformCartItemsToOrderPayload } from '@/helpers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -34,7 +36,7 @@ export const CheckoutModule: React.FC = () => {
   const clearCart = useStore((s) => s.clearCart);
   const subTotal = useStore((s) => s.getTotalPrice());
 
-  const deliveryFee = 15000;
+  const deliveryFee = DEFAULT_DELIVERY_FEE;
   const total = subTotal + deliveryFee;
 
   // Form State
@@ -42,7 +44,7 @@ export const CheckoutModule: React.FC = () => {
   const [guestPhone, setGuestPhone] = React.useState<string>('');
   const [guestAddress, setGuestAddress] = React.useState<string>('');
   const [notes, setNotes] = React.useState<string>('');
-  const [paymentMethod] = React.useState<string>('COD');
+  const [paymentMethod] = React.useState<PaymentMethod>(PaymentMethodEnum.COD);
 
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [createdOrder, setCreatedOrder] = React.useState<OrderResponseDto | null>(null);
@@ -58,7 +60,7 @@ export const CheckoutModule: React.FC = () => {
   }, [user]);
 
   // Handle Order Placement
-  const handlePlaceOrder = async (e: React.FormEvent) => {
+  const _handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (items.length === 0) {
@@ -74,15 +76,7 @@ export const CheckoutModule: React.FC = () => {
     setErrorMessage(null);
 
     const payload = {
-      items: items.map((item) => ({
-        productId: item.product.id,
-        productVariantId: item.variant?.id,
-        ingredients: item.selectedIngredients.map((ing) => ({
-          ingredientId: ing.id,
-          quantity: 1,
-        })),
-        quantity: item.quantity,
-      })),
+      items: transformCartItemsToOrderPayload(items),
       guestName,
       guestPhone,
       guestAddress,
@@ -120,7 +114,8 @@ export const CheckoutModule: React.FC = () => {
 
           <h1 className="text-3xl font-black text-gray-900 tracking-tight">Cảm ơn bạn đã đặt hàng</h1>
           <p className="text-sm text-gray-500 mt-2">
-            Mã đơn hàng của bạn là: <strong className="text-red-600 font-mono text-base">#{createdOrder.orderNumber}</strong>
+            Mã đơn hàng của bạn là:{' '}
+            <strong className="text-red-600 font-mono text-base">#{createdOrder.orderNumber}</strong>
           </p>
 
           <div className="w-full bg-gray-50 rounded-2xl p-6 mt-8 border border-gray-100 text-left space-y-3">
@@ -233,7 +228,9 @@ export const CheckoutModule: React.FC = () => {
                       {item.selectedIngredients.length > 0 && (
                         <p className="text-[11px] text-gray-500 mt-1 leading-tight">
                           + Topping:{' '}
-                          {item.selectedIngredients.map((ing) => `${ing.name} (+${formatVND(ing.price || 0)})`).join(', ')}
+                          {item.selectedIngredients
+                            .map((ing) => `${ing.name} (+${formatVND(ing.price || 0)})`)
+                            .join(', ')}
                         </p>
                       )}
 
@@ -275,7 +272,10 @@ export const CheckoutModule: React.FC = () => {
 
         {/* Right Column: Customer Information & Checkout Form */}
         <div className="lg:col-span-5">
-          <form onSubmit={handlePlaceOrder} className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-xl shadow-gray-100/50 space-y-6">
+          <form
+            onSubmit={_handlePlaceOrder}
+            className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-xl shadow-gray-100/50 space-y-6"
+          >
             <h2 className="text-lg font-bold text-gray-900 pb-3 border-b border-gray-100 flex items-center gap-2">
               <Truck className="w-5 h-5 text-red-600" />
               <span>Thông Tin Giao Hàng</span>
