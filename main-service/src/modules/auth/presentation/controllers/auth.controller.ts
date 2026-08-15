@@ -1,3 +1,4 @@
+import ms, { StringValue } from 'ms';
 import { Body, Controller, Post, Request, Res, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
@@ -40,10 +41,9 @@ export class AuthController {
   }
 
   private setAuthCookie(res: Response, refreshToken: string) {
-    const jwtRefreshExpiresIn = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d');
-    const maxAgeRefreshToken = Number(jwtRefreshExpiresIn?.slice(0, -1)) * 60 * 1000 || 7 * 24 * 60 * 60 * 1000;
+    const jwtRefreshExpiresIn = this.configService.get<StringValue>('JWT_REFRESH_EXPIRES_IN', '7d');
+    const maxAgeRefreshToken = ms(jwtRefreshExpiresIn) || 7 * 24 * 60 * 60 * 1000;
     this.createCookie(res, 'refreshToken', refreshToken, maxAgeRefreshToken);
-    // Cookie phụ không httpOnly để FE biết user đã đăng nhập (không chứa dữ liệu nhạy cảm)
     this.setLoggedInCookie(res, maxAgeRefreshToken);
   }
 

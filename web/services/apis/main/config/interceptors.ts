@@ -1,5 +1,5 @@
 import { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import { useAuthStore } from '../../../../stores/auth.store';
+import { useStore } from '@/stores';
 
 let refreshPromise: Promise<string | null> | null = null;
 
@@ -12,7 +12,7 @@ export const setupInterceptors = (
   // Đọc Access Token từ Auth Store (memory) và inject vào header
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = useAuthStore.getState().accessToken;
+      const token = useStore.getState().accessToken;
       if (token && config.headers) {
         config.headers['Authorization'] = `Bearer ${token}`;
       }

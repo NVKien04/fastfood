@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useAuthStore } from '@/stores/auth.store';
+import { useStore } from '@/stores';
 import { ApiMain } from '@/services/apis/main/api.main';
 
 interface AuthProviderProps {
@@ -9,7 +9,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const isInitializing = useAuthStore((s) => s.isInitializing);
+  const isInitializing = useStore((s) => s.isInitializing);
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // Nếu chưa từng đăng nhập (cookie logged_in không tồn tại) → bỏ qua refresh
     if (!hasLoggedInCookie) {
-      useAuthStore.getState().setInitializing(false);
+      useStore.getState().setInitializing(false);
       return;
     }
 
@@ -35,14 +35,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         if (refreshResponse.kind === 'OK' && refreshResponse.data?.accessToken) {
           const token = refreshResponse.data.accessToken;
-          useAuthStore.getState().setAccessToken(token);
+          useStore.getState().setAccessToken(token);
 
           // Bước 2: Dùng accessToken mới để lấy thông tin user /users/me
           const profileResponse = await ApiMain.instance.user.getProfile();
 
           if (profileResponse.kind === 'OK' && profileResponse.data) {
             const userData = profileResponse.data;
-            useAuthStore.getState().setUser({
+            useStore.getState().setUser({
               id: userData.id,
               email: userData.email,
               fullName: userData.name,
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Lỗi mạng hoặc server chết → bỏ qua, để user ở trạng thái chưa đăng nhập
       } finally {
         // Bước 3: Dù thành công hay thất bại, đánh dấu đã khởi tạo xong
-        useAuthStore.getState().setInitializing(false);
+        useStore.getState().setInitializing(false);
         console.log('Đã khởi tạo xong AuthProvider');
       }
     };

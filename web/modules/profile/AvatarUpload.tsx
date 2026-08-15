@@ -1,9 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { ApiMain } from '@/services/apis/main/api.main';
-import { useAuthStore } from '@/stores/auth.store';
-import { Camera, Loader2, Trash2, User as UserIcon, Check, AlertCircle } from 'lucide-react';
+import { useStore } from '@/stores';
+import { useUploadImage } from '@/services/react-query/mutations/upload';
+import { useUpdateProfile } from '@/services/react-query/mutations/user';
+import { Camera, Loader2, Trash2, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface AvatarUploadProps {
@@ -17,14 +18,17 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   userName = 'User',
   onAvatarChange,
 }) => {
-  const { user, setUser } = useAuthStore();
+  const { user, setUser } = useStore();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(false);
   const [message, setMessage] = React.useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  const uploadMutation = useUploadImage();
+  const updateProfileMutation = useUpdateProfile();
+
+  const loading = uploadMutation.isPending || updateProfileMutation.isPending;
   const activeAvatarUrl = previewUrl || currentAvatar || user?.avatar;
 
   // Handle file selection from input
@@ -55,28 +59,25 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   // Upload avatar to S3 and update profile
   const handleUpload = async () => {
     if (!selectedFile) return;
-
-    setLoading(true);
     setMessage(null);
 
     try {
-      // Step 1: Upload image file to AWS S3 under 'avatars' folder
-      const uploadRes = await ApiMain.instance.upload.uploadImage(selectedFile, 'avatars');
-
-      if (uploadRes.kind === 'ERROR' || !uploadRes.data?.url) {
-        throw new Error(uploadRes.kind === 'ERROR' ? uploadRes.error : 'Upload ảnh lên S3 thất bại');
-      }
-
-      const newAvatarUrl = uploadRes.data.url;
-
-      // Step 2: Update avatar URL in user profile in DB
-      const updateRes = await ApiMain.instance.user.updateProfile({
-        avatar: newAvatarUrl,
+      // Step 1: Upload image file via uploadMutation
+      const uploadRes = await uploadMutation.mutateAsync({
+        file: selectedFile,
+        folder: 'avatars',
       });
 
-      if (updateRes.kind === 'ERROR') {
-        throw new Error(updateRes.error);
+      if (!uploadRes?.url) {
+        throw new Error('Upload ảnh thất bại');
       }
+
+      const newAvatarUrl = uploadRes.url;
+
+      // Step 2: Update avatar URL in user profile via updateProfileMutation
+      await updateProfileMutation.mutateAsync({
+        avatar: newAvatarUrl,
+      });
 
       // Step 3: Update Zustand store
       if (user) {
@@ -92,24 +93,17 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     } catch (err: unknown) {
       const errorText = err instanceof Error ? err.message : 'Có lỗi xảy ra khi upload';
       setMessage({ type: 'error', text: errorText });
-    } finally {
-      setLoading(false);
     }
   };
 
   // Remove current avatar
   const handleRemoveAvatar = async () => {
-    setLoading(true);
     setMessage(null);
 
     try {
-      const updateRes = await ApiMain.instance.user.updateProfile({
+      await updateProfileMutation.mutateAsync({
         avatar: '',
       });
-
-      if (updateRes.kind === 'ERROR') {
-        throw new Error(updateRes.error);
-      }
 
       if (user) {
         setUser({ ...user, avatar: '' });
@@ -123,8 +117,6 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     } catch (err: unknown) {
       const errorText = err instanceof Error ? err.message : 'Có lỗi xảy ra khi xóa ảnh';
       setMessage({ type: 'error', text: errorText });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -174,7 +166,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
             {loading && (
               <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center text-red-600 gap-1 z-10">
                 <Loader2 className="w-8 h-8 animate-spin" />
-                <span className="text-[10px] font-bold">Đang tải lên...</span>
+                <span className="text-[10px] font-bold">Đang xử lý...</span>
               </div>
             )}
           </div>

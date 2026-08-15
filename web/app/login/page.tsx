@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ApiMain } from '@/services/apis/main/api.main';
-import { useAuthStore } from '@/stores/auth.store';
+import { useStore } from '@/stores';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function LoginPage() {
 
       if (response.kind === 'OK' && response.data.accessToken) {
         // Lưu token vào store
-        useAuthStore.getState().setAccessToken(response.data.accessToken);
+        useStore.getState().setAccessToken(response.data.accessToken);
         // Chuyển hướng về trang chủ
         router.push('/');
       } else if (response.kind === 'ERROR') {

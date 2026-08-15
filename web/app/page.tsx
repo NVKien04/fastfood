@@ -3,17 +3,17 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { ApiMain } from '@/services/apis/main/api.main';
-import { useAuthStore } from '@/stores/auth.store';
+import { useStore } from '@/stores';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const router = useRouter();
-  const accessToken = useAuthStore((s) => s.accessToken);
-  const user = useAuthStore((s) => s.user);
+  const accessToken = useStore((s) => s.accessToken);
+  const user = useStore((s) => s.user);
 
   const handleLogout = async () => {
     await ApiMain.instance.auth.logout();
-    useAuthStore.getState().clearAuth();
+    useStore.getState().clearAuth();
     router.push('/login');
   };
 

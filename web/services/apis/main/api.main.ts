@@ -7,7 +7,7 @@ import { CategoryApiModule } from './module/Category.api';
 import { UploadApiModule } from './module/Upload.api';
 import { OrderApiModule } from './module/Order.api';
 import { CartApiModule } from './module/Cart.api';
-import { useAuthStore } from '../../../stores/auth.store';
+import { useStore } from '@/stores';
 
 export class ApiMain {
   private static _instance: ApiMain;
@@ -28,7 +28,7 @@ export class ApiMain {
       const response = await this.auth.refreshToken();
       if (response.kind === 'OK' && response.data?.accessToken) {
         const newToken = response.data.accessToken;
-        useAuthStore.getState().setAccessToken(newToken);
+        useStore.getState().setAccessToken(newToken);
         return newToken;
       }
       return null;
@@ -37,7 +37,7 @@ export class ApiMain {
     // ─── onLogout ───────────────────────────────────────────────────
     // Xóa token khỏi store → Redirect về trang login
     const onLogout = () => {
-      useAuthStore.getState().clearAuth();
+      useStore.getState().clearAuth();
       if (typeof window !== 'undefined') {
         // eslint-disable-next-line @next/next/no-location-assign-relative-destination
         window.location.href = '/login';

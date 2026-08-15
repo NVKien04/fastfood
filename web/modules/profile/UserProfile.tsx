@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { ApiMain } from '@/services/apis/main/api.main';
-import { UserResponseDto } from '@/services/apis/main/generated/data-contracts';
-import { useAuthStore } from '@/stores/auth.store';
+import { useStore } from '@/stores';
+import { useUserProfile } from '@/services/react-query/queries/user';
+import { useUpdateProfile } from '@/services/react-query/mutations/user';
 import { AvatarUpload } from './AvatarUpload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,67 +21,66 @@ import {
 } from 'lucide-react';
 
 export const UserProfile: React.FC = () => {
-  const { user, setUser } = useAuthStore();
-  const [profileData, setProfileData] = React.useState<UserResponseDto | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [saving, setSaving] = React.useState<boolean>(false);
+  const { user, setUser } = useStore();
   const [statusMessage, setStatusMessage] = React.useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Form states
   const [name, setName] = React.useState<string>('');
   const [phone, setPhone] = React.useState<string>('');
 
-  // Fetch full profile info from backend
-  const fetchProfile = React.useCallback(async () => {
-    setLoading(true);
-    const response = await ApiMain.instance.user.getProfile();
-    if (response.kind === 'OK' && response.data) {
-      const data = response.data;
-      setProfileData(data);
-      setName(data.name || '');
-      setPhone(data.phone || '');
+  // Fetch full profile info via React Query
+  const { data: profileData, isLoading: loading } = useUserProfile();
 
-      // Sync Zustand store using current state snapshot
-      const currentUser = useAuthStore.getState().user;
+  // Mutation for updating profile
+  const updateProfileMutation = useUpdateProfile();
+
+  // Sync form inputs when query data loads
+  React.useEffect(() => {
+    if (profileData) {
+      setName(profileData.name || '');
+      setPhone(profileData.phone || '');
+
+      // Sync Zustand store
+      const currentUser = useStore.getState().user;
       if (currentUser) {
         setUser({
           ...currentUser,
-          fullName: data.name || currentUser.fullName,
-          avatar: data.avatar || currentUser.avatar,
+          fullName: profileData.name || currentUser.fullName,
+          avatar: profileData.avatar || currentUser.avatar,
         });
       }
     }
-    setLoading(false);
-  }, [setUser]);
-
-  React.useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
+  }, [profileData, setUser]);
 
   // Save profile changes (name, phone)
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
     setStatusMessage(null);
 
-    const res = await ApiMain.instance.user.updateProfile({
-      name,
-      phone,
-    });
-
-    if (res.kind === 'OK' && res.data) {
-      setProfileData(res.data);
-      if (user) {
-        setUser({
-          ...user,
-          fullName: res.data.name || name,
-        });
-      }
-      setStatusMessage({ type: 'success', text: 'Cập nhật thông tin cá nhân thành công!' });
-    } else {
-      setStatusMessage({ type: 'error', text: res.error || 'Cập nhật thất bại. Vui lòng thử lại.' });
-    }
-    setSaving(false);
+    updateProfileMutation.mutate(
+      {
+        name,
+        phone,
+      },
+      {
+        onSuccess: (data) => {
+          if (data) {
+            if (user) {
+              setUser({
+                ...user,
+                fullName: data.name || name,
+              });
+            }
+            setStatusMessage({ type: 'success', text: 'Cập nhật thông tin cá nhân thành công!' });
+          } else {
+            setStatusMessage({ type: 'error', text: 'Cập nhật thất bại. Vui lòng thử lại.' });
+          }
+        },
+        onError: (err) => {
+          setStatusMessage({ type: 'error', text: err.message || 'Cập nhật thất bại. Vui lòng thử lại.' });
+        },
+      },
+    );
   };
 
   if (loading) {
@@ -97,6 +96,7 @@ export const UserProfile: React.FC = () => {
   const activeEmail = profileData?.email || user?.email || '';
   const activeAvatar = profileData?.avatar || user?.avatar || '';
   const activeRole = profileData?.role || (user?.roles?.[0] ?? 'CUSTOMER');
+  const saving = updateProfileMutation.isPending;
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8">
@@ -120,9 +120,6 @@ export const UserProfile: React.FC = () => {
             <AvatarUpload
               currentAvatar={activeAvatar}
               userName={activeName}
-              onAvatarChange={(newUrl) => {
-                setProfileData((prev) => (prev ? { ...prev, avatar: newUrl } : null));
-              }}
             />
 
             <div className="mt-6 text-center">

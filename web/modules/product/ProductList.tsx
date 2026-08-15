@@ -2,35 +2,30 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { ApiMain } from '@/services/apis/main/api.main';
 import {
   ProductDetailResponseDto,
   ProductFilterDto,
   ProductIngredientResponseDto,
   ProductVariantResponseDto,
 } from '@/services/apis/main/generated/data-contracts';
-import { CategoryResponseDto } from '@/services/apis/main/module/Category.api';
-import { PaginationMeta } from '@/services/apis/api.type';
+import { useCategoryList } from '@/services/react-query/queries/category';
+import { useProductList, useProductDetail } from '@/services/react-query/queries/product';
 import { ProductDetailModal, formatVND } from './ProductDetailModal';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Utensils, ChevronLeft, ChevronRight, Search, Loader2, Plus, ShoppingBag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useCartStore } from '@/stores/cart.store';
+import { useStore } from '@/stores';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export const ProductList: React.FC = () => {
-  const [products, setProducts] = React.useState<ProductDetailResponseDto[]>([]);
-  const [categories, setCategories] = React.useState<CategoryResponseDto[]>([]);
+  const { t } = useTranslation();
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<number | null>(null);
-  const [pagination, setPagination] = React.useState<PaginationMeta | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [categoryLoading, setCategoryLoading] = React.useState<boolean>(true);
-  const [error, setError] = React.useState<string | null>(null);
 
   // Cart state from Zustand
-  const cartItems = useCartStore((s) => s.items);
-  const cartTotalCount = useCartStore((s) => s.getTotalCount());
-  const cartTotalPrice = useCartStore((s) => s.getTotalPrice());
+  const cartTotalCount = useStore((s) => s.getTotalCount());
+  const cartTotalPrice = useStore((s) => s.getTotalPrice());
 
   // Filter State
   const [page, setPage] = React.useState<number>(1);
@@ -38,49 +33,40 @@ export const ProductList: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState<string>('');
 
   // Selected Detail Modal State
-  const [selectedProduct, setSelectedProduct] = React.useState<ProductDetailResponseDto | null>(null);
+  const [selectedProductId, setSelectedProductId] = React.useState<string | null>(null);
+  const [selectedProductFallback, setSelectedProductFallback] = React.useState<ProductDetailResponseDto | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
-  const [detailLoading, setDetailLoading] = React.useState<boolean>(false);
 
-  // Fetch category list
-  const fetchCategories = React.useCallback(async () => {
-    setCategoryLoading(true);
-    const response = await ApiMain.instance.category.getCategories({ page: 1, limit: 100 });
-    if (response.kind === 'OK' && response.data) {
-      setCategories(response.data);
-    }
-    setCategoryLoading(false);
-  }, []);
+  // Categories Query
+  const { data: categoriesData, isLoading: categoryLoading } = useCategoryList({ page: 1, limit: 100 });
+  const categories = React.useMemo(() => categoriesData ?? [], [categoriesData]);
 
-  React.useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-
-  // Fetch product list
-  const fetchProducts = React.useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    const filter: ProductFilterDto = {
+  // Products Query
+  const productFilter: ProductFilterDto = React.useMemo(
+    () => ({
       page,
       limit,
       ...(selectedCategoryId ? { categoryId: selectedCategoryId } : {}),
-    };
+    }),
+    [page, limit, selectedCategoryId],
+  );
 
-    const response = await ApiMain.instance.product.getProducts(filter);
+  const {
+    data: productsData,
+    isLoading: loading,
+    error: productError,
+    refetch: refetchProducts,
+  } = useProductList(productFilter);
 
-    if (response.kind === 'OK') {
-      setProducts(response.data || []);
-      setPagination(response.pagination || null);
-    } else {
-      setError(response.error || 'Khởi tạo danh sách sản phẩm thất bại');
-    }
-    setLoading(false);
-  }, [page, limit, selectedCategoryId]);
+  const products = React.useMemo(() => (productsData?.kind === 'OK' ? (productsData.data ?? []) : []), [productsData]);
+  const pagination = productsData?.kind === 'OK' ? (productsData.pagination ?? null) : null;
 
-  React.useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  // Product detail query for selected product in modal
+  const { data: productDetail, isFetching: detailLoading } = useProductDetail(
+    isModalOpen ? (selectedProductId ?? undefined) : undefined,
+  );
+
+  const activeModalProduct = productDetail || selectedProductFallback;
 
   // Map categoryId to name for fast lookup
   const categoryMap = React.useMemo(() => {
@@ -104,19 +90,16 @@ export const ProductList: React.FC = () => {
   }, [products, searchQuery]);
 
   // Open modal with detail
-  const handleOpenDetail = async (product: ProductDetailResponseDto) => {
-    setDetailLoading(true);
-    // Fetch full detail (including variants & ingredients)
-    const res = await ApiMain.instance.product.getById(product.id);
-
-    if (res.kind === 'OK' && res.data) {
-      setSelectedProduct(res.data);
-    } else {
-      // Fallback to item
-      setSelectedProduct(product);
-    }
-    setDetailLoading(false);
+  const handleOpenDetail = (product: ProductDetailResponseDto) => {
+    setSelectedProductId(product.id);
+    setSelectedProductFallback(product);
     setIsModalOpen(true);
+  };
+
+  const handleCloseDetail = () => {
+    setIsModalOpen(false);
+    setSelectedProductId(null);
+    setSelectedProductFallback(null);
   };
 
   const handleAddToCartFromModal = (item: {
@@ -126,7 +109,7 @@ export const ProductList: React.FC = () => {
     quantity: number;
     totalPrice: number;
   }) => {
-    useCartStore.getState().addItem({
+    useStore.getState().addItem({
       product: item.product,
       variant: item.variant,
       selectedIngredients: item.selectedIngredients,
@@ -140,24 +123,26 @@ export const ProductList: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-            <span>Thực Đơn Món Ăn</span>
+            <span>{t('PRODUCT.MENU_TITLE')}</span>
             <span className="text-red-600">🍕</span>
           </h1>
-          <p className="text-sm text-gray-500 mt-1">Khám phá hương vị tuyệt hảo từ nguyên liệu tươi ngon nhất</p>
+          <p className="text-sm text-gray-500 mt-1">{t('PRODUCT.MENU_SUBTITLE')}</p>
         </div>
 
-        {/* Search Input & Cart Button */}
+        {/* Search Input, Language Switcher & Cart Button */}
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative w-full md:w-72">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
-              placeholder="Tìm kiếm món ăn..."
+              placeholder={t('PRODUCT.SEARCH_PLACEHOLDER', 'Tìm kiếm món ăn theo tên...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 h-10 rounded-xl border-gray-200 focus:border-red-500 focus:ring-red-500/20 bg-white"
             />
           </div>
+
+          <LanguageSwitcher />
 
           <Link
             href="/checkout"
@@ -186,7 +171,7 @@ export const ProductList: React.FC = () => {
             }`}
           >
             <Utensils className="w-3.5 h-3.5" />
-            <span>Tất cả món</span>
+            <span>{t('PRODUCT.ALL_CATEGORIES', 'Tất cả món')}</span>
           </button>
 
           {categoryLoading ? (
@@ -219,19 +204,27 @@ export const ProductList: React.FC = () => {
       {loading ? (
         <div className="min-h-[400px] flex flex-col items-center justify-center gap-3 text-gray-400">
           <Loader2 className="w-8 h-8 animate-spin text-red-600" />
-          <p className="text-sm font-medium">Đang tải danh sách món ăn...</p>
+          <p className="text-sm font-medium">{t('COMMON.LOADING', 'Đang tải...')}</p>
         </div>
-      ) : error ? (
+      ) : productError ? (
         <div className="min-h-[300px] flex flex-col items-center justify-center p-6 bg-red-50 rounded-2xl border border-red-100 text-center">
-          <p className="text-red-600 font-semibold mb-3">{error}</p>
-          <Button onClick={fetchProducts} variant="outline" className="border-red-200 text-red-600 hover:bg-red-100">
-            Thử lại
+          <p className="text-red-600 font-semibold mb-3">
+            {productError.message || t('COMMON.ERROR', 'Khởi tạo danh sách sản phẩm thất bại')}
+          </p>
+          <Button
+            onClick={() => refetchProducts()}
+            variant="outline"
+            className="border-red-200 text-red-600 hover:bg-red-100"
+          >
+            {t('COMMON.RETRY', 'Thử lại')}
           </Button>
         </div>
       ) : filteredProducts.length === 0 ? (
         <div className="min-h-[300px] flex flex-col items-center justify-center text-center p-8 bg-gray-50 rounded-2xl border border-gray-100">
           <Utensils className="w-12 h-12 text-gray-300 mb-3" />
-          <p className="text-gray-600 font-medium">Không tìm thấy món ăn nào phù hợp trong danh mục này</p>
+          <p className="text-gray-600 font-medium">
+            {t('PRODUCT.EMPTY_PRODUCTS_DESC', 'Không tìm thấy món ăn nào phù hợp trong danh mục này')}
+          </p>
         </div>
       ) : (
         <>
@@ -259,7 +252,10 @@ export const ProductList: React.FC = () => {
 
                     {/* Category Pill Tag */}
                     {categoryMap.get(product.categoryId) && (
-                      <Badge variant="outline" className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border-orange-200 text-orange-800 text-[10px] font-bold px-2 py-0.5 shadow-sm">
+                      <Badge
+                        variant="outline"
+                        className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border-orange-200 text-orange-800 text-[10px] font-bold px-2 py-0.5 shadow-sm"
+                      >
                         {categoryMap.get(product.categoryId)}
                       </Badge>
                     )}
@@ -280,7 +276,7 @@ export const ProductList: React.FC = () => {
                 <div className="p-5 pt-0 flex items-center justify-between gap-2">
                   <div>
                     <span className="text-[10px] font-semibold text-gray-400 block uppercase tracking-wider">
-                      Giá từ
+                      {t('PRODUCT.PRICE_FROM', 'Giá từ')}
                     </span>
                     <span className="text-lg font-black text-gray-900">{formatVND(product.basePrice || 0)}</span>
                   </div>
@@ -290,7 +286,7 @@ export const ProductList: React.FC = () => {
                     disabled={detailLoading}
                     className="bg-red-600 hover:bg-red-700 text-white rounded-xl px-4 py-2 text-xs font-bold shadow-md shadow-red-600/20 active:scale-95 transition-all flex items-center gap-1.5"
                   >
-                    <span>Chọn món</span>
+                    <span>{t('PRODUCT.ORDER_NOW', 'Chọn món')}</span>
                     <Plus className="w-3.5 h-3.5" />
                   </Button>
                 </div>
@@ -363,7 +359,7 @@ export const ProductList: React.FC = () => {
               {cartTotalCount}
             </span>
           </div>
-          <span className="text-sm">Xem giỏ hàng</span>
+          <span className="text-sm">{t('NAV.CART', 'Xem giỏ hàng')}</span>
           <span className="bg-red-700/80 text-white text-xs font-black px-2.5 py-1 rounded-full">
             {formatVND(cartTotalPrice)}
           </span>
@@ -372,9 +368,9 @@ export const ProductList: React.FC = () => {
 
       {/* Product Detail Modal */}
       <ProductDetailModal
-        product={selectedProduct}
+        product={activeModalProduct}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseDetail}
         onAddToCart={handleAddToCartFromModal}
       />
     </div>

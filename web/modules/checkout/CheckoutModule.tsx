@@ -2,11 +2,9 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { ApiMain } from '@/services/apis/main/api.main';
 import { OrderResponseDto } from '@/services/apis/main/module/Order.api';
-import { useCartStore } from '@/stores/cart.store';
-import { useAuthStore } from '@/stores/auth.store';
+import { useCreateOrder } from '@/services/react-query/mutations/order';
+import { useStore } from '@/stores';
 import { formatVND } from '../product/ProductDetailModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,13 +28,11 @@ import {
 } from 'lucide-react';
 
 export const CheckoutModule: React.FC = () => {
-  const router = useRouter();
-  const { user } = useAuthStore();
-  const items = useCartStore((s) => s.items);
-  const updateQuantity = useCartStore((s) => s.updateQuantity);
-  const removeItem = useCartStore((s) => s.removeItem);
-  const clearCart = useCartStore((s) => s.clearCart);
-  const subTotal = useCartStore((s) => s.getTotalPrice());
+  const { user } = useStore();
+  const items = useStore((s) => s.items);
+  const updateQuantity = useStore((s) => s.updateQuantity);
+  const clearCart = useStore((s) => s.clearCart);
+  const subTotal = useStore((s) => s.getTotalPrice());
 
   const deliveryFee = 15000;
   const total = subTotal + deliveryFee;
@@ -48,9 +44,11 @@ export const CheckoutModule: React.FC = () => {
   const [notes, setNotes] = React.useState<string>('');
   const [paymentMethod] = React.useState<string>('COD');
 
-  const [loading, setLoading] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [createdOrder, setCreatedOrder] = React.useState<OrderResponseDto | null>(null);
+
+  const createOrderMutation = useCreateOrder();
+  const loading = createOrderMutation.isPending;
 
   // Autofill user info if logged in
   React.useEffect(() => {
@@ -73,41 +71,38 @@ export const CheckoutModule: React.FC = () => {
       return;
     }
 
-    setLoading(true);
     setErrorMessage(null);
 
-    try {
-      const payload = {
-        items: items.map((item) => ({
-          productId: item.product.id,
-          productVariantId: item.variant?.id,
-          ingredients: item.selectedIngredients.map((ing) => ({
-            ingredientId: ing.id,
-            quantity: 1,
-          })),
-          quantity: item.quantity,
+    const payload = {
+      items: items.map((item) => ({
+        productId: item.product.id,
+        productVariantId: item.variant?.id,
+        ingredients: item.selectedIngredients.map((ing) => ({
+          ingredientId: ing.id,
+          quantity: 1,
         })),
-        guestName,
-        guestPhone,
-        guestAddress,
-        notes,
-        paymentMethod,
-      };
+        quantity: item.quantity,
+      })),
+      guestName,
+      guestPhone,
+      guestAddress,
+      notes,
+      paymentMethod,
+    };
 
-      const res = await ApiMain.instance.order.createOrder(payload);
-
-      if (res.kind === 'OK' && res.data) {
-        setCreatedOrder(res.data);
-        clearCart();
-      } else {
-        throw new Error(res.error || 'Đặt hàng thất bại. Vui lòng thử lại sau.');
-      }
-    } catch (err: unknown) {
-      const errorText = err instanceof Error ? err.message : 'Đặt hàng thất bại';
-      setErrorMessage(errorText);
-    } finally {
-      setLoading(false);
-    }
+    createOrderMutation.mutate(payload, {
+      onSuccess: (data) => {
+        if (data) {
+          setCreatedOrder(data);
+          clearCart();
+        } else {
+          setErrorMessage('Đặt hàng thất bại. Vui lòng thử lại sau.');
+        }
+      },
+      onError: (err) => {
+        setErrorMessage(err.message || 'Đặt hàng thất bại. Vui lòng thử lại sau.');
+      },
+    });
   };
 
   // Order Success View

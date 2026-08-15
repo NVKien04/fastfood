@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +35,7 @@ export const formatVND = (price: number): string => {
 };
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product, isOpen, onClose, onAddToCart }) => {
+  const { t } = useTranslation();
   const [selectedVariantId, setSelectedVariantId] = React.useState<number | null>(null);
   const [selectedIngredientIds, setSelectedIngredientIds] = React.useState<number[]>([]);
   const [quantity, setQuantity] = React.useState<number>(1);
@@ -152,7 +154,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
               {/* Phần 1: Danh sách Biến thể (Sắp xếp từ thấp đến cao) */}
               {sortedVariants.length > 0 && (
                 <div className="mt-6">
-                  <label className="block text-sm font-bold text-gray-800 mb-3">Chọn biến thể</label>
+                  <label className="block text-sm font-bold text-gray-800 mb-3">{t('PRODUCT.SELECT_VARIANT', 'Chọn biến thể')}</label>
                   <div className="space-y-2.5">
                     {sortedVariants.map((variant) => {
                       const isSelected = activeVariant?.id === variant.id;
@@ -189,7 +191,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
               {/* Phần 2: Danh sách Topping / Nguyên liệu chọn thêm (Sắp xếp từ thấp đến cao) */}
               {sortedIngredients.length > 0 && (
                 <div className="mt-6">
-                  <label className="block text-sm font-bold text-gray-800 mb-3">Topping / Nguyên liệu chọn thêm</label>
+                  <label className="block text-sm font-bold text-gray-800 mb-3">{t('PRODUCT.SELECT_TOPPINGS', 'Topping / Nguyên liệu chọn thêm')}</label>
                   <div className="space-y-2">
                     {sortedIngredients.map((ing) => {
                       const isChecked = selectedIngredientIds.includes(ing.id);
@@ -254,7 +256,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                 onClick={handleAddToCart}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold h-12 rounded-xl text-sm shadow-lg shadow-red-600/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
-                <span>Thêm vào giỏ hàng</span>
+                <span>{t('PRODUCT.ADD_TO_CART', 'Thêm vào giỏ hàng')}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
                 <span>{formatVND(totalPrice)}</span>
               </Button>

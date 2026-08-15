@@ -1,4 +1,4 @@
-import { StateCreator } from 'zustand';
+import { SliceCreator } from '../type';
 
 export interface User {
   id: string;
@@ -19,7 +19,7 @@ export interface AuthSlice {
   clearAuth: () => void;
 }
 
-export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (set) => ({
+export const createAuthSlice: SliceCreator<AuthSlice> = (set) => ({
   accessToken: null,
   user: null,
   isInitializing: true,

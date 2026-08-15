@@ -1,0 +1,3 @@
+export const PRODUCT_LIST = 'PRODUCT_LIST';
+export const PRODUCT_DETAIL = 'PRODUCT_DETAIL';
+export const PRODUCT_BY_SLUG = 'PRODUCT_BY_SLUG';

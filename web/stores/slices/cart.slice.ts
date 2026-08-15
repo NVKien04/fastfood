@@ -1,4 +1,4 @@
-import { StateCreator } from 'zustand';
+import { SliceCreator } from '../type';
 import {
   ProductDetailResponseDto,
   ProductIngredientResponseDto,
@@ -43,7 +43,7 @@ export const generateCartItemId = (
   return `${productId}_${variantId || 'base'}_${sortedIngIds}`;
 };
 
-export const createCartSlice: StateCreator<CartSlice, [], [], CartSlice> = (set, get) => ({
+export const createCartSlice: SliceCreator<CartSlice> = (set, get) => ({
   items: [],
 
   addItem: ({ product, variant = null, selectedIngredients = [], quantity = 1 }) => {
@@ -54,34 +54,30 @@ export const createCartSlice: StateCreator<CartSlice, [], [], CartSlice> = (set,
     const ingredientsPrice = selectedIngredients.reduce((sum, ing) => sum + (ing.price || 0), 0);
     const unitPrice = (product.basePrice || 0) + variantPrice + ingredientsPrice;
 
-    const currentItems = get().items;
-    const existingIndex = currentItems.findIndex((item) => item.id === cartItemId);
+    set((state) => {
+      const existingItem = state.items.find((item) => item.id === cartItemId);
 
-    if (existingIndex > -1) {
-      const updatedItems = [...currentItems];
-      const newQty = updatedItems[existingIndex].quantity + quantity;
-      updatedItems[existingIndex] = {
-        ...updatedItems[existingIndex],
-        quantity: newQty,
-        totalPrice: unitPrice * newQty,
-      };
-      set({ items: updatedItems });
-    } else {
-      const newItem: CartItem = {
-        id: cartItemId,
-        product,
-        variant,
-        selectedIngredients,
-        quantity,
-        unitPrice,
-        totalPrice: unitPrice * quantity,
-      };
-      set({ items: [...currentItems, newItem] });
-    }
+      if (existingItem) {
+        existingItem.quantity += quantity;
+        existingItem.totalPrice = unitPrice * existingItem.quantity;
+      } else {
+        state.items.push({
+          id: cartItemId,
+          product,
+          variant,
+          selectedIngredients,
+          quantity,
+          unitPrice,
+          totalPrice: unitPrice * quantity,
+        });
+      }
+    });
   },
 
   removeItem: (cartItemId) => {
-    set({ items: get().items.filter((item) => item.id !== cartItemId) });
+    set((state) => {
+      state.items = state.items.filter((item) => item.id !== cartItemId);
+    });
   },
 
   updateQuantity: (cartItemId, quantity) => {
@@ -90,22 +86,19 @@ export const createCartSlice: StateCreator<CartSlice, [], [], CartSlice> = (set,
       return;
     }
 
-    set({
-      items: get().items.map((item) => {
-        if (item.id === cartItemId) {
-          return {
-            ...item,
-            quantity,
-            totalPrice: item.unitPrice * quantity,
-          };
-        }
-        return item;
-      }),
+    set((state) => {
+      const item = state.items.find((i) => i.id === cartItemId);
+      if (item) {
+        item.quantity = quantity;
+        item.totalPrice = item.unitPrice * quantity;
+      }
     });
   },
 
   clearCart: () => {
-    set({ items: [] });
+    set((state) => {
+      state.items = [];
+    });
   },
 
   getTotalPrice: () => {
