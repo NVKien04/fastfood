@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { ProductEntity } from '@/entities/product.entity';
-import { PaginationOptions } from '@/common/core/pagination';
 import { Product } from '@/modules/product/domain/entities/product.domain';
-import { IProductRepository } from '@/modules/product/domain/repositories/product.repository.interface';
+import {
+  IProductRepository,
+  ProductFilterOptions,
+} from '@/modules/product/domain/repositories/product.repository.interface';
 import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.mapper';
 
 @Injectable()
@@ -82,18 +84,44 @@ export class ProductTypeOrmRepository implements IProductRepository {
     return ProductMapper.toDomainList(saved);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Product[], number]> {
+  async findPaginated(options: ProductFilterOptions): Promise<[Product[], number]> {
     const entity = 'product';
     const qb = this.repo.createQueryBuilder(entity);
 
-    if (where) {
-      qb.where(where);
+    if (options.search) {
+      qb.andWhere('(LOWER(product.name) LIKE :search OR LOWER(product.description) LIKE :search)', {
+        search: `%${options.search.toLowerCase().trim()}%`,
+      });
+    }
+
+    if (options.categoryId !== undefined) {
+      qb.andWhere('product.categoryId = :categoryId', { categoryId: options.categoryId });
+    }
+
+    if (options.isFeatured !== undefined) {
+      qb.andWhere('product.isFeatured = :isFeatured', { isFeatured: options.isFeatured });
+    }
+
+    if (options.isActive !== undefined) {
+      qb.andWhere('product.isActive = :isActive', { isActive: options.isActive });
+    }
+
+    if (options.minPrice !== undefined) {
+      qb.andWhere('product.basePrice >= :minPrice', { minPrice: options.minPrice });
+    }
+
+    if (options.maxPrice !== undefined) {
+      qb.andWhere('product.basePrice <= :maxPrice', { maxPrice: options.maxPrice });
     }
 
     qb.take(options.take).skip(options.skip);
 
-    if (options.orderBy) {
-      qb.orderBy(`${entity}.${options.orderBy}`, options.orderDirection ?? 'ASC');
+    const allowedSortFields = ['sortOrder', 'basePrice', 'createdAt', 'name', 'isFeatured'];
+    const sortField = options.orderBy && allowedSortFields.includes(options.orderBy) ? options.orderBy : 'sortOrder';
+    const sortDirection = options.orderDirection === 'DESC' ? 'DESC' : 'ASC';
+    qb.orderBy(`${entity}.${sortField}`, sortDirection);
+    if (sortField !== 'createdAt') {
+      qb.addOrderBy(`${entity}.createdAt`, 'DESC');
     }
 
     const [entities, total] = await qb.getManyAndCount();

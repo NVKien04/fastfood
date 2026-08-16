@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class ProductFilterDto {
   @ApiPropertyOptional({ description: 'Trang hiện tại', example: 1, default: 1 })
@@ -14,14 +14,22 @@ export class ProductFilterDto {
   @Min(1)
   limit?: number;
 
-  @ApiPropertyOptional({ description: 'Trường dùng để sắp xếp', example: 'sortOrder' })
+  @ApiPropertyOptional({ description: 'Từ khóa tìm kiếm theo tên hoặc mô tả', example: 'Pizza' })
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @ApiPropertyOptional({
+    description: 'Trường dùng để sắp xếp (sortOrder, basePrice, createdAt, name, isFeatured)',
+    example: 'sortOrder',
+  })
   @IsOptional()
   @IsString()
   orderby?: string;
 
-  @ApiPropertyOptional({ description: 'Hướng sắp xếp (ASC hoặc DESC)', example: 'ASC' })
+  @ApiPropertyOptional({ description: 'Hướng sắp xếp (ASC hoặc DESC)', example: 'ASC', enum: ['ASC', 'DESC'] })
   @IsOptional()
-  @IsString()
+  @IsIn(['ASC', 'DESC'])
   orderDirection?: 'ASC' | 'DESC';
 
   @ApiPropertyOptional({ description: 'Lọc theo ID danh mục', example: 1 })
@@ -33,4 +41,21 @@ export class ProductFilterDto {
   @IsOptional()
   @IsInt()
   isFeatured?: number;
+
+  @ApiPropertyOptional({ description: 'Lọc theo trạng thái hoạt động (1: đang bán, 0: ngưng bán)', example: 1 })
+  @IsOptional()
+  @IsInt()
+  isActive?: number;
+
+  @ApiPropertyOptional({ description: 'Lọc theo giá tối thiểu', example: 50000 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  minPrice?: number;
+
+  @ApiPropertyOptional({ description: 'Lọc theo giá tối đa', example: 300000 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  maxPrice?: number;
 }

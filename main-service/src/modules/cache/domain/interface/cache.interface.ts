@@ -1,5 +1,3 @@
-export const CACHE_SERVICE = 'ICacheService';
-
 export interface ICacheService {
   /**
    * Lấy dữ liệu từ Cache và tự động parse JSON

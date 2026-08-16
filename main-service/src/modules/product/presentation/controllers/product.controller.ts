@@ -5,6 +5,7 @@ import { Auth } from '@/common/decorators/auth.decorator';
 import { RoleEnum } from '@/enums/role.enum';
 import { CreateProductDto } from '@/modules/product/presentation/dto/create-product.dto';
 import { UpdateProductDto } from '@/modules/product/presentation/dto/update-product.dto';
+import { UpdateProductStatusDto } from '@/modules/product/presentation/dto/update-product-status.dto';
 import { ProductDetailResponseDto } from '@/modules/product/presentation/dto/product-detail-response.dto';
 import { ProductFilterDto } from '@/modules/product/presentation/dto/product-filter.dto';
 
@@ -14,7 +15,7 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post('get-page')
-  @ApiOperation({ summary: 'Lấy danh sách sản phẩm phân trang' })
+  @ApiOperation({ summary: 'Lấy danh sách sản phẩm phân trang và tìm kiếm/lọc' })
   @ApiResponse({ status: 200, description: 'Lấy dữ liệu thành công' })
   async getPage(@Body() filterObject: ProductFilterDto) {
     return await this.productService.getPage(filterObject);
@@ -25,7 +26,7 @@ export class ProductController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Tạo mới sản phẩm kèm biến thể và thành phần' })
   @ApiResponse({ status: 201, description: 'Tạo sản phẩm thành công' })
-  @ApiResponse({ status: 409, description: 'Sản phẩm đã tồn tại' })
+  @ApiResponse({ status: 409, description: 'Sản phẩm hoặc biến thể đã tồn tại' })
   async create(@Body() createProductDto: CreateProductDto) {
     const product = await this.productService.create(createProductDto);
     return {
@@ -46,6 +47,18 @@ export class ProductController {
     };
   }
 
+  @Get(':id/related')
+  @ApiOperation({ summary: 'Lấy danh sách sản phẩm liên quan (cùng danh mục)' })
+  @ApiParam({ name: 'id', description: 'UUID của sản phẩm', type: String })
+  @ApiResponse({ status: 200, description: 'Lấy sản phẩm liên quan thành công' })
+  @ApiResponse({ status: 404, description: 'Sản phẩm không tồn tại' })
+  async getRelated(@Param('id') id: string) {
+    const products = await this.productService.getRelatedProducts(id);
+    return {
+      data: products,
+    };
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Lấy chi tiết sản phẩm theo ID (kèm biến thể và nguyên liệu)' })
   @ApiParam({ name: 'id', description: 'UUID của sản phẩm', type: String })
@@ -58,6 +71,21 @@ export class ProductController {
     };
   }
 
+  @Patch(':id/status')
+  @Auth(RoleEnum.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Cập nhật trạng thái nhanh (isActive, isFeatured) của sản phẩm' })
+  @ApiParam({ name: 'id', description: 'ID của sản phẩm', type: String })
+  @ApiResponse({ status: 200, description: 'Cập nhật trạng thái thành công' })
+  @ApiResponse({ status: 404, description: 'Sản phẩm không tồn tại' })
+  async updateStatus(@Param('id') id: string, @Body() statusDto: UpdateProductStatusDto) {
+    const product = await this.productService.updateStatus(id, statusDto);
+    return {
+      data: product,
+      message: 'Cập nhật trạng thái thành công',
+    };
+  }
+
   @Patch(':id')
   @Auth(RoleEnum.ADMIN)
   @ApiBearerAuth()
@@ -65,6 +93,7 @@ export class ProductController {
   @ApiParam({ name: 'id', description: 'ID của sản phẩm', type: String })
   @ApiResponse({ status: 200, description: 'Cập nhật sản phẩm thành công' })
   @ApiResponse({ status: 404, description: 'Sản phẩm không tồn tại' })
+  @ApiResponse({ status: 409, description: 'Biến thể trùng lặp' })
   async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     const product = await this.productService.update(id, updateProductDto);
     return {

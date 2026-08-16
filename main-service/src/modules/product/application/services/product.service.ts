@@ -1,18 +1,22 @@
-import { buildPaginationResponse, PaginationOptions, PaginationResponse } from '@/common/core/pagination';
+import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
 import { CreateProductDto } from '@/modules/product/presentation/dto/create-product.dto';
 import { ProductFilterDto } from '@/modules/product/presentation/dto/product-filter.dto';
 import { ProductDetailResponseDto } from '@/modules/product/presentation/dto/product-detail-response.dto';
 import { Product } from '@/modules/product/domain/entities/product.domain';
-import type { IProductRepository } from '@/modules/product/domain/repositories/product.repository.interface';
+import type {
+  IProductRepository,
+  ProductFilterOptions,
+} from '@/modules/product/domain/repositories/product.repository.interface';
 import { Fn } from '@/utils/fn';
 import { Inject, Injectable } from '@nestjs/common';
 import { CategoryService } from '@/modules/category/application/services/category.service';
 import { UpdateProductDto } from '@/modules/product/presentation/dto/update-product.dto';
+import { UpdateProductStatusDto } from '@/modules/product/presentation/dto/update-product-status.dto';
 import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
 import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import { BusinessException } from '@/common/exception/biz.exception';
 import { ErrorEnum } from '@/common/constants/error-code.constant';
-import { CACHE_SERVICE, type ICacheService } from '@/modules/cache/domain/interface/cache.interface';
+import { type ICacheService } from '@/modules/cache/domain/interface/cache.interface';
 import { REDIS_KEYS, REDIS_TTL } from '@/common/constants/redis.constaint';
 import { ProductHelper } from '@/modules/product/application/helpers/product.helper';
 
@@ -24,12 +28,27 @@ export class ProductService {
     private readonly categoryService: CategoryService,
     private readonly productVariantService: ProductVariantService,
     private readonly ingredientService: IngredientService,
-    @Inject(CACHE_SERVICE)
+    @Inject('ICacheService')
     private readonly cacheService: ICacheService,
   ) {}
 
   private clearProductCache() {
     return this.cacheService.delByPattern(REDIS_KEYS.PRODUCT.PATTERN);
+  }
+
+  /**
+   * Kiểm tra trùng lặp cặp (size, type) trong danh sách biến thể
+   */
+  private validateUniqueVariants(variants?: { size: string; type: string }[]): void {
+    if (!variants || variants.length <= 1) return;
+    const seen = new Set<string>();
+    for (const variant of variants) {
+      const key = `${variant.size}_${variant.type}`;
+      if (seen.has(key)) {
+        throw new BusinessException(ErrorEnum.PRODUCT_VARIANT_DUPLICATE);
+      }
+      seen.add(key);
+    }
   }
 
   // ==========================================
@@ -84,8 +103,8 @@ export class ProductService {
     return this.repo.softDelete(id, manager);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, unknown>): Promise<[Product[], number]> {
-    return this.repo.findPaginated(options, where);
+  async findPaginated(options: ProductFilterOptions): Promise<[Product[], number]> {
+    return this.repo.findPaginated(options);
   }
 
   // ==========================================
@@ -94,17 +113,16 @@ export class ProductService {
 
   /**
    * Tạo mới sản phẩm kèm variants trong một transaction.
-   * Tự sinh slug từ name, kiểm tra trùng slug và danh mục.
-   */
-  /**
-   * Tạo mới sản phẩm kèm variants trong một transaction.
-   * Tự sinh slug từ name, kiểm tra trùng slug và danh mục.
+   * Tự sinh slug từ name, kiểm tra trùng slug, trùng biến thể và danh mục.
    */
   async create(productDto: CreateProductDto): Promise<Product | null> {
     const category = await this.categoryService.getById(productDto.categoryId);
     if (!category) {
       throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
     }
+
+    // Kiểm tra trùng lặp variants
+    this.validateUniqueVariants(productDto.variants);
 
     const productSlug = Fn.changeNameToSlug(productDto.name);
     const existedProduct = await this.findOne({ slug: productSlug });
@@ -146,8 +164,8 @@ export class ProductService {
   }
 
   /**
-   * Lấy danh sách sản phẩm phân trang.
-   * Filter: isActive (mặc định chỉ lấy active), isFeatured (tuỳ chọn), categoryId (tuỳ chọn).
+   * Lấy danh sách sản phẩm phân trang và tìm kiếm/lọc nâng cao.
+   * Filter: search, categoryId, isFeatured, isActive (mặc định 1), minPrice, maxPrice.
    */
   async getPage(filterObject: ProductFilterDto): Promise<PaginationResponse<Product>> {
     const cacheKey = `${REDIS_KEYS.PRODUCT.PAGE}${JSON.stringify(filterObject ?? {})}`;
@@ -160,23 +178,18 @@ export class ProductService {
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
 
-    const where: Record<string, unknown> = { isActive: 1 };
-    if (filterObject?.isFeatured !== undefined) {
-      where['isFeatured'] = Number(filterObject.isFeatured);
-    }
-    if (filterObject?.categoryId !== undefined) {
-      where['categoryId'] = Number(filterObject.categoryId);
-    }
-
-    const [data, totalItems] = await this.findPaginated(
-      {
-        skip,
-        take: limit,
-        orderBy: filterObject?.orderby,
-        orderDirection: filterObject?.orderDirection,
-      },
-      where,
-    );
+    const [data, totalItems] = await this.findPaginated({
+      skip,
+      take: limit,
+      orderBy: filterObject?.orderby,
+      orderDirection: filterObject?.orderDirection,
+      search: filterObject?.search,
+      categoryId: filterObject?.categoryId !== undefined ? Number(filterObject.categoryId) : undefined,
+      isFeatured: filterObject?.isFeatured !== undefined ? Number(filterObject.isFeatured) : undefined,
+      isActive: filterObject?.isActive !== undefined ? Number(filterObject.isActive) : 1,
+      minPrice: filterObject?.minPrice !== undefined ? Number(filterObject.minPrice) : undefined,
+      maxPrice: filterObject?.maxPrice !== undefined ? Number(filterObject.maxPrice) : undefined,
+    });
 
     const response = buildPaginationResponse(data, totalItems, page, limit);
     await this.cacheService.set(cacheKey, response, REDIS_TTL.PRODUCT_PAGE);
@@ -185,7 +198,7 @@ export class ProductService {
 
   /**
    * Cập nhật sản phẩm và variants trong transaction.
-   * Truyền variants mới sẽ xóa cũ và tạo lại (replace strategy).
+   * Truyền variants mới sẽ kiểm tra trùng lặp, xóa cũ và tạo lại (replace strategy).
    */
   async update(productId: string, updateData: UpdateProductDto): Promise<Product | null> {
     const product = await this.findByIdOrThrow(productId);
@@ -195,6 +208,12 @@ export class ProductService {
         throw new BusinessException(ErrorEnum.CATEGORY_NOT_FOUND);
       }
     }
+
+    // Kiểm tra trùng lặp variants nếu có truyền vào
+    if (updateData.variants !== undefined) {
+      this.validateUniqueVariants(updateData.variants);
+    }
+
     const { variants, name, ...scalarFields } = updateData;
     const updatePayload: Partial<Product> = { ...scalarFields };
     if (name !== undefined) {
@@ -228,6 +247,30 @@ export class ProductService {
     }
 
     return updatedProduct;
+  }
+
+  /**
+   * Cập nhật trạng thái nhanh (isActive, isFeatured).
+   */
+  async updateStatus(productId: string, statusDto: UpdateProductStatusDto): Promise<Product | null> {
+    await this.findByIdOrThrow(productId);
+    const updatePayload: Partial<Product> = {};
+    if (statusDto.isActive !== undefined) {
+      updatePayload.isActive = statusDto.isActive;
+    }
+    if (statusDto.isFeatured !== undefined) {
+      updatePayload.isFeatured = statusDto.isFeatured;
+    }
+
+    if (Object.keys(updatePayload).length === 0) {
+      return this.findById(productId);
+    }
+
+    const updated = await this.updateRaw(productId, updatePayload);
+    if (updated) {
+      this.clearProductCache();
+    }
+    return updated;
   }
 
   /**
@@ -272,5 +315,17 @@ export class ProductService {
     const detail = await ProductHelper.buildDetail(product, this.productVariantService, this.ingredientService);
     await this.cacheService.set(cacheKey, detail, REDIS_TTL.PRODUCT_DETAIL);
     return detail;
+  }
+
+  /**
+   * Lấy danh sách sản phẩm liên quan (cùng danh mục, loại trừ sản phẩm hiện tại).
+   */
+  async getRelatedProducts(productId: string, limit = 6): Promise<Product[]> {
+    const product = await this.findByIdOrThrow(productId);
+    const allCategoryProducts = await this.findAll(
+      { categoryId: product.categoryId, isActive: 1 },
+      { sortOrder: 'ASC' },
+    );
+    return allCategoryProducts.filter((p) => p.id !== productId).slice(0, limit);
   }
 }

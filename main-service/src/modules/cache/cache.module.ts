@@ -1,7 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { REDIS_CLIENT, redisProvider } from '@/modules/cache/infrastructure/redis.provider';
 import { RedisCacheService } from '@/modules/cache/infrastructure/ioredis-cache.service';
-import { CACHE_SERVICE } from '@/modules/cache/domain/interface/cache.interface';
 
 @Global()
 @Module({
@@ -9,10 +8,10 @@ import { CACHE_SERVICE } from '@/modules/cache/domain/interface/cache.interface'
     redisProvider,
     RedisCacheService,
     {
-      provide: CACHE_SERVICE,
+      provide: 'ICacheService',
       useExisting: RedisCacheService,
     },
   ],
-  exports: [REDIS_CLIENT, RedisCacheService, CACHE_SERVICE],
+  exports: [REDIS_CLIENT, RedisCacheService, 'ICacheService'],
 })
 export class CacheModule {}

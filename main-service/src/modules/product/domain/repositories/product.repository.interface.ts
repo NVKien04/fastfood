@@ -1,6 +1,15 @@
 import { PaginationOptions } from '@/common/core/pagination';
 import { Product } from '@/modules/product/domain/entities/product.domain';
 
+export interface ProductFilterOptions extends PaginationOptions {
+  search?: string;
+  categoryId?: number;
+  isFeatured?: number;
+  isActive?: number;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
 export interface IProductRepository {
   findAll(
     condition?: Partial<Product>,
@@ -14,6 +23,6 @@ export interface IProductRepository {
   softDelete(id: string, manager?: unknown): Promise<boolean>;
   delete(id: string, manager?: unknown): Promise<boolean>;
   createMany(entities: Partial<Product>[], manager?: unknown): Promise<Product[]>;
-  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Product[], number]>;
+  findPaginated(options: ProductFilterOptions): Promise<[Product[], number]>;
   executeTransaction<T>(callback: (manager: unknown) => Promise<T>): Promise<T>;
 }

@@ -21,6 +21,7 @@ export enum ErrorEnum {
   // ========== Product & Category ==========
   PRODUCT_NOT_FOUND = 'PRODUCT_NOT_FOUND',
   PRODUCT_SLUG_EXISTED = 'PRODUCT_SLUG_EXISTED',
+  PRODUCT_VARIANT_DUPLICATE = 'PRODUCT_VARIANT_DUPLICATE',
   CATEGORY_NOT_FOUND = 'CATEGORY_NOT_FOUND',
   CATEGORY_EXISTED = 'CATEGORY_EXISTED',
   INGREDIENT_NOT_FOUND = 'INGREDIENT_NOT_FOUND',
@@ -78,6 +79,10 @@ export const ERROR_MAP: Record<ErrorEnum, ErrorDetail> = {
   [ErrorEnum.PRODUCT_SLUG_EXISTED]: {
     httpStatus: HttpStatus.CONFLICT,
     message: 'Product with this slug already exists',
+  },
+  [ErrorEnum.PRODUCT_VARIANT_DUPLICATE]: {
+    httpStatus: HttpStatus.CONFLICT,
+    message: 'Duplicate product variant (size and type)',
   },
   [ErrorEnum.CATEGORY_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, message: 'Category not found' },
   [ErrorEnum.CATEGORY_EXISTED]: { httpStatus: HttpStatus.CONFLICT, message: 'Category already exists' },
