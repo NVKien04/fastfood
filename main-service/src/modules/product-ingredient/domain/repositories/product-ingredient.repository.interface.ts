@@ -1,28 +1,20 @@
-import { DeepPartial, DeleteResult, FindOptionsOrder, FindOptionsWhere } from 'typeorm';
-import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
 import { PaginationOptions } from '@/common/core/pagination';
+import { ProductIngredient } from '@/modules/product-ingredient/domain/entities/product-ingredient.domain';
 
 export interface IProductIngredientRepository {
   findAll(
-    condition?: FindOptionsWhere<ProductIngredientsEntity>,
-    order?: FindOptionsOrder<ProductIngredientsEntity>,
+    condition?: Partial<ProductIngredient>,
+    order?: Record<string, 'ASC' | 'DESC'>,
     relations?: string[],
-  ): Promise<ProductIngredientsEntity[]>;
-  findOne(
-    condition: FindOptionsWhere<ProductIngredientsEntity>,
-    relations?: string[],
-  ): Promise<ProductIngredientsEntity | null>;
-  findById(id: string): Promise<ProductIngredientsEntity | null>;
-  create(entity: DeepPartial<ProductIngredientsEntity>, manager?: unknown): Promise<ProductIngredientsEntity>;
-  update(
-    id: string,
-    entity: DeepPartial<ProductIngredientsEntity>,
-    manager?: unknown,
-  ): Promise<ProductIngredientsEntity | null>;
-  softDelete(id: string, manager?: unknown): Promise<DeleteResult>;
-  delete(id: string, manager?: unknown): Promise<DeleteResult>;
-  deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult>;
-  findByProductId(productId: string): Promise<ProductIngredientsEntity[]>;
-  createMany(entity: DeepPartial<ProductIngredientsEntity>[], manager?: unknown): Promise<ProductIngredientsEntity[]>;
-  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[ProductIngredientsEntity[], number]>;
+  ): Promise<ProductIngredient[]>;
+  findOne(condition: Partial<ProductIngredient>, relations?: string[]): Promise<ProductIngredient | null>;
+  findById(id: string): Promise<ProductIngredient | null>;
+  create(entity: Partial<ProductIngredient>, manager?: unknown): Promise<ProductIngredient>;
+  update(id: string, entity: Partial<ProductIngredient>, manager?: unknown): Promise<ProductIngredient | null>;
+  softDelete(id: string, manager?: unknown): Promise<boolean>;
+  delete(id: string, manager?: unknown): Promise<boolean>;
+  deleteByProductId(productId: string, manager?: unknown): Promise<boolean>;
+  findByProductId(productId: string): Promise<ProductIngredient[]>;
+  createMany(entity: Partial<ProductIngredient>[], manager?: unknown): Promise<ProductIngredient[]>;
+  findPaginated(options: PaginationOptions, where?: Record<string, unknown>): Promise<[ProductIngredient[], number]>;
 }

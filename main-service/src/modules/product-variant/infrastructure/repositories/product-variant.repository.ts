@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
+import { EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { PaginationOptions } from '@/common/core/pagination';
 import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { ProductVariant } from '@/modules/product-variant/domain/entities/product-variant.domain';
 import { IProductVariantRepository } from '@/modules/product-variant/domain/repositories/product-variant.repository.interface';
+import { ProductVariantMapper } from '@/modules/product-variant/infrastructure/mappers/product-variant.mapper';
 
 @Injectable()
 export class ProductVariantRepository implements IProductVariantRepository {
@@ -18,70 +20,87 @@ export class ProductVariantRepository implements IProductVariantRepository {
   }
 
   async findAll(
-    condition?: FindOptionsWhere<ProductVariantsEntity>,
-    order?: FindOptionsOrder<ProductVariantsEntity>,
+    condition?: Partial<ProductVariant>,
+    order?: Record<string, 'ASC' | 'DESC'>,
     relations?: string[],
-  ): Promise<ProductVariantsEntity[]> {
-    return this.repo.find({ where: condition, order: order ?? {}, relations: relations ?? [] });
+  ): Promise<ProductVariant[]> {
+    const where = condition
+      ? (ProductVariantMapper.toOrmEntity(condition) as FindOptionsWhere<ProductVariantsEntity>)
+      : undefined;
+    const entities = await this.repo.find({
+      where,
+      order: (order ?? {}) as FindOptionsOrder<ProductVariantsEntity>,
+      relations: relations ?? [],
+    });
+    return ProductVariantMapper.toDomainList(entities);
   }
 
-  async findOne(
-    condition: FindOptionsWhere<ProductVariantsEntity>,
-    relations?: string[],
-  ): Promise<ProductVariantsEntity | null> {
-    return this.repo.findOne({ where: condition, relations: relations ?? [] });
+  async findOne(condition: Partial<ProductVariant>, relations?: string[]): Promise<ProductVariant | null> {
+    const where = ProductVariantMapper.toOrmEntity(condition) as FindOptionsWhere<ProductVariantsEntity>;
+    const entity = await this.repo.findOne({ where, relations: relations ?? [] });
+    return entity ? ProductVariantMapper.toDomain(entity) : null;
   }
 
-  async findById(id: number): Promise<ProductVariantsEntity | null> {
-    return this.repo.findOne({ where: { id } as FindOptionsWhere<ProductVariantsEntity> });
+  async findById(id: number): Promise<ProductVariant | null> {
+    const entity = await this.repo.findOne({ where: { id } as FindOptionsWhere<ProductVariantsEntity> });
+    return entity ? ProductVariantMapper.toDomain(entity) : null;
   }
 
-  async create(entity: DeepPartial<ProductVariantsEntity>, manager?: unknown): Promise<ProductVariantsEntity> {
+  async create(entity: Partial<ProductVariant>, manager?: unknown): Promise<ProductVariant> {
     const repo = this.getRepo(manager);
-    const obj = repo.create(entity);
-    return repo.save(obj);
+    const ormPayload = ProductVariantMapper.toOrmEntity(entity);
+    const obj = repo.create(ormPayload);
+    const saved = await repo.save(obj);
+    const domain = ProductVariantMapper.toDomain(saved);
+    if (!domain) {
+      throw new Error('Failed to map created product variant to domain');
+    }
+    return domain;
   }
 
-  async update(
-    id: number,
-    entity: DeepPartial<ProductVariantsEntity>,
-    manager?: unknown,
-  ): Promise<ProductVariantsEntity | null> {
+  async update(id: number, entity: Partial<ProductVariant>, manager?: unknown): Promise<ProductVariant | null> {
     const repo = this.getRepo(manager);
-    const result = await repo.update(id as any, entity);
+    const ormPayload = ProductVariantMapper.toOrmEntity(entity);
+    const result = await repo.update(id, ormPayload);
     if (result.affected && result.affected > 0) return this.findById(id);
     return null;
   }
 
-  async softDelete(id: number, manager?: unknown): Promise<DeleteResult> {
+  async softDelete(id: number, manager?: unknown): Promise<boolean> {
     const repo = this.getRepo(manager);
-    return repo.softDelete(id);
+    const result = await repo.softDelete(id);
+    return Boolean(result.affected && result.affected > 0);
   }
 
-  async delete(id: number, manager?: unknown): Promise<DeleteResult> {
+  async delete(id: number, manager?: unknown): Promise<boolean> {
     const repo = this.getRepo(manager);
-    return repo.delete(id as any);
+    const result = await repo.delete(id);
+    return Boolean(result.affected && result.affected > 0);
   }
 
-  async deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult> {
+  async deleteByProductId(productId: string, manager?: unknown): Promise<boolean> {
     const repo = this.getRepo(manager);
-    return repo.delete({ productId } as any);
+    const result = await repo.delete({ productId } as FindOptionsWhere<ProductVariantsEntity>);
+    return Boolean(result.affected && result.affected > 0);
   }
 
-  async findByProductId(productId: string): Promise<ProductVariantsEntity[]> {
-    return this.repo.find({ where: { productId } as FindOptionsWhere<ProductVariantsEntity> });
+  async findByProductId(productId: string): Promise<ProductVariant[]> {
+    const entities = await this.repo.find({ where: { productId } as FindOptionsWhere<ProductVariantsEntity> });
+    return ProductVariantMapper.toDomainList(entities);
   }
 
-  async createMany(entity: DeepPartial<ProductVariantsEntity>[], manager?: unknown): Promise<ProductVariantsEntity[]> {
+  async createMany(entities: Partial<ProductVariant>[], manager?: unknown): Promise<ProductVariant[]> {
     const repo = this.getRepo(manager);
-    const entities = repo.create(entity);
-    return repo.save(entities);
+    const ormPayloads = entities.map((data) => ProductVariantMapper.toOrmEntity(data));
+    const created = repo.create(ormPayloads);
+    const saved = await repo.save(created);
+    return ProductVariantMapper.toDomainList(saved);
   }
 
   async findPaginated(
     options: PaginationOptions,
-    where?: Record<string, any>,
-  ): Promise<[ProductVariantsEntity[], number]> {
+    where?: Record<string, unknown>,
+  ): Promise<[ProductVariant[], number]> {
     const entity = 'product_variants';
     const qb = this.repo.createQueryBuilder(entity);
 
@@ -95,6 +114,7 @@ export class ProductVariantRepository implements IProductVariantRepository {
       qb.orderBy(`${entity}.${options.orderBy}`, options.orderDirection ?? 'ASC');
     }
 
-    return qb.getManyAndCount();
+    const [entities, total] = await qb.getManyAndCount();
+    return [ProductVariantMapper.toDomainList(entities), total];
   }
 }

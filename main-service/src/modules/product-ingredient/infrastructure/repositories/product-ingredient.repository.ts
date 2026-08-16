@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, DeleteResult, EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
+import { EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { PaginationOptions } from '@/common/core/pagination';
 import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
+import { ProductIngredient } from '@/modules/product-ingredient/domain/entities/product-ingredient.domain';
 import { IProductIngredientRepository } from '@/modules/product-ingredient/domain/repositories/product-ingredient.repository.interface';
+import { ProductIngredientMapper } from '@/modules/product-ingredient/infrastructure/mappers/product-ingredient.mapper';
 
 @Injectable()
 export class ProductIngredientRepository implements IProductIngredientRepository {
@@ -18,73 +20,87 @@ export class ProductIngredientRepository implements IProductIngredientRepository
   }
 
   async findAll(
-    condition?: FindOptionsWhere<ProductIngredientsEntity>,
-    order?: FindOptionsOrder<ProductIngredientsEntity>,
+    condition?: Partial<ProductIngredient>,
+    order?: Record<string, 'ASC' | 'DESC'>,
     relations?: string[],
-  ): Promise<ProductIngredientsEntity[]> {
-    return this.repo.find({ where: condition, order: order ?? {}, relations: relations ?? [] });
+  ): Promise<ProductIngredient[]> {
+    const where = condition
+      ? (ProductIngredientMapper.toOrmEntity(condition) as FindOptionsWhere<ProductIngredientsEntity>)
+      : undefined;
+    const entities = await this.repo.find({
+      where,
+      order: (order ?? {}) as FindOptionsOrder<ProductIngredientsEntity>,
+      relations: relations ?? [],
+    });
+    return ProductIngredientMapper.toDomainList(entities);
   }
 
-  async findOne(
-    condition: FindOptionsWhere<ProductIngredientsEntity>,
-    relations?: string[],
-  ): Promise<ProductIngredientsEntity | null> {
-    return this.repo.findOne({ where: condition, relations: relations ?? [] });
+  async findOne(condition: Partial<ProductIngredient>, relations?: string[]): Promise<ProductIngredient | null> {
+    const where = ProductIngredientMapper.toOrmEntity(condition) as FindOptionsWhere<ProductIngredientsEntity>;
+    const entity = await this.repo.findOne({ where, relations: relations ?? [] });
+    return entity ? ProductIngredientMapper.toDomain(entity) : null;
   }
 
-  async findById(id: string): Promise<ProductIngredientsEntity | null> {
-    return this.repo.findOne({ where: { id } as FindOptionsWhere<ProductIngredientsEntity> });
+  async findById(id: string): Promise<ProductIngredient | null> {
+    const entity = await this.repo.findOne({ where: { id } as FindOptionsWhere<ProductIngredientsEntity> });
+    return entity ? ProductIngredientMapper.toDomain(entity) : null;
   }
 
-  async create(entity: DeepPartial<ProductIngredientsEntity>, manager?: unknown): Promise<ProductIngredientsEntity> {
+  async create(entity: Partial<ProductIngredient>, manager?: unknown): Promise<ProductIngredient> {
     const repo = this.getRepo(manager);
-    const obj = repo.create(entity);
-    return repo.save(obj);
+    const ormPayload = ProductIngredientMapper.toOrmEntity(entity);
+    const obj = repo.create(ormPayload);
+    const saved = await repo.save(obj);
+    const domain = ProductIngredientMapper.toDomain(saved);
+    if (!domain) {
+      throw new Error('Failed to map created product ingredient to domain');
+    }
+    return domain;
   }
 
-  async update(
-    id: string,
-    entity: DeepPartial<ProductIngredientsEntity>,
-    manager?: unknown,
-  ): Promise<ProductIngredientsEntity | null> {
+  async update(id: string, entity: Partial<ProductIngredient>, manager?: unknown): Promise<ProductIngredient | null> {
     const repo = this.getRepo(manager);
-    const result = await repo.update(id as any, entity);
+    const ormPayload = ProductIngredientMapper.toOrmEntity(entity);
+    const result = await repo.update(id, ormPayload);
     if (result.affected && result.affected > 0) return this.findById(id);
     return null;
   }
 
-  async softDelete(id: string, manager?: unknown): Promise<DeleteResult> {
+  async softDelete(id: string, manager?: unknown): Promise<boolean> {
     const repo = this.getRepo(manager);
-    return repo.softDelete(id);
+    const result = await repo.softDelete(id);
+    return Boolean(result.affected && result.affected > 0);
   }
 
-  async delete(id: string, manager?: unknown): Promise<DeleteResult> {
+  async delete(id: string, manager?: unknown): Promise<boolean> {
     const repo = this.getRepo(manager);
-    return repo.delete(id as any);
+    const result = await repo.delete(id);
+    return Boolean(result.affected && result.affected > 0);
   }
 
-  async deleteByProductId(productId: string, manager?: unknown): Promise<DeleteResult> {
+  async deleteByProductId(productId: string, manager?: unknown): Promise<boolean> {
     const repo = this.getRepo(manager);
-    return repo.delete({ productId } as any);
+    const result = await repo.delete({ productId } as FindOptionsWhere<ProductIngredientsEntity>);
+    return Boolean(result.affected && result.affected > 0);
   }
 
-  async findByProductId(productId: string): Promise<ProductIngredientsEntity[]> {
-    return this.repo.find({ where: { productId } as FindOptionsWhere<ProductIngredientsEntity> });
+  async findByProductId(productId: string): Promise<ProductIngredient[]> {
+    const entities = await this.repo.find({ where: { productId } as FindOptionsWhere<ProductIngredientsEntity> });
+    return ProductIngredientMapper.toDomainList(entities);
   }
 
-  async createMany(
-    entity: DeepPartial<ProductIngredientsEntity>[],
-    manager?: unknown,
-  ): Promise<ProductIngredientsEntity[]> {
+  async createMany(entities: Partial<ProductIngredient>[], manager?: unknown): Promise<ProductIngredient[]> {
     const repo = this.getRepo(manager);
-    const entities = repo.create(entity);
-    return repo.save(entities);
+    const ormPayloads = entities.map((data) => ProductIngredientMapper.toOrmEntity(data));
+    const created = repo.create(ormPayloads);
+    const saved = await repo.save(created);
+    return ProductIngredientMapper.toDomainList(saved);
   }
 
   async findPaginated(
     options: PaginationOptions,
-    where?: Record<string, any>,
-  ): Promise<[ProductIngredientsEntity[], number]> {
+    where?: Record<string, unknown>,
+  ): Promise<[ProductIngredient[], number]> {
     const entity = 'product_ingredients';
     const qb = this.repo.createQueryBuilder(entity);
 
@@ -98,6 +114,7 @@ export class ProductIngredientRepository implements IProductIngredientRepository
       qb.orderBy(`${entity}.${options.orderBy}`, options.orderDirection ?? 'ASC');
     }
 
-    return qb.getManyAndCount();
+    const [entities, total] = await qb.getManyAndCount();
+    return [ProductIngredientMapper.toDomainList(entities), total];
   }
 }

@@ -1,10 +1,11 @@
 import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import Redis from 'ioredis';
-import { REDIS_CLIENT } from '@/modules/redis/redis.provider';
+import { REDIS_CLIENT } from '@/modules/cache/infrastructure/redis.provider';
+import { ICacheService } from '@/modules/cache/domain/interface/cache.interface';
 
 @Injectable()
-export class RedisService implements OnModuleDestroy {
-  private readonly logger = new Logger(RedisService.name);
+export class RedisCacheService implements ICacheService, OnModuleDestroy {
+  private readonly logger = new Logger(RedisCacheService.name);
 
   constructor(
     @Inject(REDIS_CLIENT)
@@ -24,6 +25,10 @@ export class RedisService implements OnModuleDestroy {
     return this.redisClient;
   }
 
+  private parseData<T>(value: T): string {
+    return JSON.stringify(value);
+  }
+
   /**
    * Lấy dữ liệu từ Redis và tự động parse JSON
    */
@@ -32,8 +37,9 @@ export class RedisService implements OnModuleDestroy {
       const data = await this.redisClient.get(key);
       if (!data) return null;
       return JSON.parse(data) as T;
-    } catch (error) {
-      this.logger.error(`Redis GET error [${key}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis GET error [${key}]: ${message}`);
       return null;
     }
   }
@@ -41,16 +47,17 @@ export class RedisService implements OnModuleDestroy {
   /**
    * Lưu dữ liệu vào Redis (hỗ trợ TTL tính bằng giây)
    */
-  async set(key: string, value: any, ttlSeconds?: number): Promise<void> {
+  async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
     try {
-      const serialized = JSON.stringify(value);
+      const serialized = this.parseData(value);
       if (ttlSeconds && ttlSeconds > 0) {
         await this.redisClient.set(key, serialized, 'EX', ttlSeconds);
       } else {
         await this.redisClient.set(key, serialized);
       }
-    } catch (error) {
-      this.logger.error(`Redis SET error [${key}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis SET error [${key}]: ${message}`);
     }
   }
 
@@ -62,9 +69,10 @@ export class RedisService implements OnModuleDestroy {
       const keys = Array.isArray(key) ? key : [key];
       if (keys.length === 0) return 0;
       return await this.redisClient.del(...keys);
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      this.logger.error(`Redis DEL error [${key}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      const keyStr = Array.isArray(key) ? key.join(', ') : key;
+      this.logger.error(`Redis DEL error [${keyStr}]: ${message}`);
       return 0;
     }
   }
@@ -83,11 +91,12 @@ export class RedisService implements OnModuleDestroy {
         if (resultKeys.length > 0) {
           const pipeline = this.redisClient.pipeline();
           resultKeys.forEach((k) => pipeline.del(k));
-          pipeline.exec();
+          void pipeline.exec();
         }
       });
-    } catch (error) {
-      this.logger.error(`Redis DEL pattern error [${pattern}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis DEL pattern error [${pattern}]: ${message}`);
     }
   }
 
@@ -98,8 +107,9 @@ export class RedisService implements OnModuleDestroy {
     try {
       const count = await this.redisClient.exists(key);
       return count > 0;
-    } catch (error) {
-      this.logger.error(`Redis EXISTS error [${key}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis EXISTS error [${key}]: ${message}`);
       return false;
     }
   }
@@ -111,9 +121,22 @@ export class RedisService implements OnModuleDestroy {
     try {
       const result = await this.redisClient.expire(key, seconds);
       return result === 1;
-    } catch (error) {
-      this.logger.error(`Redis EXPIRE error [${key}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis EXPIRE error [${key}]: ${message}`);
       return false;
+    }
+  }
+
+  /**
+   * Xóa toàn bộ dữ liệu database Redis hiện tại
+   */
+  async clear(): Promise<void> {
+    try {
+      await this.redisClient.flushdb();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis CLEAR error: ${message}`);
     }
   }
 
@@ -124,17 +147,19 @@ export class RedisService implements OnModuleDestroy {
       const data = await this.redisClient.hget(key, field);
       if (!data) return null;
       return JSON.parse(data) as T;
-    } catch (error) {
-      this.logger.error(`Redis HGET error [${key}.${field}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis HGET error [${key}.${field}]: ${message}`);
       return null;
     }
   }
 
-  async hset(key: string, field: string, value: any): Promise<void> {
+  async hset<T>(key: string, field: string, value: T): Promise<void> {
     try {
-      await this.redisClient.hset(key, field, JSON.stringify(value));
-    } catch (error) {
-      this.logger.error(`Redis HSET error [${key}.${field}]: ${error.message}`);
+      await this.redisClient.hset(key, field, this.parseData(value));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis HSET error [${key}.${field}]: ${message}`);
     }
   }
 
@@ -143,8 +168,10 @@ export class RedisService implements OnModuleDestroy {
       const fields = Array.isArray(field) ? field : [field];
       if (fields.length === 0) return 0;
       return await this.redisClient.hdel(key, ...fields);
-    } catch (error) {
-      this.logger.error(`Redis HDEL error [${key}]: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      const fieldStr = Array.isArray(field) ? field.join(', ') : field;
+      this.logger.error(`Redis HDEL error [${key}.${fieldStr}]: ${message}`);
       return 0;
     }
   }

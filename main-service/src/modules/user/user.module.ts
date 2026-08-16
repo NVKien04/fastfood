@@ -8,10 +8,7 @@ import { UserService } from '@/modules/user/application/services/user.service';
 import { AddressModule } from '@/modules/address/address.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([UserEntity, UserCouponsEntity]),
-    AddressModule,
-  ],
+  imports: [TypeOrmModule.forFeature([UserEntity, UserCouponsEntity]), AddressModule],
   controllers: [UserController],
   providers: [
     UserService,

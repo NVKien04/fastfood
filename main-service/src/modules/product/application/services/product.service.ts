@@ -12,7 +12,7 @@ import { ProductVariantService } from '@/modules/product-variant/application/ser
 import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import { BusinessException } from '@/common/exception/biz.exception';
 import { ErrorEnum } from '@/common/constants/error-code.constant';
-import { RedisService } from '@/modules/redis/redis.service';
+import { CACHE_SERVICE, type ICacheService } from '@/modules/cache/domain/interface/cache.interface';
 import { REDIS_KEYS, REDIS_TTL } from '@/common/constants/redis.constaint';
 import { ProductHelper } from '@/modules/product/application/helpers/product.helper';
 
@@ -24,11 +24,12 @@ export class ProductService {
     private readonly categoryService: CategoryService,
     private readonly productVariantService: ProductVariantService,
     private readonly ingredientService: IngredientService,
-    private readonly redisService: RedisService,
+    @Inject(CACHE_SERVICE)
+    private readonly cacheService: ICacheService,
   ) {}
 
   private clearProductCache() {
-    return this.redisService.delByPattern(REDIS_KEYS.PRODUCT.PATTERN);
+    return this.cacheService.delByPattern(REDIS_KEYS.PRODUCT.PATTERN);
   }
 
   // ==========================================
@@ -150,7 +151,7 @@ export class ProductService {
    */
   async getPage(filterObject: ProductFilterDto): Promise<PaginationResponse<Product>> {
     const cacheKey = `${REDIS_KEYS.PRODUCT.PAGE}${JSON.stringify(filterObject ?? {})}`;
-    const cached = await this.redisService.get<PaginationResponse<Product>>(cacheKey);
+    const cached = await this.cacheService.get<PaginationResponse<Product>>(cacheKey);
     if (cached) {
       return cached;
     }
@@ -178,7 +179,7 @@ export class ProductService {
     );
 
     const response = buildPaginationResponse(data, totalItems, page, limit);
-    await this.redisService.set(cacheKey, response, REDIS_TTL.PRODUCT_PAGE);
+    await this.cacheService.set(cacheKey, response, REDIS_TTL.PRODUCT_PAGE);
     return response;
   }
 
@@ -246,14 +247,14 @@ export class ProductService {
    */
   async getDetail(productId: string): Promise<ProductDetailResponseDto> {
     const cacheKey = `${REDIS_KEYS.PRODUCT.DETAIL_ID}${productId}`;
-    const cached = await this.redisService.get<ProductDetailResponseDto>(cacheKey);
+    const cached = await this.cacheService.get<ProductDetailResponseDto>(cacheKey);
     if (cached) {
       return cached;
     }
 
     const product = await this.findByIdOrThrow(productId);
     const detail = await ProductHelper.buildDetail(product, this.productVariantService, this.ingredientService);
-    await this.redisService.set(cacheKey, detail, REDIS_TTL.PRODUCT_DETAIL);
+    await this.cacheService.set(cacheKey, detail, REDIS_TTL.PRODUCT_DETAIL);
     return detail;
   }
 
@@ -262,14 +263,14 @@ export class ProductService {
    */
   async getDetailBySlug(slug: string): Promise<ProductDetailResponseDto> {
     const cacheKey = `${REDIS_KEYS.PRODUCT.DETAIL_SLUG}${slug}`;
-    const cached = await this.redisService.get<ProductDetailResponseDto>(cacheKey);
+    const cached = await this.cacheService.get<ProductDetailResponseDto>(cacheKey);
     if (cached) {
       return cached;
     }
 
     const product = await this.findOneOrThrow({ slug });
     const detail = await ProductHelper.buildDetail(product, this.productVariantService, this.ingredientService);
-    await this.redisService.set(cacheKey, detail, REDIS_TTL.PRODUCT_DETAIL);
+    await this.cacheService.set(cacheKey, detail, REDIS_TTL.PRODUCT_DETAIL);
     return detail;
   }
 }

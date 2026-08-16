@@ -6,7 +6,14 @@ import { ProductVariantsEntity } from '@/entities/product_variants.entity';
 import { CombosEntity } from '@/entities/combos.entity';
 import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
 
-import { categories, ingredients, products, productVariants, combos, productIngredients } from '@/database/seeders/data';
+import {
+  categories,
+  ingredients,
+  products,
+  productVariants,
+  combos,
+  productIngredients,
+} from '@/database/seeders/data';
 
 export async function MasterSeed(dataSource: DataSource) {
   console.log('🌱 --- Starting Database Seeding ---');

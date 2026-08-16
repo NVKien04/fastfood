@@ -1,5 +1,5 @@
 import { Product } from '@/modules/product/domain/entities/product.domain';
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { ProductVariant } from '@/modules/product-variant/domain/entities/product-variant.domain';
 import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
 import {
   ProductDetailResponseDto,
@@ -31,7 +31,7 @@ export class ProductHelper {
    */
   static toDetailDto(
     product: Product,
-    rawVariants: ProductVariantsEntity[],
+    rawVariants: ProductVariant[],
     categoryIngredients: Ingredient[],
   ): ProductDetailResponseDto {
     const variants: ProductVariantResponseDto[] = rawVariants.map((v) => ({

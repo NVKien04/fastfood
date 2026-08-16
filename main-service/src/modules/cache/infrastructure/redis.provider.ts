@@ -24,11 +24,11 @@ export const redisProvider: Provider = {
       logger.log(`Connected to Redis successfully (${host}:${port})`);
     });
 
-    client.on('error', (err) => {
+    client.on('error', (err: Error) => {
       logger.error(`Redis connection error (${host}:${port}): ${err.message}`);
     });
 
-    client.connect().catch((err) => {
+    client.connect().catch((err: Error) => {
       logger.error(`Failed to initiate Redis connection: ${err.message}`);
     });
 
