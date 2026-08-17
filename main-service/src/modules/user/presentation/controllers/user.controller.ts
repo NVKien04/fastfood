@@ -8,7 +8,7 @@ import { RoleEnum } from '@/enums/role.enum';
 import { UserService } from '@/modules/user/application/services/user.service';
 import { AddressService } from '@/modules/address/application/services/address.service';
 import { GetUser } from '@/common/decorators/getUser.decorator';
-import type { AuthUser } from '@/common/constants/auth.constant';
+import type { AuthUser } from '@/modules/auth/domain/interface/auth.interface';
 import { CreateAddressDto } from '@/modules/address/presentation/dto/create-address.dto';
 
 @ApiTags('Users')

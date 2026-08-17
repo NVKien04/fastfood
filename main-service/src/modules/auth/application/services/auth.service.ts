@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '@/modules/user/application/services/user.service';
 import { LoginDto } from '@/modules/auth/presentation/dto/login.dto';
 import { CreateUserDto } from '@/modules/user/presentation/dto/create-user.dto';
-import { JwtPayLoad } from '@/common/constants/auth.constant';
+import type { JwtPayLoad, TokenPair } from '@/modules/auth/domain/interface/auth.interface';
 import { ChangePasswordDto } from '@/modules/auth/presentation/dto/change-password.dto';
-import { TokenService, type TokenPair } from '@/modules/auth/application/services/token.service';
+import { TokenService } from '@/modules/auth/application/services/token.service';
 
 @Injectable()
 export class AuthService {

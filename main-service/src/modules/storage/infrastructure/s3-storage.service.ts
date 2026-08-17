@@ -15,7 +15,7 @@ import {
   PresignedUploadUrlResult,
   DEFAULT_ALLOWED_IMAGE_TYPES,
   DEFAULT_MAX_FILE_SIZE_BYTES,
-} from '@/common/constants/storage.constant';
+} from '@/modules/storage/domain/interface/storage.interface';
 
 @Injectable()
 export class S3StorageService implements IStorageService, OnModuleInit {
@@ -55,7 +55,7 @@ export class S3StorageService implements IStorageService, OnModuleInit {
   }
 
   /**
-   * Upload file/image buffer to AWS S3.
+   * Upload file buffer lên AWS S3
    */
   async uploadFile(file: StorageFile, options: UploadOptions = {}): Promise<UploadResult> {
     const {
@@ -105,7 +105,7 @@ export class S3StorageService implements IStorageService, OnModuleInit {
   }
 
   /**
-   * Delete file from AWS S3 using URL or key.
+   * Xóa file khỏi AWS S3 theo key hoặc URL
    */
   async deleteFile(fileUrlOrKey: string): Promise<boolean> {
     if (!fileUrlOrKey) return false;
@@ -130,7 +130,7 @@ export class S3StorageService implements IStorageService, OnModuleInit {
   }
 
   /**
-   * Generate Presigned Upload URL for direct client-side S3 upload.
+   * Sinh Presigned Upload URL cho direct client-side upload
    */
   async getPresignedUploadUrl(options: PresignedUploadUrlOptions): Promise<PresignedUploadUrlResult> {
     const { filename, mimetype, folder = 'uploads', expiresInSeconds = 900 } = options;
@@ -167,14 +167,14 @@ export class S3StorageService implements IStorageService, OnModuleInit {
   }
 
   /**
-   * Get full public URL for a given S3 key.
+   * Lấy URL công khai của file
    */
-  async getPublicUrl(key: string): Promise<string> {
-    return this.buildPublicUrl(key);
+  getPublicUrl(key: string): Promise<string> {
+    return Promise.resolve(this.buildPublicUrl(key));
   }
 
   /**
-   * Extract S3 key from full S3 URL or custom CDN URL.
+   * Trích xuất key từ URL hoặc key thô
    */
   extractKeyFromUrl(fileUrlOrKey: string): string {
     if (!fileUrlOrKey) return '';

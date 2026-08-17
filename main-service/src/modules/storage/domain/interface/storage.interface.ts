@@ -15,7 +15,7 @@ export interface UploadOptions {
 export interface UploadResult {
   key: string;
   url: string;
-  bucket: string;
+  bucket?: string;
   mimetype: string;
   size?: number;
 }
@@ -35,10 +35,29 @@ export interface PresignedUploadUrlResult {
 }
 
 export interface IStorageService {
+  /**
+   * Upload file trực tiếp lên Storage
+   */
   uploadFile(file: StorageFile, options?: UploadOptions): Promise<UploadResult>;
+
+  /**
+   * Xóa file khỏi Storage bằng key hoặc URL
+   */
   deleteFile(fileUrlOrKey: string): Promise<boolean>;
+
+  /**
+   * Tạo Presigned URL cho client upload trực tiếp
+   */
   getPresignedUploadUrl(options: PresignedUploadUrlOptions): Promise<PresignedUploadUrlResult>;
+
+  /**
+   * Lấy URL công khai của file theo key
+   */
   getPublicUrl(key: string): Promise<string>;
+
+  /**
+   * Trích xuất storage key từ URL đầy đủ
+   */
   extractKeyFromUrl(fileUrlOrKey: string): string;
 }
 

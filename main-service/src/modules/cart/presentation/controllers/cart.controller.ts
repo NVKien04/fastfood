@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '@/common/decorators/auth.decorator';
 import { GetUser } from '@/common/decorators/getUser.decorator';
-import type { AuthUser } from '@/common/constants/auth.constant';
+import type { AuthUser } from '@/modules/auth/domain/interface/auth.interface';
 import { CartService } from '../../application/services/cart.service';
 import { AddToCartDto } from '../dto/add-to-cart.dto';
 import { UpdateCartItemDto } from '../dto/update-cart-item.dto';

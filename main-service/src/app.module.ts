@@ -25,8 +25,7 @@ import { UserCouponModule } from '@/modules/user-coupon/user-coupon.module';
 import { NotificationModule } from '@/modules/notification/notification.module';
 import { ComboModule } from '@/modules/combo/combo.module';
 import { CacheModule } from '@/modules/cache/cache.module';
-import { StorageModule } from '@/common/storage/storage.module';
-import { UploadModule } from '@/modules/upload/upload.module';
+import { StorageModule } from '@/modules/storage/storage.module';
 
 @Module({
   imports: [
@@ -79,7 +78,6 @@ import { UploadModule } from '@/modules/upload/upload.module';
     UserCouponModule,
     NotificationModule,
     ComboModule,
-    UploadModule,
   ],
   controllers: [],
   providers: [

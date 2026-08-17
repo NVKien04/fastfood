@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '@/modules/auth/application/services/auth.service';
 import { type Response } from 'express';
-import { CookieName } from '@/common/constants/auth.constant';
+import type { CookieName } from '@/modules/auth/domain/interface/auth.interface';
 import { LoginDto } from '@/modules/auth/presentation/dto/login.dto';
 import { LoginResponseDto } from '@/modules/auth/presentation/dto/login-response.dto';
 import { CreateUserDto } from '@/modules/user/presentation/dto/create-user.dto';

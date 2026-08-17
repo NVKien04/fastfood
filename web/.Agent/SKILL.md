@@ -122,13 +122,13 @@ const filteredProducts = useMemo(() => {
 
 ## 7. File Naming Convention
 
-| File type                                          | Naming                          | Example                                                             |
-| -------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------- |
-| `.tsx` (UI components, modals)                     | **PascalCase**                  | `ProductList.tsx`, `ProductDetailModal.tsx`, `LanguageSwitcher.tsx` |
-| `.tsx` (Next.js App Router conventions)            | **kebab-case / lowercase**      | `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`                |
-| `.helper.ts` (module-specific helpers)             | **`*.helper.ts`**               | `product.helper.ts`, `cart.helper.ts`, `checkout.helper.ts`         |
-| `.slice.ts` (Zustand slices)                       | **`*.slice.ts`**                | `auth.slice.ts`, `cart.slice.ts`, `app.slice.ts`                    |
-| `.ts` (hooks, configs, constants, utils)           | **camelCase** or **kebab-case** | `product-keys.ts`, `query-client.ts`, `i18n.ts`, `currency.ts`      |
+| File type                                | Naming                          | Example                                                             |
+| ---------------------------------------- | ------------------------------- | ------------------------------------------------------------------- |
+| `.tsx` (UI components, modals)           | **PascalCase**                  | `ProductList.tsx`, `ProductDetailModal.tsx`, `LanguageSwitcher.tsx` |
+| `.tsx` (Next.js App Router conventions)  | **kebab-case / lowercase**      | `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`                |
+| `.helper.ts` (module-specific helpers)   | **`*.helper.ts`**               | `product.helper.ts`, `cart.helper.ts`, `checkout.helper.ts`         |
+| `.slice.ts` (Zustand slices)             | **`*.slice.ts`**                | `auth.slice.ts`, `cart.slice.ts`, `app.slice.ts`                    |
+| `.ts` (hooks, configs, constants, utils) | **camelCase** or **kebab-case** | `product-keys.ts`, `query-client.ts`, `i18n.ts`, `currency.ts`      |
 
 ## 8. Project Structure & Directory Responsibilities
 
@@ -185,7 +185,9 @@ services/apis/main/    →  services/react-query/    →  Component (module)
 `.tsx` files should contain **minimal logic**. All data processing, conversions, and formatters **MUST** be extracted into `helpers/` or `utils/`.
 
 ### 1. `utils/` — General / Application-wide Utilities
+
 Common, module-agnostic utility functions used across multiple features throughout the entire application.
+
 - Currency formatting: `formatVND(amount)`, `formatCurrency(amount, currency)`
 - Date & time formatting: `formatDate(date)`, `formatTime(date)`, `formatRelativeTime(date)`
 - String / number formatting, classname mergers (`cn`), etc.
@@ -203,11 +205,13 @@ export const formatVND = (price: number): string => {
 
 // Usage across any component:
 import { formatVND } from '@/utils';
-<span>{formatVND(product.basePrice)}</span>
+<span>{formatVND(product.basePrice)}</span>;
 ```
 
 ### 2. `helpers/` — Module-specific Business Logic & Transformations (`*.helper.ts`)
+
 Logic, calculations, and data conversions tied to a specific domain or module. Organize files by module name with `.helper.ts` suffix (e.g., `helpers/product.helper.ts`, `helpers/checkout.helper.ts`, `helpers/cart.helper.ts`):
+
 - Converting API response DTOs into display models.
 - Sorting product variants / ingredients by price.
 - Calculating dynamic unit prices and totals with selected modifiers.

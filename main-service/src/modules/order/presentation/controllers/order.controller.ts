@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '@/common/decorators/auth.decorator';
 import { GetUser } from '@/common/decorators/getUser.decorator';
-import type { AuthUser } from '@/common/constants/auth.constant';
+import type { AuthUser } from '@/modules/auth/domain/interface/auth.interface';
 import { RoleEnum } from '@/enums/role.enum';
 import { OrderService } from '../../application/services/order.service';
 import { CreateOrderDto } from '../dto/create-order.dto';
