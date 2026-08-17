@@ -1,13 +1,10 @@
-import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
-import { CreateCouponDto } from '@/modules/coupon/presentation/dto/create-coupon.dto';
-import { UpdateCouponDto } from '@/modules/coupon/presentation/dto/update-coupon.dto';
-import { CouponFilterDto } from '@/modules/coupon/presentation/dto/coupon-filter.dto';
+import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { CouponFilterDto, CreateCouponDto, UpdateCouponDto } from '@/modules/coupon/presentation/dto';
 import { Inject, Injectable } from '@nestjs/common';
-import { BusinessException } from '@/common/exception/biz.exception';
-import { ErrorEnum } from '@/common/constants/error-code.constant';
-
+import { BusinessException } from '@/common/exception';
+import { ErrorEnum } from '@/common/constants';
 import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
-import type { ICouponRepository } from '@/modules/coupon/domain/repositories/coupon.repository.interface';
+import { type ICouponRepository } from '@/modules/coupon/domain/repositories/coupon.repository.interface';
 
 @Injectable()
 export class CouponService {

@@ -1,4 +1,4 @@
-import { PaginationOptions } from '@/common/core/pagination';
+import { PaginationOptions } from '@/common/core';
 import { Address } from '@/modules/address/domain/entities/address.domain';
 
 export interface IAddressRepository {

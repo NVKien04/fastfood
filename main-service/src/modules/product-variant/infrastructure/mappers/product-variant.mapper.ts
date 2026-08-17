@@ -1,4 +1,4 @@
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { ProductVariantsEntity } from '@/entities';
 import { ProductVariant } from '@/modules/product-variant/domain/entities/product-variant.domain';
 
 export class ProductVariantMapper {

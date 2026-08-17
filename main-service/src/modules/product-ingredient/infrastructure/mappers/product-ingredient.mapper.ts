@@ -1,4 +1,4 @@
-import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
+import { ProductIngredientsEntity } from '@/entities';
 import { ProductIngredient } from '@/modules/product-ingredient/domain/entities/product-ingredient.domain';
 
 export class ProductIngredientMapper {

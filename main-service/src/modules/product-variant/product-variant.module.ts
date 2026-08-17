@@ -1,4 +1,4 @@
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
+import { ProductVariantsEntity } from '@/entities';
 import { ProductVariantRepository } from '@/modules/product-variant/infrastructure/repositories/product-variant.repository';
 import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
 import { Module } from '@nestjs/common';

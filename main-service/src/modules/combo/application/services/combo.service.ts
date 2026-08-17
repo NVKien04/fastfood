@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { IComboRepository } from '@/modules/combo/domain/repositories/combo.repository.interface';
+import { type IComboRepository } from '@/modules/combo/domain/repositories/combo.repository.interface';
 import { CreateComboDto } from '@/modules/combo/presentation/dto/create-combo.dto';
 import { Combo } from '@/modules/combo/domain/entities/combo.domain';
-import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
-import { BusinessException } from '@/common/exception/biz.exception';
-import { ErrorEnum } from '@/common/constants/error-code.constant';
+import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { BusinessException } from '@/common/exception';
+import { ErrorEnum } from '@/common/constants';
 
 @Injectable()
 export class ComboService {

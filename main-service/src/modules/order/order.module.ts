@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { OrdersEntity } from '@/entities/orders.entity';
-import { OrderItemsEntity } from '@/entities/order-items.entity';
-import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
-import { OrderService } from './application/services/order.service';
-import { OrderController } from './presentation/controllers/order.controller';
-import { OrderTypeOrmRepository } from './infrastructure/repositories/order.typeorm.repository';
+import { OrderItemsEntity, OrderItemsIngredientsEntity, OrdersEntity } from '@/entities';
+import { OrderService } from '@/modules/order/application/services/order.service';
+import { OrderController } from '@/modules/order/presentation/controllers/order.controller';
+import { OrderTypeOrmRepository } from '@/modules/order/infrastructure/repositories/order.typeorm.repository';
 import { ProductModule } from '@/modules/product/product.module';
 import { ProductVariantModule } from '@/modules/product-variant/product-variant.module';
 import { IngredientModule } from '@/modules/ingredient/ingredient.module';

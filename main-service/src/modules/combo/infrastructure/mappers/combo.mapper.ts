@@ -1,4 +1,4 @@
-import { CombosEntity } from '@/entities/combos.entity';
+import { CombosEntity } from '@/entities';
 import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 
 export class ComboMapper {

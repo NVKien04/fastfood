@@ -3,13 +3,10 @@ import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ApiResponseInterceptor } from '@/common/interceptors/response.interceptor';
-import { LoggingInterceptor } from '@/common/interceptors/logging.interceptor';
+import { ApiResponseInterceptor, LoggingInterceptor } from '@/common/interceptors';
 import { StartTimingMiddleware } from '@/common/middleware/start-timing.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { StringValue } from 'ms';
-
-// Domain Modules
 import { UserModule } from '@/modules/user/user.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { CategoryModule } from '@/modules/category/category.module';
@@ -26,6 +23,8 @@ import { NotificationModule } from '@/modules/notification/notification.module';
 import { ComboModule } from '@/modules/combo/combo.module';
 import { CacheModule } from '@/modules/cache/cache.module';
 import { StorageModule } from '@/modules/storage/storage.module';
+
+// Domain Modules
 
 @Module({
   imports: [

@@ -1,11 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '@/common/decorators/auth.decorator';
-import { GetUser } from '@/common/decorators/getUser.decorator';
-import type { AuthUser } from '@/modules/auth/domain/interface/auth.interface';
-import { CartService } from '../../application/services/cart.service';
-import { AddToCartDto } from '../dto/add-to-cart.dto';
-import { UpdateCartItemDto } from '../dto/update-cart-item.dto';
+import { Auth, GetUser } from '@/common/decorators';
+import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
+import { CartService } from '@/modules/cart/application/services/cart.service';
+import { AddToCartDto, UpdateCartItemDto } from '@/modules/cart/presentation/dto';
 
 @ApiTags('Cart')
 @ApiBearerAuth()

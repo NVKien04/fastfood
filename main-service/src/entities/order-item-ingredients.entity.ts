@@ -1,3 +1,4 @@
+import { IngredientsEntity, OrderItemsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,8 +9,6 @@ import {
   ManyToOne,
   DeleteDateColumn,
 } from 'typeorm';
-import { IngredientsEntity } from '@/entities/ingredients.entity';
-import { OrderItemsEntity } from '@/entities/order-items.entity';
 
 @Entity('order-items-ingredients')
 export class OrderItemsIngredientsEntity {

@@ -1,11 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '@/common/decorators/auth.decorator';
-import { CreateCouponDto } from '@/modules/coupon/presentation/dto/create-coupon.dto';
-import { UpdateCouponDto } from '@/modules/coupon/presentation/dto/update-coupon.dto';
-import { CouponFilterDto } from '@/modules/coupon/presentation/dto/coupon-filter.dto';
-import { ApplyCouponDto } from '@/modules/coupon/presentation/dto/apply-coupon.dto';
-import { RoleEnum } from '@/enums/role.enum';
+import { Auth } from '@/common/decorators';
+import { ApplyCouponDto, CouponFilterDto, CreateCouponDto, UpdateCouponDto } from '@/modules/coupon/presentation/dto';
+import { RoleEnum } from '@/enums';
 import { CouponService } from '@/modules/coupon/application/services/coupon.service';
 
 @ApiTags('Coupon')

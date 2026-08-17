@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsOptional, IsUUID, Min } from 'class-validator';
-import { OrderStatus } from '@/enums/order-status.enum';
+import { OrderStatus } from '@/enums';
 
 export class OrderFilterDto {
   @ApiPropertyOptional({ description: 'Trang hiện tại', example: 1, default: 1 })

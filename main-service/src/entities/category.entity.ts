@@ -1,3 +1,4 @@
+import { IngredientsEntity, ProductEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,8 +8,6 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ProductEntity } from '@/entities/product.entity';
-import { IngredientsEntity } from '@/entities/ingredients.entity';
 
 @Entity('category')
 export class CategoryEntity {

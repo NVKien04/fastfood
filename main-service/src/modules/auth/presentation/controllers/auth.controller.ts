@@ -1,17 +1,14 @@
-import ms, { StringValue } from 'ms';
 import { Body, Controller, Post, Request, Res, UnauthorizedException } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '@/modules/auth/application/services/auth.service';
 import { type Response } from 'express';
-import type { CookieName } from '@/modules/auth/domain/interface/auth.interface';
-import { LoginDto } from '@/modules/auth/presentation/dto/login.dto';
-import { LoginResponseDto } from '@/modules/auth/presentation/dto/login-response.dto';
-import { CreateUserDto } from '@/modules/user/presentation/dto/create-user.dto';
-import { UserResponseDto } from '@/modules/user/presentation/dto/response-user.dto';
-import { ChangePasswordDto } from '@/modules/auth/presentation/dto/change-password.dto';
-import { Auth } from '@/common/decorators/auth.decorator';
-import { RoleEnum } from '@/enums/role.enum';
+import { type CookieName } from '@/modules/auth/domain/interface/auth.interface';
+import { ChangePasswordDto, LoginDto, LoginResponseDto } from '@/modules/auth/presentation/dto';
+import { CreateUserDto, UserResponseDto } from '@/modules/user/presentation/dto';
+import { Auth } from '@/common/decorators';
+import { RoleEnum } from '@/enums';
+import ms, { StringValue } from 'ms';
 
 @ApiTags('Auth')
 @Controller('auth')

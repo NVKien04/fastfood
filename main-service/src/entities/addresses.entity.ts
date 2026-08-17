@@ -1,3 +1,4 @@
+import { OrdersEntity, UserEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,8 +10,6 @@ import {
   DeleteDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { UserEntity } from '@/entities/user.entity';
-import { OrdersEntity } from '@/entities/orders.entity';
 
 @Entity('addresses')
 export class AddressesEntity {

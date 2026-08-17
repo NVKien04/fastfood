@@ -1,3 +1,4 @@
+import { UserCouponsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,7 +8,6 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { UserCouponsEntity } from '@/entities/user-coupons.entity';
 
 @Entity('coupons')
 export class CouponsEntity {

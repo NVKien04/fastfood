@@ -1,7 +1,7 @@
-// response-user.dto.ts
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { RoleEnum } from '@/enums/role.enum';
+import { RoleEnum } from '@/enums';
+// response-user.dto.ts
 
 @Exclude()
 export class UserResponseDto {

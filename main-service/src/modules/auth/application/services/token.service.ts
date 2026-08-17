@@ -2,9 +2,9 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { StringValue } from 'ms';
-import type { JwtPayLoad, TokenPair } from '@/modules/auth/domain/interface/auth.interface';
+import { type JwtPayLoad, TokenPair } from '@/modules/auth/domain/interface/auth.interface';
 import { RefreshToken } from '@/modules/auth/domain/entities/refresh-token.domain';
-import type { IRefreshTokenRepository } from '@/modules/auth/domain/repositories/refresh-token.repository.interface';
+import { type IRefreshTokenRepository } from '@/modules/auth/domain/repositories/refresh-token.repository.interface';
 
 @Injectable()
 export class TokenService {

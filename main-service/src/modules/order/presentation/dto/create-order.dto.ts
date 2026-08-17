@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
-import { PaymentMethod } from '@/enums/payment-method.enum';
+import { PaymentMethod } from '@/enums';
 
 export class CreateOrderItemIngredientDto {
   @ApiProperty({ description: 'ID nguyên liệu / topping', example: 1 })

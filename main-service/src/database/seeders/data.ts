@@ -1,6 +1,5 @@
+import { SizeEnum, TypeEnum } from '@/enums';
 // Auto-extracted and generated from raw_page.html (Pizza Hut Vietnam Data)
-import { SizeEnum } from '@/enums/size.enum';
-import { TypeEnum } from '@/enums/type.enum';
 
 export const categories = [
   {

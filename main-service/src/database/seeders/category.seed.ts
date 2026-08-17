@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { CategoryEntity } from '@/entities/category.entity';
+import { CategoryEntity } from '@/entities';
 import { categories } from '@/database/seeders/data';
 
 export async function CategoriesSeed(dataSource: DataSource) {

@@ -1,13 +1,13 @@
 import { Product } from '@/modules/product/domain/entities/product.domain';
 import { ProductVariant } from '@/modules/product-variant/domain/entities/product-variant.domain';
 import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
+import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
+import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import {
   ProductDetailResponseDto,
   ProductVariantResponseDto,
   ProductIngredientResponseDto,
-} from '@/modules/product/presentation/dto/product-detail-response.dto';
-import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
-import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
+} from '@/modules/product/presentation/dto';
 
 export class ProductHelper {
   /**

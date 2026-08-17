@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { RefreshTokensEntity } from '@/entities/refresh-tokens.entity';
+import { RefreshTokensEntity } from '@/entities';
 import { IRefreshTokenRepository } from '@/modules/auth/domain/repositories/refresh-token.repository.interface';
 import { RefreshToken } from '@/modules/auth/domain/entities/refresh-token.domain';
 import { RefreshTokenMapper } from '@/modules/auth/infrastructure/mappers/refresh-token.mapper';

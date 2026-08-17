@@ -1,13 +1,10 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '@/common/decorators/auth.decorator';
-import { GetUser } from '@/common/decorators/getUser.decorator';
-import type { AuthUser } from '@/modules/auth/domain/interface/auth.interface';
-import { RoleEnum } from '@/enums/role.enum';
-import { OrderService } from '../../application/services/order.service';
-import { CreateOrderDto } from '../dto/create-order.dto';
-import { OrderFilterDto } from '../dto/order-filter.dto';
-import { OrderStatus } from '@/enums/order-status.enum';
+import { Auth, GetUser } from '@/common/decorators';
+import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
+import { OrderStatus, RoleEnum } from '@/enums';
+import { OrderService } from '@/modules/order/application/services/order.service';
+import { CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
 
 @ApiTags('Order')
 @Controller('order')

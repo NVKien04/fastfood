@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { ProductEntity } from '@/entities/product.entity';
+import { ProductEntity } from '@/entities';
 import { Product } from '@/modules/product/domain/entities/product.domain';
+import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.mapper';
 import {
   IProductRepository,
   ProductFilterOptions,
 } from '@/modules/product/domain/repositories/product.repository.interface';
-import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.mapper';
 
 @Injectable()
 export class ProductTypeOrmRepository implements IProductRepository {

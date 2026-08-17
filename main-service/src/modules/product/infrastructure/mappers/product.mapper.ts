@@ -1,4 +1,4 @@
-import { ProductEntity } from '@/entities/product.entity';
+import { ProductEntity } from '@/entities';
 import { Product } from '@/modules/product/domain/entities/product.domain';
 
 export class ProductMapper {

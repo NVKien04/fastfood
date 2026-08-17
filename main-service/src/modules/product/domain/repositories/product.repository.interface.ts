@@ -1,4 +1,4 @@
-import { PaginationOptions } from '@/common/core/pagination';
+import { PaginationOptions } from '@/common/core';
 import { Product } from '@/modules/product/domain/entities/product.domain';
 
 export interface ProductFilterOptions extends PaginationOptions {

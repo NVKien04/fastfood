@@ -1,4 +1,4 @@
-import { PaginationOptions } from '@/common/core/pagination';
+import { PaginationOptions } from '@/common/core';
 import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 
 export interface IComboRepository {

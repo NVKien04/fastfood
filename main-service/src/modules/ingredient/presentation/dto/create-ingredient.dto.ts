@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsInt, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateIngredientDto {
   @ApiProperty({ description: 'Tên nguyên liệu', example: 'Double Cheese' })

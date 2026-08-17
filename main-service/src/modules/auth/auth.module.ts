@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from '@/modules/auth/presentation/controllers/auth.controller';
-import { RefreshTokensEntity } from '@/entities/refresh-tokens.entity';
-import { AuthorizationGuard } from '@/guards/authorization.guard';
-import { JwtAuthGuard } from '@/guards/jwt.guard';
-import { LocalAuthGuard } from '@/guards/local-auth.guard';
+import { RefreshTokensEntity } from '@/entities';
+import { AuthorizationGuard, JwtAuthGuard, LocalAuthGuard } from '@/guards';
 import { UserModule } from '@/modules/user/user.module';
 import { AuthService } from '@/modules/auth/application/services/auth.service';
 import { TokenService } from '@/modules/auth/application/services/token.service';

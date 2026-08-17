@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { CombosEntity } from '@/entities/combos.entity';
-import { PaginationOptions } from '@/common/core/pagination';
+import { CombosEntity } from '@/entities';
+import { PaginationOptions } from '@/common/core';
 import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 import { IComboRepository } from '@/modules/combo/domain/repositories/combo.repository.interface';
 import { ComboMapper } from '@/modules/combo/infrastructure/mappers/combo.mapper';

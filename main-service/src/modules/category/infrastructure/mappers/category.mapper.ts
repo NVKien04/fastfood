@@ -1,4 +1,4 @@
-import { CategoryEntity } from '@/entities/category.entity';
+import { CategoryEntity } from '@/entities';
 import { Category } from '@/modules/category/domain/entities/category.domain';
 import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.mapper';
 

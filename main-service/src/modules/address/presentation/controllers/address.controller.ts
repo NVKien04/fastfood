@@ -1,9 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '@/common/decorators/auth.decorator';
-import { CreateAddressDto } from '@/modules/address/presentation/dto/create-address.dto';
-import { UpdateAddressDto } from '@/modules/address/presentation/dto/update-address.dto';
-import { RoleEnum } from '@/enums/role.enum';
+import { Auth } from '@/common/decorators';
+import { CreateAddressDto, UpdateAddressDto } from '@/modules/address/presentation/dto';
+import { RoleEnum } from '@/enums';
 import { AddressService } from '@/modules/address/application/services/address.service';
 
 interface AuthenticatedRequest {

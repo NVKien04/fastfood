@@ -1,9 +1,8 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '@/common/decorators/auth.decorator';
-import { CreateCategoryDto } from '@/modules/category/presentation/dto/create-category.dto';
-import { UpdateCategoryDto } from '@/modules/category/presentation/dto/update-category.dto';
-import { RoleEnum } from '@/enums/role.enum';
+import { Auth } from '@/common/decorators';
+import { CreateCategoryDto, UpdateCategoryDto } from '@/modules/category/presentation/dto';
+import { RoleEnum } from '@/enums';
 import { CategoryService } from '@/modules/category/application/services/category.service';
 
 @ApiTags('Category')

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { ERROR_MAP, ErrorEnum } from '@/common/constants/error-code.constant';
+import { ERROR_MAP, ErrorEnum } from '@/common/constants';
 
 /**
  * BusinessException - Exception lỗi nghiệp vụ tập trung (hỗ trợ i18n).

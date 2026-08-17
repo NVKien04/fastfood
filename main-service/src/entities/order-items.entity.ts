@@ -1,4 +1,11 @@
 import {
+  CombosEntity,
+  OrderItemsIngredientsEntity,
+  OrdersEntity,
+  ProductEntity,
+  ProductVariantsEntity,
+} from '@/entities';
+import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -9,11 +16,6 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ProductEntity } from '@/entities/product.entity';
-import { OrdersEntity } from '@/entities/orders.entity';
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
-import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
-import { CombosEntity } from '@/entities/combos.entity';
 
 @Entity('order-items')
 export class OrderItemsEntity {

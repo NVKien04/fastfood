@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsInt, Min, Max } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreateAddressDto {
   @ApiProperty({ description: 'Tên đường, số nhà', example: '123 Đường Nguyễn Trãi' })

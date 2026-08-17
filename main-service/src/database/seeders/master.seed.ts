@@ -1,10 +1,12 @@
 import { DataSource } from 'typeorm';
-import { CategoryEntity } from '@/entities/category.entity';
-import { IngredientsEntity } from '@/entities/ingredients.entity';
-import { ProductEntity } from '@/entities/product.entity';
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
-import { CombosEntity } from '@/entities/combos.entity';
-import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
+import {
+  CategoryEntity,
+  CombosEntity,
+  IngredientsEntity,
+  ProductEntity,
+  ProductIngredientsEntity,
+  ProductVariantsEntity,
+} from '@/entities';
 
 import {
   categories,

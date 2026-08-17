@@ -1,6 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { SizeEnum } from '@/enums/size.enum';
-import { TypeEnum } from '@/enums/type.enum';
+import { SizeEnum, TypeEnum } from '@/enums';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Variant Response

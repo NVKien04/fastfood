@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { UserEntity } from '@/entities/user.entity';
-import { PaginationOptions } from '@/common/core/pagination';
+import { UserEntity } from '@/entities';
+import { PaginationOptions } from '@/common/core';
 import { User } from '@/modules/user/domain/entities/user.domain';
 import { IUserRepository } from '@/modules/user/domain/repositories/user.repository.interface';
 import { UserMapper } from '@/modules/user/infrastructure/mappers/user.mapper';

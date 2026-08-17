@@ -1,4 +1,4 @@
-import { PaginationOptions } from '@/common/core/pagination';
+import { PaginationOptions } from '@/common/core';
 import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
 
 export interface IIngredientRepository {

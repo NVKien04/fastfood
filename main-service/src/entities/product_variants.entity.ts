@@ -1,3 +1,5 @@
+import { CartItemsEntity, OrderItemsEntity, ProductEntity } from '@/entities';
+import { SizeEnum, TypeEnum } from '@/enums';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,11 +11,6 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ProductEntity } from '@/entities/product.entity';
-import { SizeEnum } from '@/enums/size.enum';
-import { TypeEnum } from '@/enums/type.enum';
-import { CartItemsEntity } from '@/entities/cart-items.entity';
-import { OrderItemsEntity } from '@/entities/order-items.entity';
 
 @Entity('product_variants')
 export class ProductVariantsEntity {

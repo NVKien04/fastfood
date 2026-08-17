@@ -1,3 +1,4 @@
+import { CartItemIngredientsEntity, CategoryEntity, OrderItemsIngredientsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,9 +10,6 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { CategoryEntity } from '@/entities/category.entity';
-import { CartItemIngredientsEntity } from '@/entities/cart-item-ingredient.entity';
-import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
 
 @Entity('ingredients')
 export class IngredientsEntity {

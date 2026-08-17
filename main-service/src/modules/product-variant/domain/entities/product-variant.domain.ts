@@ -1,5 +1,4 @@
-import { SizeEnum } from '@/enums/size.enum';
-import { TypeEnum } from '@/enums/type.enum';
+import { SizeEnum, TypeEnum } from '@/enums';
 
 export class ProductVariant {
   id: number;

@@ -1,17 +1,18 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CartItemsEntity } from '@/entities/cart-items.entity';
-import { CartItemIngredientsEntity } from '@/entities/cart-item-ingredient.entity';
-import { ProductEntity } from '@/entities/product.entity';
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
-import { IngredientsEntity } from '@/entities/ingredients.entity';
-import { AddToCartDto } from '../../presentation/dto/add-to-cart.dto';
-import { UpdateCartItemDto } from '../../presentation/dto/update-cart-item.dto';
-import { BusinessException } from '@/common/exception/biz.exception';
-import { ErrorEnum } from '@/common/constants/error-code.constant';
-import { Cart } from '../../domain/entities/cart.domain';
-import type { ICartRepository } from '../../domain/repositories/cart.repository.interface';
+import { AddToCartDto, UpdateCartItemDto } from '@/modules/cart/presentation/dto';
+import { BusinessException } from '@/common/exception';
+import { ErrorEnum } from '@/common/constants';
+import { Cart } from '@/modules/cart/domain/entities/cart.domain';
+import { type ICartRepository } from '@/modules/cart/domain/repositories/cart.repository.interface';
+import {
+  CartItemsEntity,
+  CartItemIngredientsEntity,
+  ProductEntity,
+  ProductVariantsEntity,
+  IngredientsEntity,
+} from '@/entities';
 
 @Injectable()
 export class CartService {

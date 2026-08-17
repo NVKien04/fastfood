@@ -1,6 +1,5 @@
-import { OrderStatus } from '@/enums/order-status.enum';
-import { PaymentMethod } from '@/enums/payment-method.enum';
-import { PaymentStatus } from '@/enums/payment-status.enum';
+import { OrderStatus, PaymentMethod, PaymentStatus } from '@/enums';
+import { AddressesEntity, OrderItemsEntity, UserEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -12,9 +11,6 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { UserEntity } from '@/entities/user.entity';
-import { AddressesEntity } from '@/entities/addresses.entity';
-import { OrderItemsEntity } from '@/entities/order-items.entity';
 
 @Entity('orders')
 export class OrdersEntity {

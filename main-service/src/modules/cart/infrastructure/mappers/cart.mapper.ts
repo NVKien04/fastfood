@@ -1,5 +1,5 @@
-import { CartEntity } from '@/entities/cart.entity';
-import { Cart } from '../../domain/entities/cart.domain';
+import { CartEntity } from '@/entities';
+import { Cart } from '@/modules/cart/domain/entities/cart.domain';
 
 export class CartMapper {
   static toDomain(entity: CartEntity): Cart {

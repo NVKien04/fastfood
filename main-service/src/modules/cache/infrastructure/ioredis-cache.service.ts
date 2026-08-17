@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import Redis from 'ioredis';
 import { REDIS_CLIENT } from '@/modules/cache/infrastructure/redis.provider';
 import { ICacheService } from '@/modules/cache/domain/interface/cache.interface';
+import Redis from 'ioredis';
 
 @Injectable()
 export class RedisCacheService implements ICacheService, OnModuleDestroy {

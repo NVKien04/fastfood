@@ -1,4 +1,4 @@
-import { AddressesEntity } from '@/entities/addresses.entity';
+import { AddressesEntity } from '@/entities';
 import { Address } from '@/modules/address/domain/entities/address.domain';
 
 export class AddressMapper {

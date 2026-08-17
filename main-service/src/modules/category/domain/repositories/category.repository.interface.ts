@@ -1,4 +1,4 @@
-import { PaginationOptions } from '@/common/core/pagination';
+import { PaginationOptions } from '@/common/core';
 import { Category } from '@/modules/category/domain/entities/category.domain';
 
 export interface ICategoryRepository {

@@ -1,15 +1,12 @@
-import { UpdateUserDto } from '@/modules/user/presentation/dto/update-user.dto';
-import { UserFilterDto } from '@/modules/user/presentation/dto/user-filter.dto';
-import { UserResponseDto } from '@/modules/user/presentation/dto/response-user.dto';
+import { UpdateUserDto, UserFilterDto, UserResponseDto } from '@/modules/user/presentation/dto';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '@/common/decorators/auth.decorator';
-import { RoleEnum } from '@/enums/role.enum';
+import { Auth, GetUser } from '@/common/decorators';
+import { RoleEnum } from '@/enums';
 import { UserService } from '@/modules/user/application/services/user.service';
 import { AddressService } from '@/modules/address/application/services/address.service';
-import { GetUser } from '@/common/decorators/getUser.decorator';
-import type { AuthUser } from '@/modules/auth/domain/interface/auth.interface';
-import { CreateAddressDto } from '@/modules/address/presentation/dto/create-address.dto';
+import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
+import { CreateAddressDto } from '@/modules/address/presentation/dto';
 
 @ApiTags('Users')
 @Controller('users')

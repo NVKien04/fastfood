@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsInt, Min, IsDateString } from 'class-validator';
+import { IsDateString, IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateCouponDto {
   @ApiProperty({ description: 'Mã coupon', example: 'KM50K' })

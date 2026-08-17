@@ -1,5 +1,4 @@
-import { CouponsEntity } from '@/entities/coupons.entity';
-import { UserCouponsEntity } from '@/entities/user-coupons.entity';
+import { CouponsEntity, UserCouponsEntity } from '@/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

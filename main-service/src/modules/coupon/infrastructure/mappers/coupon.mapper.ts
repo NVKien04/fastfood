@@ -1,4 +1,4 @@
-import { CouponsEntity } from '@/entities/coupons.entity';
+import { CouponsEntity } from '@/entities';
 import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
 
 export class CouponMapper {

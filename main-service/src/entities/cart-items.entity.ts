@@ -1,3 +1,4 @@
+import { CartEntity, CartItemIngredientsEntity, CombosEntity, ProductEntity, ProductVariantsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,11 +10,6 @@ import {
   DeleteDateColumn,
   OneToMany,
 } from 'typeorm';
-import { ProductVariantsEntity } from '@/entities/product_variants.entity';
-import { ProductEntity } from '@/entities/product.entity';
-import { CartEntity } from '@/entities/cart.entity';
-import { CartItemIngredientsEntity } from '@/entities/cart-item-ingredient.entity';
-import { CombosEntity } from '@/entities/combos.entity';
 
 @Entity('cart_items')
 export class CartItemsEntity {

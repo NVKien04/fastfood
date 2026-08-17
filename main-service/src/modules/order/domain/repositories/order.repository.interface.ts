@@ -1,7 +1,7 @@
-import { Order } from '../entities/order.domain';
-import { OrderFilterDto } from '../../presentation/dto/order-filter.dto';
-import { PaginationResponse } from '@/common/core/pagination';
-import { OrderStatus } from '@/enums/order-status.enum';
+import { Order } from '@/modules/order/domain/entities/order.domain';
+import { type OrderFilterDto } from '@/modules/order/presentation/dto';
+import { type PaginationResponse } from '@/common/core';
+import { type OrderStatus } from '@/enums';
 
 export interface IOrderRepository {
   saveOrder(order: Order): Promise<Order>;

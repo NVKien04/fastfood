@@ -1,3 +1,5 @@
+import { UserEntity } from '@/entities';
+import { NotificationType } from '@/enums';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,8 +10,6 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { UserEntity } from '@/entities/user.entity';
-import { NotificationType } from '@/enums/notification-type.enum';
 
 @Entity('notifications')
 export class NotificationEntity {

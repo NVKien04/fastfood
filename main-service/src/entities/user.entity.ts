@@ -1,4 +1,5 @@
-import { RoleEnum } from '@/enums/role.enum';
+import { RoleEnum } from '@/enums';
+import { AddressesEntity, CartEntity, NotificationEntity, OrdersEntity, UserCouponsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,11 +10,6 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { AddressesEntity } from '@/entities/addresses.entity';
-import { UserCouponsEntity } from '@/entities/user-coupons.entity';
-import { OrdersEntity } from '@/entities/orders.entity';
-import { CartEntity } from '@/entities/cart.entity';
-import { NotificationEntity } from '@/entities/notification.entity';
 
 @Entity('users')
 export class UserEntity {

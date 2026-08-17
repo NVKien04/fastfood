@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CartEntity } from '@/entities/cart.entity';
-import { CartItemsEntity } from '@/entities/cart-items.entity';
-import { CartItemIngredientsEntity } from '@/entities/cart-item-ingredient.entity';
-import { Cart } from '../../domain/entities/cart.domain';
-import { ICartRepository } from '../../domain/repositories/cart.repository.interface';
-import { CartMapper } from '../mappers/cart.mapper';
+import { CartEntity, CartItemIngredientsEntity, CartItemsEntity } from '@/entities';
+import { Cart } from '@/modules/cart/domain/entities/cart.domain';
+import { ICartRepository } from '@/modules/cart/domain/repositories/cart.repository.interface';
+import { CartMapper } from '@/modules/cart/infrastructure/mappers/cart.mapper';
 
 @Injectable()
 export class CartTypeOrmRepository implements ICartRepository {

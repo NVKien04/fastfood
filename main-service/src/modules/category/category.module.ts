@@ -1,9 +1,7 @@
-import { IngredientsEntity } from '@/entities/ingredients.entity';
-import { ProductEntity } from '@/entities/product.entity';
+import { CategoryEntity, IngredientsEntity, ProductEntity } from '@/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryController } from '@/modules/category/presentation/controllers/category.controller';
-import { CategoryEntity } from '@/entities/category.entity';
 import { CategoryTypeOrmRepository } from '@/modules/category/infrastructure/repositories/category.typeorm.repository';
 import { CategoryService } from '@/modules/category/application/services/category.service';
 

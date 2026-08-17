@@ -1,7 +1,7 @@
-import { AddressesEntity } from '@/entities/addresses.entity';
+import { AddressesEntity } from '@/entities';
 import { AddressTypeOrmRepository } from '@/modules/address/infrastructure/repositories/address.typeorm.repository';
 import { AddressService } from '@/modules/address/application/services/address.service';
-import { forwardRef, Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '@/modules/user/user.module';
 import { AddressController } from '@/modules/address/presentation/controllers/address.controller';

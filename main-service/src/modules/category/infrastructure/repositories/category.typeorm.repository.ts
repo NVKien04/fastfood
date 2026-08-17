@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { CategoryEntity } from '@/entities/category.entity';
-import { PaginationOptions } from '@/common/core/pagination';
+import { CategoryEntity } from '@/entities';
+import { PaginationOptions } from '@/common/core';
 import { Category } from '@/modules/category/domain/entities/category.domain';
 import { ICategoryRepository } from '@/modules/category/domain/repositories/category.repository.interface';
 import { CategoryMapper } from '@/modules/category/infrastructure/mappers/category.mapper';

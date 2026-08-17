@@ -1,7 +1,5 @@
-import { OrdersEntity } from '@/entities/orders.entity';
-import { OrderItemsEntity } from '@/entities/order-items.entity';
-import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
-import { Order, OrderItem, OrderItemIngredient } from '../../domain/entities/order.domain';
+import { OrderItemsEntity, OrderItemsIngredientsEntity, OrdersEntity } from '@/entities';
+import { Order, OrderItem, OrderItemIngredient } from '@/modules/order/domain/entities/order.domain';
 
 export class OrderMapper {
   static toDomainIngredient(entity: OrderItemsIngredientsEntity): OrderItemIngredient {

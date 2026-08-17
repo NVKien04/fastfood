@@ -1,4 +1,4 @@
-import { Cart } from '../entities/cart.domain';
+import { Cart } from '@/modules/cart/domain/entities/cart.domain';
 
 export interface ICartRepository {
   findByUserId(userId: string): Promise<Cart | null>;

@@ -1,18 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { OrdersEntity } from '@/entities/orders.entity';
-import { OrderItemsEntity } from '@/entities/order-items.entity';
-import { OrderItemsIngredientsEntity } from '@/entities/order-item-ingredients.entity';
-import { Order } from '../../domain/entities/order.domain';
-import { IOrderRepository } from '../../domain/repositories/order.repository.interface';
-import { OrderMapper } from '../mappers/order.mapper';
-import { OrderFilterDto } from '../../presentation/dto/order-filter.dto';
-import { OrderStatus } from '@/enums/order-status.enum';
-import { PaymentStatus } from '@/enums/payment-status.enum';
-import { BusinessException } from '@/common/exception/biz.exception';
-import { ErrorEnum } from '@/common/constants/error-code.constant';
-import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
+import { OrderItemsEntity, OrderItemsIngredientsEntity, OrdersEntity } from '@/entities';
+import { Order } from '@/modules/order/domain/entities/order.domain';
+import { IOrderRepository } from '@/modules/order/domain/repositories/order.repository.interface';
+import { OrderMapper } from '@/modules/order/infrastructure/mappers/order.mapper';
+import { type OrderFilterDto } from '@/modules/order/presentation/dto';
+import { OrderStatus, PaymentStatus } from '@/enums';
+import { BusinessException } from '@/common/exception';
+import { ErrorEnum } from '@/common/constants';
+import { buildPaginationResponse, type PaginationResponse } from '@/common/core';
 
 @Injectable()
 export class OrderTypeOrmRepository implements IOrderRepository {

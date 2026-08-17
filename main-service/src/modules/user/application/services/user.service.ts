@@ -1,16 +1,13 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto } from '@/modules/user/presentation/dto/create-user.dto';
-import { RoleEnum } from '@/enums/role.enum';
-import { HashUtil } from '@/utils/hash.util';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from '@/modules/user/presentation/dto';
+import { RoleEnum } from '@/enums';
+import { HashUtil } from '@/utils';
 import { UserMapper } from '@/modules/user/infrastructure/mappers/user.mapper';
-import { UserResponseDto } from '@/modules/user/presentation/dto/response-user.dto';
-import { UpdateUserDto } from '@/modules/user/presentation/dto/update-user.dto';
-import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
-import { BusinessException } from '@/common/exception/biz.exception';
-import { ErrorEnum } from '@/common/constants/error-code.constant';
-
+import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { BusinessException } from '@/common/exception';
+import { ErrorEnum } from '@/common/constants';
 import { User } from '@/modules/user/domain/entities/user.domain';
-import type { IUserRepository } from '@/modules/user/domain/repositories/user.repository.interface';
+import { type IUserRepository } from '@/modules/user/domain/repositories/user.repository.interface';
 
 @Injectable()
 export class UserService {

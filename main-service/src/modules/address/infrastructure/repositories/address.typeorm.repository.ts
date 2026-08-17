@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { AddressesEntity } from '@/entities/addresses.entity';
-import { PaginationOptions } from '@/common/core/pagination';
+import { AddressesEntity } from '@/entities';
+import { PaginationOptions } from '@/common/core';
 import { Address } from '@/modules/address/domain/entities/address.domain';
 import { IAddressRepository } from '@/modules/address/domain/repositories/address.repository.interface';
 import { AddressMapper } from '@/modules/address/infrastructure/mappers/address.mapper';

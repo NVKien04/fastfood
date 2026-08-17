@@ -1,4 +1,4 @@
-import { PaginationOptions } from '@/common/core/pagination';
+import { PaginationOptions } from '@/common/core';
 import { ProductVariant } from '@/modules/product-variant/domain/entities/product-variant.domain';
 
 export interface IProductVariantRepository {

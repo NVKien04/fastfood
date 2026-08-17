@@ -1,19 +1,15 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-
-import { OrderStatus } from '@/enums/order-status.enum';
-import { PaymentStatus } from '@/enums/payment-status.enum';
-import { PaymentMethod } from '@/enums/payment-method.enum';
-import { BusinessException } from '@/common/exception/biz.exception';
-import { ErrorEnum } from '@/common/constants/error-code.constant';
-import { PaginationResponse } from '@/common/core/pagination';
-import { Order, OrderItem, OrderItemIngredient } from '../../domain/entities/order.domain';
-import type { IOrderRepository } from '../../domain/repositories/order.repository.interface';
+import { OrderStatus, PaymentMethod, PaymentStatus } from '@/enums';
+import { BusinessException } from '@/common/exception';
+import { ErrorEnum } from '@/common/constants';
+import { PaginationResponse } from '@/common/core';
+import { Order, OrderItem, OrderItemIngredient } from '@/modules/order/domain/entities/order.domain';
+import { type IOrderRepository } from '@/modules/order/domain/repositories/order.repository.interface';
 import { ProductService } from '@/modules/product/application/services/product.service';
 import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
 import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import { CouponService } from '@/modules/coupon/application/services/coupon.service';
-import { CreateOrderDto } from '../../presentation/dto/create-order.dto';
-import { OrderFilterDto } from '../../presentation/dto/order-filter.dto';
+import { CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
 
 @Injectable()
 export class OrderService {

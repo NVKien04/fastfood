@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
-import { PaginationOptions } from '@/common/core/pagination';
-import { ProductIngredientsEntity } from '@/entities/product_ingredients.entity';
+import { PaginationOptions } from '@/common/core';
+import { ProductIngredientsEntity } from '@/entities';
 import { ProductIngredient } from '@/modules/product-ingredient/domain/entities/product-ingredient.domain';
 import { IProductIngredientRepository } from '@/modules/product-ingredient/domain/repositories/product-ingredient.repository.interface';
 import { ProductIngredientMapper } from '@/modules/product-ingredient/infrastructure/mappers/product-ingredient.mapper';

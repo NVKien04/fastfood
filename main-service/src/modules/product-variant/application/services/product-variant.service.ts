@@ -1,7 +1,7 @@
-import { buildPaginationResponse, PaginationResponse } from '@/common/core/pagination';
-import { CreateProductVariantDto } from '@/modules/product/presentation/dto/create-product.dto';
+import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { CreateProductVariantDto } from '@/modules/product/presentation/dto';
 import { ProductVariant } from '@/modules/product-variant/domain/entities/product-variant.domain';
-import type { IProductVariantRepository } from '@/modules/product-variant/domain/repositories/product-variant.repository.interface';
+import { type IProductVariantRepository } from '@/modules/product-variant/domain/repositories/product-variant.repository.interface';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
