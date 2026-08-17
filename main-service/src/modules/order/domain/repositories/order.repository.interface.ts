@@ -9,4 +9,5 @@ export interface IOrderRepository {
   findByUserId(userId: string): Promise<Order[]>;
   findPaginated(filter: OrderFilterDto): Promise<PaginationResponse<Order>>;
   updateStatus(id: string, status: OrderStatus): Promise<Order | null>;
+  cancelOrder(id: string, reason?: string): Promise<Order | null>;
 }

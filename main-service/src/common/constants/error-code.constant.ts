@@ -29,6 +29,10 @@ export enum ErrorEnum {
   // ========== Cart & Order ==========
   CART_EMPTY = 'CART_EMPTY',
   ORDER_NOT_FOUND = 'ORDER_NOT_FOUND',
+  ORDER_CANNOT_CANCEL = 'ORDER_CANNOT_CANCEL',
+  ORDER_INVALID_STATUS_TRANSITION = 'ORDER_INVALID_STATUS_TRANSITION',
+  ORDER_DELIVERY_INFO_REQUIRED = 'ORDER_DELIVERY_INFO_REQUIRED',
+  ORDER_ACCESS_DENIED = 'ORDER_ACCESS_DENIED',
 
   // ========== Coupon ==========
   COUPON_NOT_FOUND = 'COUPON_NOT_FOUND',
@@ -91,6 +95,22 @@ export const ERROR_MAP: Record<ErrorEnum, ErrorDetail> = {
   // Cart & Order
   [ErrorEnum.CART_EMPTY]: { httpStatus: HttpStatus.BAD_REQUEST, message: 'Cart is empty' },
   [ErrorEnum.ORDER_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, message: 'Order not found' },
+  [ErrorEnum.ORDER_CANNOT_CANCEL]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'Order cannot be cancelled in current status',
+  },
+  [ErrorEnum.ORDER_INVALID_STATUS_TRANSITION]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'Invalid order status transition',
+  },
+  [ErrorEnum.ORDER_DELIVERY_INFO_REQUIRED]: {
+    httpStatus: HttpStatus.BAD_REQUEST,
+    message: 'Guest name, phone and address are required for guest orders',
+  },
+  [ErrorEnum.ORDER_ACCESS_DENIED]: {
+    httpStatus: HttpStatus.FORBIDDEN,
+    message: 'You do not have permission to access this order',
+  },
 
   // Coupon
   [ErrorEnum.COUPON_NOT_FOUND]: { httpStatus: HttpStatus.NOT_FOUND, message: 'Coupon not found' },

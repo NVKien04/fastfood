@@ -23,6 +23,7 @@ import { NotificationModule } from '@/modules/notification/notification.module';
 import { ComboModule } from '@/modules/combo/combo.module';
 import { CacheModule } from '@/modules/cache/cache.module';
 import { StorageModule } from '@/modules/storage/storage.module';
+import { DeliverySimulationModule } from '@/modules/delivery-simulation/delivery-simulation.module';
 
 // Domain Modules
 
@@ -77,6 +78,7 @@ import { StorageModule } from '@/modules/storage/storage.module';
     UserCouponModule,
     NotificationModule,
     ComboModule,
+    DeliverySimulationModule,
   ],
   controllers: [],
   providers: [

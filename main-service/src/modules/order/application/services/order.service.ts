@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OrderStatus, PaymentMethod, PaymentStatus } from '@/enums';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
-import { PaginationResponse } from '@/common/core';
+import { type PaginationResponse } from '@/common/core';
 import { Order, OrderItem, OrderItemIngredient } from '@/modules/order/domain/entities/order.domain';
 import { type IOrderRepository } from '@/modules/order/domain/repositories/order.repository.interface';
 import { ProductService } from '@/modules/product/application/services/product.service';
@@ -10,6 +10,22 @@ import { ProductVariantService } from '@/modules/product-variant/application/ser
 import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import { CouponService } from '@/modules/coupon/application/services/coupon.service';
 import { CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
+import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
+
+/**
+ * Bảng chuyển trạng thái hợp lệ cho đơn hàng (State Machine).
+ * Key = trạng thái hiện tại, Value = danh sách trạng thái có thể chuyển đến.
+ */
+const VALID_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
+  [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
+  [OrderStatus.CONFIRMED]: [OrderStatus.PREPARING, OrderStatus.CANCELLED],
+  [OrderStatus.PREPARING]: [OrderStatus.READY_FOR_SHIPMENT],
+  [OrderStatus.READY_FOR_SHIPMENT]: [OrderStatus.DELIVERED],
+  [OrderStatus.DELIVERED]: [],
+  [OrderStatus.CANCELLED]: [],
+};
+
+const CANCELLABLE_STATUSES: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.CONFIRMED];
 
 @Injectable()
 export class OrderService {
@@ -24,6 +40,10 @@ export class OrderService {
     private readonly couponService: CouponService,
   ) {}
 
+  // =============================================
+  // NHÓM 1: TẠO ĐƠN HÀNG
+  // =============================================
+
   /**
    * Tạo đơn hàng mới từ dữ liệu giỏ hàng, địa chỉ và mã giảm giá nhận từ Client
    * Tự động xác thực sản phẩm, biến thể, topping, voucher và tính toán lại giá tiền chuẩn xác.
@@ -32,6 +52,9 @@ export class OrderService {
     if (!dto.items || dto.items.length === 0) {
       throw new BusinessException(ErrorEnum.CART_EMPTY);
     }
+
+    // Validate thông tin giao hàng cho khách vãng lai
+    this.validateDeliveryInfo(dto, userId);
 
     let subTotal = 0;
     const preparedItems: OrderItem[] = [];
@@ -132,6 +155,10 @@ export class OrderService {
     return savedOrder;
   }
 
+  // =============================================
+  // NHÓM 2: TRUY VẤN ĐƠN HÀNG
+  // =============================================
+
   /**
    * Lấy lịch sử đơn hàng của người dùng đang đăng nhập
    */
@@ -140,13 +167,21 @@ export class OrderService {
   }
 
   /**
-   * Lấy chi tiết đơn hàng theo ID
+   * Lấy chi tiết đơn hàng theo ID (có kiểm tra quyền truy cập).
+   * - Người dùng đăng nhập: chỉ xem được đơn của chính mình.
+   * - Admin: xem được tất cả đơn hàng.
    */
-  async getOrderById(id: string): Promise<Order> {
+  async getOrderById(id: string, currentUser?: AuthUser): Promise<Order> {
     const order = await this.orderRepository.findById(id);
     if (!order) {
       throw new BusinessException(ErrorEnum.ORDER_NOT_FOUND);
     }
+
+    // Kiểm tra quyền truy cập
+    if (currentUser) {
+      this.assertOrderOwnership(order, currentUser);
+    }
+
     return order;
   }
 
@@ -157,14 +192,91 @@ export class OrderService {
     return this.orderRepository.findPaginated(filter);
   }
 
+  // =============================================
+  // NHÓM 3: CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
+  // =============================================
+
   /**
-   * Cập nhật trạng thái đơn hàng (Admin / Shipper)
+   * Cập nhật trạng thái đơn hàng (Admin / Shipper).
+   * Áp dụng State Machine để validate luồng chuyển trạng thái hợp lệ.
    */
-  async updateOrderStatus(id: string, status: OrderStatus): Promise<Order> {
-    const order = await this.orderRepository.updateStatus(id, status);
+  async updateOrderStatus(id: string, newStatus: OrderStatus): Promise<Order> {
+    const order = await this.orderRepository.findById(id);
     if (!order) {
       throw new BusinessException(ErrorEnum.ORDER_NOT_FOUND);
     }
-    return order;
+
+    // Validate State Machine
+    this.assertValidTransition(order.status, newStatus);
+
+    const updated = await this.orderRepository.updateStatus(id, newStatus);
+    if (!updated) {
+      throw new BusinessException(ErrorEnum.ORDER_NOT_FOUND);
+    }
+
+    this.logger.log(`📦 Order #${order.orderNumber}: ${order.status} → ${newStatus}`);
+    return updated;
+  }
+
+  /**
+   * Khách hàng hủy đơn hàng (chỉ cho phép khi đơn ở trạng thái PENDING hoặc CONFIRMED).
+   */
+  async cancelOrder(id: string, reason: string | undefined, currentUser: AuthUser): Promise<Order> {
+    const order = await this.orderRepository.findById(id);
+    if (!order) {
+      throw new BusinessException(ErrorEnum.ORDER_NOT_FOUND);
+    }
+
+    // Kiểm tra quyền sở hữu
+    this.assertOrderOwnership(order, currentUser);
+
+    // Kiểm tra trạng thái cho phép hủy
+    if (!CANCELLABLE_STATUSES.includes(order.status)) {
+      throw new BusinessException(ErrorEnum.ORDER_CANNOT_CANCEL);
+    }
+
+    const cancelled = await this.orderRepository.cancelOrder(id, reason);
+    if (!cancelled) {
+      throw new BusinessException(ErrorEnum.ORDER_NOT_FOUND);
+    }
+
+    this.logger.log(
+      `❌ Order #${order.orderNumber} cancelled by user ${currentUser.userId}. Reason: ${reason || 'N/A'}`,
+    );
+    return cancelled;
+  }
+
+  // =============================================
+  // PRIVATE HELPERS
+  // =============================================
+
+  /**
+   * Validate thông tin giao hàng: nếu không có userId (khách vãng lai), bắt buộc phải có guestName, guestPhone, guestAddress.
+   */
+  private validateDeliveryInfo(dto: CreateOrderDto, userId?: string): void {
+    if (!userId && (!dto.guestName || !dto.guestPhone || !dto.guestAddress)) {
+      throw new BusinessException(ErrorEnum.ORDER_DELIVERY_INFO_REQUIRED);
+    }
+  }
+
+  /**
+   * Kiểm tra quyền sở hữu đơn hàng.
+   * - Admin: được phép truy cập tất cả.
+   * - User thường: chỉ truy cập đơn hàng do chính mình tạo.
+   */
+  private assertOrderOwnership(order: Order, currentUser: AuthUser): void {
+    if (currentUser.role !== 'admin' && order.userId !== currentUser.userId) {
+      throw new BusinessException(ErrorEnum.ORDER_ACCESS_DENIED);
+    }
+  }
+
+  /**
+   * Validate chuyển trạng thái đơn hàng theo State Machine.
+   */
+  private assertValidTransition(currentStatus: OrderStatus, newStatus: OrderStatus): void {
+    const allowed = VALID_TRANSITIONS[currentStatus];
+    if (!allowed || !allowed.includes(newStatus)) {
+      throw new BusinessException(ErrorEnum.ORDER_INVALID_STATUS_TRANSITION);
+    }
   }
 }

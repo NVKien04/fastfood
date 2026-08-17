@@ -4,7 +4,7 @@ import { Auth, GetUser } from '@/common/decorators';
 import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
 import { OrderStatus, RoleEnum } from '@/enums';
 import { OrderService } from '@/modules/order/application/services/order.service';
-import { CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
+import { CancelOrderDto, CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
 
 @ApiTags('Order')
 @Controller('order')
@@ -45,19 +45,34 @@ export class OrderController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Lấy chi tiết đơn hàng theo ID' })
+  @Auth()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Lấy chi tiết đơn hàng theo ID (kiểm tra quyền sở hữu)' })
   @ApiResponse({ status: 200, description: 'Lấy thông tin thành công' })
-  async getOrderById(@Param('id') id: string) {
-    const order = await this.orderService.getOrderById(id);
+  async getOrderById(@Param('id') id: string, @GetUser() user: AuthUser) {
+    const order = await this.orderService.getOrderById(id, user);
     return {
       data: order,
+    };
+  }
+
+  @Post(':id/cancel')
+  @Auth()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Khách hàng hủy đơn hàng (chỉ khi đơn ở trạng thái PENDING hoặc CONFIRMED)' })
+  @ApiResponse({ status: 200, description: 'Hủy đơn hàng thành công' })
+  async cancelOrder(@Param('id') id: string, @Body() dto: CancelOrderDto, @GetUser() user: AuthUser) {
+    const order = await this.orderService.cancelOrder(id, dto.reason, user);
+    return {
+      data: order,
+      message: 'Hủy đơn hàng thành công',
     };
   }
 
   @Patch(':id/status')
   @Auth(RoleEnum.ADMIN)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Cập nhật trạng thái đơn hàng (Admin / Shipper)' })
+  @ApiOperation({ summary: 'Cập nhật trạng thái đơn hàng (Admin / Shipper) - áp dụng State Machine' })
   @ApiResponse({ status: 200, description: 'Cập nhật trạng thái thành công' })
   async updateStatus(@Param('id') id: string, @Body('status') status: OrderStatus) {
     const order = await this.orderService.updateOrderStatus(id, status);

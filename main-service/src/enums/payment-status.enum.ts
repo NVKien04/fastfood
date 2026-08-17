@@ -6,4 +6,6 @@ export enum PaymentStatus {
   FAILED = 'thanh toán thất bại',
 
   REFUNDED = 'đã hoàn trả',
+
+  CANCELLED = 'đã hủy',
 }

@@ -147,6 +147,22 @@ export class OrderTypeOrmRepository implements IOrderRepository {
     if (status === OrderStatus.DELIVERED) {
       entity.paymentStatus = PaymentStatus.PAID;
     }
+    if (status === OrderStatus.CANCELLED) {
+      entity.paymentStatus = PaymentStatus.CANCELLED;
+    }
+    const saved = await this.orderRepo.save(entity);
+    return OrderMapper.toDomain(saved);
+  }
+
+  async cancelOrder(id: string, reason?: string): Promise<Order | null> {
+    const entity = await this.orderRepo.findOne({ where: { id } });
+    if (!entity) return null;
+
+    entity.status = OrderStatus.CANCELLED;
+    entity.paymentStatus = PaymentStatus.CANCELLED;
+    if (reason) {
+      entity.notes = entity.notes ? `${entity.notes}\n[Lý do hủy]: ${reason}` : `[Lý do hủy]: ${reason}`;
+    }
     const saved = await this.orderRepo.save(entity);
     return OrderMapper.toDomain(saved);
   }
