@@ -1,4 +1,5 @@
-import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { PaginationOptions, PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { CreateIngredientDto, UpdateIngredientDto } from '@/modules/ingredient/presentation/dto';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
@@ -49,7 +50,7 @@ export class IngredientService {
     return this.ingredientRepository.softDelete(id);
   }
 
-  async findPaginated(options: any, where?: Record<string, any>): Promise<[Ingredient[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Ingredient[], number]> {
     return this.ingredientRepository.findPaginated(options, where);
   }
 
@@ -65,7 +66,7 @@ export class IngredientService {
     return this.findAll({ categoryId });
   }
 
-  async getPage(filterObject: any): Promise<PaginationResponse<any>> {
+  async getPage(filterObject: Record<string, unknown>): Promise<PaginationResponse<Ingredient>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
@@ -73,7 +74,7 @@ export class IngredientService {
     const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
-      orderBy: filterObject?.orderby,
+      orderBy: typeof filterObject?.orderby === 'string' ? filterObject.orderby : undefined,
     });
 
     return buildPaginationResponse(data, totalItems, page, limit);

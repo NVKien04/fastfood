@@ -9,6 +9,12 @@ import { CreateUserDto, UserResponseDto } from '@/modules/user/presentation/dto'
 import { Auth } from '@/common/decorators';
 import { RoleEnum } from '@/enums';
 import ms, { StringValue } from 'ms';
+import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
+
+interface AuthenticatedRequest {
+  user: AuthUser;
+  cookies?: Record<string, string | undefined>;
+}
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -78,7 +84,7 @@ export class AuthController {
   @Post('logout')
   @ApiOperation({ summary: 'Đăng xuất hệ thống' })
   @ApiResponse({ status: 200, description: 'Đăng xuất thành công' })
-  async Logout(@Request() req: any, @Res({ passthrough: true }) res: Response) {
+  async Logout(@Request() req: AuthenticatedRequest, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies?.['refreshToken'];
     if (refreshToken) {
       await this.authService.logout(refreshToken);
@@ -92,7 +98,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Làm mới Access Token bằng Refresh Token từ cookie' })
   @ApiResponse({ status: 200, description: 'Cấp mới token thành công', type: LoginResponseDto })
   @ApiResponse({ status: 401, description: 'Không tìm thấy hoặc Refresh Token không hợp lệ' })
-  async refresh(@Request() req: any, @Res({ passthrough: true }) res: Response) {
+  async refresh(@Request() req: AuthenticatedRequest, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies?.['refreshToken'];
     if (!refreshToken) {
       throw new UnauthorizedException('Không tìm thấy Refresh Token');
@@ -108,7 +114,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Đổi mật khẩu tài khoản' })
   @ApiResponse({ status: 200, description: 'Thay đổi mật khẩu thành công' })
   @ApiResponse({ status: 400, description: 'Mật khẩu cũ không chính xác' })
-  async changePassword(@Request() req: any, @Body() data: ChangePasswordDto) {
+  async changePassword(@Request() req: AuthenticatedRequest, @Body() data: ChangePasswordDto) {
     const userId = req.user.userId;
     await this.authService.changePassword(userId, data);
     return { message: 'Thay đổi mật khẩu thành công' };
@@ -118,7 +124,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Post('test-customer')
   @ApiOperation({ summary: 'Test truy cập với quyền CUSTOMER' })
-  testCustomer(@Request() req: any) {
+  testCustomer(@Request() req: AuthenticatedRequest) {
     return {
       message: 'Truy cập role CUSTOMER thành công',
       user: req.user,
@@ -129,7 +135,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Post('test-admin')
   @ApiOperation({ summary: 'Test truy cập với quyền ADMIN' })
-  testAdmin(@Request() req: any) {
+  testAdmin(@Request() req: AuthenticatedRequest) {
     return {
       message: 'Truy cập role ADMIN thành công',
       user: req.user,

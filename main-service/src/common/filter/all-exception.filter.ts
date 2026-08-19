@@ -21,9 +21,9 @@ export class AllExceptionFilter implements ExceptionFilter {
     if (exception instanceof BusinessException) {
       // Lỗi nghiệp vụ từ BusinessException
       httpStatus = exception.getStatus();
-      const exceptionResponse = exception.getResponse() as Record<string, any>;
-      code = exceptionResponse.code;
-      message = exceptionResponse.message;
+      const exceptionResponse = exception.getResponse() as Record<string, unknown>;
+      code = typeof exceptionResponse.code === 'string' ? exceptionResponse.code : code;
+      message = typeof exceptionResponse.message === 'string' ? exceptionResponse.message : message;
     } else if (exception instanceof HttpException) {
       // Lỗi HttpException chuẩn NestJS (ValidationPipe, Guards, v.v.)
       httpStatus = exception.getStatus();
@@ -33,7 +33,7 @@ export class AllExceptionFilter implements ExceptionFilter {
         code = this.httpStatusToCode(httpStatus);
         message = exceptionResponse;
       } else if (typeof exceptionResponse === 'object') {
-        const res = exceptionResponse as Record<string, any>;
+        const res = exceptionResponse as Record<string, unknown>;
 
         if (Array.isArray(res.message)) {
           // ValidationPipe trả về mảng lỗi → chuyển thành format chuẩn
@@ -42,7 +42,11 @@ export class AllExceptionFilter implements ExceptionFilter {
           validationErrors = this.formatValidationErrors(res.message);
         } else {
           code = this.httpStatusToCode(httpStatus);
-          message = res.message || res.error || message;
+          if (typeof res.message === 'string') {
+            message = res.message;
+          } else if (typeof res.error === 'string') {
+            message = res.error;
+          }
         }
       }
     } else {

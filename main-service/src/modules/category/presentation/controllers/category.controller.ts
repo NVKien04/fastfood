@@ -13,7 +13,7 @@ export class CategoryController {
   @Post('get-page')
   @ApiOperation({ summary: 'Lấy danh sách danh mục phân trang' })
   @ApiResponse({ status: 200, description: 'Lấy dữ liệu thành công' })
-  async getPage(@Body() filterObject: any) {
+  async getPage(@Body() filterObject: Record<string, unknown>) {
     return await this.categoryService.getPage(filterObject);
   }
 

@@ -1,5 +1,5 @@
 export interface filterObj {
-  fillter: any;
+  fillter: Record<string, unknown>;
   page: number;
   limit: number;
   orderby: string;

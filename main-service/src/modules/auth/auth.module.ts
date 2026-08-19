@@ -8,7 +8,7 @@ import { AuthService } from '@/modules/auth/application/services/auth.service';
 import { TokenService } from '@/modules/auth/application/services/token.service';
 import { JwtStrategy } from '@/modules/auth/presentation/strategies/jwt.strategy';
 import { LocalStrategy } from '@/modules/auth/presentation/strategies/local.strategy';
-import { RefreshTokenRepository } from '@/modules/auth/infrastructure/repositories/refresh-token.typeorm.repository';
+import { RefreshTokenRepository } from '@/modules/auth/infrastructure/persistence/typeorm/refresh-token.typeorm.repository';
 
 @Module({
   imports: [UserModule, TypeOrmModule.forFeature([RefreshTokensEntity])],

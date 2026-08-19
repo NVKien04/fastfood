@@ -3,7 +3,9 @@ import { Address } from '@/modules/address/domain/entities/address.domain';
 
 export class AddressMapper {
   static toDomain(ormEntity: AddressesEntity): Address {
-    if (!ormEntity) return null as any;
+    if (!ormEntity) {
+      throw new Error('AddressMapper.toDomain requires an entity');
+    }
 
     return new Address({
       id: ormEntity.id,

@@ -1,5 +1,5 @@
 import { ProductIngredientsEntity } from '@/entities';
-import { ProductIngredientRepository } from '@/modules/product-ingredient/infrastructure/repositories/product-ingredient.repository';
+import { ProductIngredientRepository } from '@/modules/product-ingredient/infrastructure/persistence/typeorm/product-ingredient.repository';
 import { ProductIngredientService } from '@/modules/product-ingredient/application/services/product-ingredient.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

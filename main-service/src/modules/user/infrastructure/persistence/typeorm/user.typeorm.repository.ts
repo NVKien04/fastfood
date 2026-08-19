@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { UserEntity } from '@/entities';
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { User } from '@/modules/user/domain/entities/user.domain';
 import { IUserRepository } from '@/modules/user/domain/repositories/user.repository.interface';
 import { UserMapper } from '@/modules/user/infrastructure/mappers/user.mapper';
@@ -85,7 +86,7 @@ export class UserTypeOrmRepository implements IUserRepository {
     return UserMapper.toDomainList(saved);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[User[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[User[], number]> {
     const entity = 'users';
     const qb = this.repo.createQueryBuilder(entity);
 

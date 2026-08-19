@@ -1,4 +1,5 @@
-import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { PaginationOptions, PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { CreateAddressDto } from '@/modules/address/presentation/dto';
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { UserService } from '@/modules/user/application/services/user.service';
@@ -48,7 +49,7 @@ export class AddressService {
     return this.addressRepository.softDelete(id);
   }
 
-  async findPaginated(options: any, where?: Record<string, any>): Promise<[Address[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Address[], number]> {
     return this.addressRepository.findPaginated(options, where);
   }
 
@@ -84,7 +85,7 @@ export class AddressService {
     return this.updateRaw(addressId, updateData);
   }
 
-  async getPage(filterObject: any): Promise<PaginationResponse<any>> {
+  async getPage(filterObject: Record<string, unknown>): Promise<PaginationResponse<Address>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
@@ -92,7 +93,7 @@ export class AddressService {
     const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
-      orderBy: filterObject?.orderby,
+      orderBy: typeof filterObject?.orderby === 'string' ? filterObject.orderby : undefined,
     });
 
     return buildPaginationResponse(data, totalItems, page, limit);

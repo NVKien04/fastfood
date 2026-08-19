@@ -3,7 +3,9 @@ import { Product } from '@/modules/product/domain/entities/product.domain';
 
 export class ProductMapper {
   static toDomain(ormEntity: ProductEntity): Product {
-    if (!ormEntity) return null as any;
+    if (!ormEntity) {
+      throw new Error('ProductMapper.toDomain requires an entity');
+    }
 
     return new Product({
       id: ormEntity.id,

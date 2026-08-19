@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { AddressesEntity } from '@/entities';
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Address } from '@/modules/address/domain/entities/address.domain';
 import { IAddressRepository } from '@/modules/address/domain/repositories/address.repository.interface';
 import { AddressMapper } from '@/modules/address/infrastructure/mappers/address.mapper';
@@ -72,7 +73,7 @@ export class AddressTypeOrmRepository implements IAddressRepository {
     return AddressMapper.toDomainList(saved);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Address[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Address[], number]> {
     const entity = 'addresses';
     const qb = this.repo.createQueryBuilder(entity);
 

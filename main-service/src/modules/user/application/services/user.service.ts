@@ -1,9 +1,10 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto, UserResponseDto } from '@/modules/user/presentation/dto';
+import { CreateUserDto, UpdateUserDto, UserFilterDto, UserResponseDto } from '@/modules/user/presentation/dto';
 import { RoleEnum } from '@/enums';
 import { HashUtil } from '@/utils';
 import { UserMapper } from '@/modules/user/infrastructure/mappers/user.mapper';
-import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { PaginationOptions, PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
 import { User } from '@/modules/user/domain/entities/user.domain';
@@ -52,7 +53,7 @@ export class UserService {
     return this.repo.softDelete(id);
   }
 
-  async findPaginated(options: any, where?: Record<string, any>): Promise<[User[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[User[], number]> {
     return this.repo.findPaginated(options, where);
   }
 
@@ -137,7 +138,7 @@ export class UserService {
     return UserMapper.toResponse(user);
   }
 
-  async getPage(filterObject: any): Promise<PaginationResponse<any>> {
+  async getPage(filterObject: UserFilterDto): Promise<PaginationResponse<UserResponseDto>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
@@ -145,7 +146,7 @@ export class UserService {
     const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
-      orderBy: filterObject?.orderby,
+      orderBy: typeof filterObject?.orderby === 'string' ? filterObject.orderby : undefined,
     });
 
     const dataDto = UserMapper.toResponseList(data);

@@ -1,6 +1,6 @@
 import { ProductController } from '@/modules/product/presentation/controllers/product.controller';
 import { OrderItemsEntity, ProductEntity, ProductVariantsEntity } from '@/entities';
-import { ProductTypeOrmRepository } from '@/modules/product/infrastructure/repositories/product.typeorm.repository';
+import { ProductTypeOrmRepository } from '@/modules/product/infrastructure/persistence/typeorm/product.typeorm.repository';
 import { ProductService } from '@/modules/product/application/services/product.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

@@ -1,4 +1,5 @@
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Address } from '@/modules/address/domain/entities/address.domain';
 
 export interface IAddressRepository {
@@ -14,5 +15,5 @@ export interface IAddressRepository {
   softDelete(id: string): Promise<boolean>;
   delete(id: string): Promise<boolean>;
   createMany(entities: Partial<Address>[]): Promise<Address[]>;
-  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Address[], number]>;
+  findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Address[], number]>;
 }

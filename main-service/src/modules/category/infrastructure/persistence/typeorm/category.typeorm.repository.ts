@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { CategoryEntity } from '@/entities';
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Category } from '@/modules/category/domain/entities/category.domain';
 import { ICategoryRepository } from '@/modules/category/domain/repositories/category.repository.interface';
 import { CategoryMapper } from '@/modules/category/infrastructure/mappers/category.mapper';
@@ -72,13 +73,13 @@ export class CategoryTypeOrmRepository implements ICategoryRepository {
     return CategoryMapper.toDomainList(saved);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Category[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Category[], number]> {
     const entity = 'category';
     const relatedFields = [{ field: 'products', alias: 'products', select: ['id', 'name'] }];
     const qb = this.repo.createQueryBuilder(entity);
 
     if (relatedFields.length > 0) {
-      relatedFields.forEach((field: any) => {
+      relatedFields.forEach((field) => {
         qb.leftJoin(`${entity}.${field.field}`, field.alias);
         if (field.select?.length) {
           const cols = field.select.map((c: string) => `${field.alias}.${c}`);

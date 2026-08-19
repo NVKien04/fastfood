@@ -2,7 +2,7 @@ import { UserCouponsEntity, UserEntity } from '@/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController } from '@/modules/user/presentation/controllers/user.controller';
-import { UserTypeOrmRepository } from '@/modules/user/infrastructure/repositories/user.typeorm.repository';
+import { UserTypeOrmRepository } from '@/modules/user/infrastructure/persistence/typeorm/user.typeorm.repository';
 import { UserService } from '@/modules/user/application/services/user.service';
 import { AddressModule } from '@/modules/address/address.module';
 

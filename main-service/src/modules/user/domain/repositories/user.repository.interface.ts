@@ -1,4 +1,5 @@
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { User } from '@/modules/user/domain/entities/user.domain';
 
 export interface IUserRepository {
@@ -11,5 +12,5 @@ export interface IUserRepository {
   softDelete(id: string): Promise<boolean>;
   delete(id: string): Promise<boolean>;
   createMany(entities: Partial<User>[]): Promise<User[]>;
-  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[User[], number]>;
+  findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[User[], number]>;
 }

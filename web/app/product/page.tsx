@@ -1,10 +1,16 @@
-import * as React from 'react';
+import { Metadata } from 'next';
+import { MainLayout } from '@/components/layout';
 import { ProductList } from '@/modules/product';
+
+export const metadata: Metadata = {
+  title: 'Thực Đơn Pizza & Món Ăn Nhanh | Pizza Hut',
+  description: 'Khám phá thực đơn phong phú từ Pizza Hut: Pizza, The Melts, Món khai vị, Đồ uống và tráng miệng hấp dẫn.',
+};
 
 export default function ProductPage() {
   return (
-    <main className="min-h-screen bg-gray-50/50">
+    <MainLayout>
       <ProductList />
-    </main>
+    </MainLayout>
   );
 }

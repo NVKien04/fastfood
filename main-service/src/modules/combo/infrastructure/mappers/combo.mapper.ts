@@ -3,7 +3,9 @@ import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 
 export class ComboMapper {
   static toDomain(ormEntity: CombosEntity): Combo {
-    if (!ormEntity) return null as any;
+    if (!ormEntity) {
+      throw new Error('ComboMapper.toDomain requires an entity');
+    }
 
     return new Combo({
       id: ormEntity.id,

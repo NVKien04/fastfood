@@ -1,14 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
-import { NotificationEntity } from '@/entities';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { NotificationType } from '@/enums';
+import { Notification } from '@/modules/notification/domain/entities/notification.domain';
+import { type INotificationRepository } from '@/modules/notification/domain/repositories/notification.repository.interface';
 
 @Injectable()
 export class NotificationService {
   constructor(
-    @InjectRepository(NotificationEntity)
-    private readonly notificationRepository: Repository<NotificationEntity>,
+    @Inject('INotificationRepository')
+    private readonly notificationRepository: INotificationRepository,
   ) {}
 
   /**
@@ -19,39 +18,22 @@ export class NotificationService {
     title: string;
     content: string;
     type?: NotificationType;
-  }): Promise<NotificationEntity> {
-    const notification = this.notificationRepository.create({
-      userId: data.userId || null,
-      title: data.title,
-      content: data.content,
-      type: data.type || NotificationType.SYSTEM,
-      isRead: false,
-    });
-    return await this.notificationRepository.save(notification);
+  }): Promise<Notification> {
+    return await this.notificationRepository.create(data);
   }
 
   /**
    * Lấy danh sách thông báo của một người dùng
    */
-  async getUserNotifications(userId: string): Promise<NotificationEntity[]> {
-    return await this.notificationRepository.find({
-      where: [
-        { userId: userId },
-        { userId: IsNull() }, // Các thông báo hệ thống chung
-      ],
-      order: {
-        createdAt: 'DESC',
-      },
-    });
+  async getUserNotifications(userId: string): Promise<Notification[]> {
+    return await this.notificationRepository.findVisibleForUser(userId);
   }
 
   /**
    * Đánh dấu đã đọc cho một thông báo cụ thể
    */
-  async markAsRead(notificationId: string, userId: string): Promise<NotificationEntity> {
-    const notification = await this.notificationRepository.findOne({
-      where: { id: notificationId },
-    });
+  async markAsRead(notificationId: string, userId: string): Promise<Notification> {
+    const notification = await this.notificationRepository.findById(notificationId);
 
     if (!notification) {
       throw new NotFoundException('Không tìm thấy thông báo');
@@ -62,24 +44,25 @@ export class NotificationService {
       throw new NotFoundException('Không tìm thấy thông báo cho người dùng này');
     }
 
-    notification.isRead = true;
-    return await this.notificationRepository.save(notification);
+    const updated = await this.notificationRepository.markAsRead(notificationId);
+    if (!updated) {
+      throw new NotFoundException('Không tìm thấy thông báo');
+    }
+    return updated;
   }
 
   /**
    * Đánh dấu đã đọc tất cả thông báo của một người dùng
    */
   async markAllAsRead(userId: string): Promise<void> {
-    await this.notificationRepository.update({ userId: userId, isRead: false }, { isRead: true });
+    await this.notificationRepository.markAllAsRead(userId);
   }
 
   /**
    * Xóa thông báo (soft-delete)
    */
   async deleteNotification(notificationId: string, userId: string): Promise<void> {
-    const notification = await this.notificationRepository.findOne({
-      where: { id: notificationId },
-    });
+    const notification = await this.notificationRepository.findById(notificationId);
 
     if (!notification) {
       throw new NotFoundException('Không tìm thấy thông báo');
@@ -89,6 +72,6 @@ export class NotificationService {
       throw new NotFoundException('Bạn không có quyền xóa thông báo này');
     }
 
-    await this.notificationRepository.softRemove(notification);
+    await this.notificationRepository.softDelete(notificationId);
   }
 }

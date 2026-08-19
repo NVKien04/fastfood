@@ -20,7 +20,7 @@ export class AddressController {
   @Post('get-page')
   @ApiOperation({ summary: 'Lấy danh sách địa chỉ phân trang' })
   @ApiResponse({ status: 200, description: 'Lấy dữ liệu thành công' })
-  async getPage(@Body() filterObject: any) {
+  async getPage(@Body() filterObject: Record<string, unknown>) {
     return await this.addressService.getPage(filterObject);
   }
 

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { CombosEntity } from '@/entities';
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 import { IComboRepository } from '@/modules/combo/domain/repositories/combo.repository.interface';
 import { ComboMapper } from '@/modules/combo/infrastructure/mappers/combo.mapper';
@@ -83,7 +84,7 @@ export class ComboTypeOrmRepository implements IComboRepository {
     return ComboMapper.toDomainList(saved);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Combo[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Combo[], number]> {
     const entity = 'combos';
     const qb = this.repo.createQueryBuilder(entity);
 

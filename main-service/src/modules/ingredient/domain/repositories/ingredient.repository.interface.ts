@@ -1,4 +1,5 @@
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
 
 export interface IIngredientRepository {
@@ -15,5 +16,5 @@ export interface IIngredientRepository {
   softDelete(id: number): Promise<boolean>;
   delete(id: number): Promise<boolean>;
   createMany(entities: Partial<Ingredient>[]): Promise<Ingredient[]>;
-  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Ingredient[], number]>;
+  findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Ingredient[], number]>;
 }

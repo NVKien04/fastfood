@@ -5,7 +5,7 @@ import {
   OrderItemsIngredientsEntity,
   ProductIngredientsEntity,
 } from '@/entities';
-import { IngredientTypeOrmRepository } from '@/modules/ingredient/infrastructure/repositories/ingredient.typeorm.repository';
+import { IngredientTypeOrmRepository } from '@/modules/ingredient/infrastructure/persistence/typeorm/ingredient.typeorm.repository';
 import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

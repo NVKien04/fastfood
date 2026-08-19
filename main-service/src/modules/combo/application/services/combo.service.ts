@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { type IComboRepository } from '@/modules/combo/domain/repositories/combo.repository.interface';
 import { CreateComboDto } from '@/modules/combo/presentation/dto/create-combo.dto';
 import { Combo } from '@/modules/combo/domain/entities/combo.domain';
-import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { PaginationOptions, PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
 
@@ -49,7 +50,7 @@ export class ComboService {
     return this.comboRepository.delete(id);
   }
 
-  async findPaginated(options: any, where?: Record<string, any>): Promise<[Combo[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Combo[], number]> {
     return this.comboRepository.findPaginated(options, where);
   }
 
@@ -81,7 +82,7 @@ export class ComboService {
     return combo;
   }
 
-  async getPage(filterObject: any): Promise<PaginationResponse<any>> {
+  async getPage(filterObject: Record<string, unknown>): Promise<PaginationResponse<Combo>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
@@ -89,7 +90,7 @@ export class ComboService {
     const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
-      orderBy: filterObject?.orderby,
+      orderBy: typeof filterObject?.orderby === 'string' ? filterObject.orderby : undefined,
     });
 
     return buildPaginationResponse(data, totalItems, page, limit);

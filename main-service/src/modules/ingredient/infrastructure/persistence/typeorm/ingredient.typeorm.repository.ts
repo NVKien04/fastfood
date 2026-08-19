@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsOrder, FindOptionsWhere, In, Repository } from 'typeorm';
 import { IngredientsEntity } from '@/entities';
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.domain';
 import { IIngredientRepository } from '@/modules/ingredient/domain/repositories/ingredient.repository.interface';
 import { IngredientMapper } from '@/modules/ingredient/infrastructure/mappers/ingredient.mapper';
@@ -82,7 +83,7 @@ export class IngredientTypeOrmRepository implements IIngredientRepository {
     return IngredientMapper.toDomainList(saved);
   }
 
-  async findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Ingredient[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Ingredient[], number]> {
     const entity = 'ingredients';
     const qb = this.repo.createQueryBuilder(entity);
 

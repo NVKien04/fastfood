@@ -4,7 +4,9 @@ import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.
 
 export class CategoryMapper {
   static toDomain(ormEntity: CategoryEntity): Category {
-    if (!ormEntity) return null as any;
+    if (!ormEntity) {
+      throw new Error('CategoryMapper.toDomain requires an entity');
+    }
 
     return new Category({
       id: ormEntity.id,

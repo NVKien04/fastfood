@@ -1,10 +1,18 @@
-import * as React from 'react';
+import { Metadata } from 'next';
+import { MainLayout } from '@/components/layout';
 import { UserProfile } from '@/modules/profile';
+
+export const metadata: Metadata = {
+  title: 'Hồ Sơ Cá Nhân | Pizza Hut',
+  description: 'Quản lý thông tin cá nhân và tài khoản Pizza Hut.',
+};
 
 export default function ProfilePage() {
   return (
-    <main className="min-h-screen bg-gray-50/50 py-6">
-      <UserProfile />
-    </main>
+    <MainLayout>
+      <div className="py-6">
+        <UserProfile />
+      </div>
+    </MainLayout>
   );
 }

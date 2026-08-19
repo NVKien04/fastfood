@@ -3,7 +3,9 @@ import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
 
 export class CouponMapper {
   static toDomain(ormEntity: CouponsEntity): Coupon {
-    if (!ormEntity) return null as any;
+    if (!ormEntity) {
+      throw new Error('CouponMapper.toDomain requires an entity');
+    }
 
     return new Coupon({
       id: ormEntity.id,

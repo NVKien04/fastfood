@@ -13,7 +13,7 @@ export class IngredientController {
   @Post('get-page')
   @ApiOperation({ summary: 'Lấy danh sách nguyên liệu phân trang' })
   @ApiResponse({ status: 200, description: 'Lấy dữ liệu thành công' })
-  async getPage(@Body() filterObject: any) {
+  async getPage(@Body() filterObject: Record<string, unknown>) {
     return await this.ingredientService.getPage(filterObject);
   }
 

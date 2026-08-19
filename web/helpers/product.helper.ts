@@ -46,3 +46,17 @@ export const calculateProductTotalPrice = (
 ): number => {
   return unitPrice * Math.max(1, quantity);
 };
+
+/**
+ * Chuyển đổi tên danh mục thành slug URL (vd: "THỨC UỐNG" -> "thuc-uong", "PIZZA GIÁ ĐỈNH" -> "pizza-gia-dinh")
+ */
+export const categoryToSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+

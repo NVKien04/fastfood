@@ -1,4 +1,5 @@
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Category } from '@/modules/category/domain/entities/category.domain';
 
 export interface ICategoryRepository {
@@ -14,5 +15,5 @@ export interface ICategoryRepository {
   softDelete(id: number): Promise<boolean>;
   delete(id: number): Promise<boolean>;
   createMany(entities: Partial<Category>[]): Promise<Category[]>;
-  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Category[], number]>;
+  findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Category[], number]>;
 }

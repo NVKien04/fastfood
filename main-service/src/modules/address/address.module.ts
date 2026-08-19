@@ -1,5 +1,5 @@
 import { AddressesEntity } from '@/entities';
-import { AddressTypeOrmRepository } from '@/modules/address/infrastructure/repositories/address.typeorm.repository';
+import { AddressTypeOrmRepository } from '@/modules/address/infrastructure/persistence/typeorm/address.typeorm.repository';
 import { AddressService } from '@/modules/address/application/services/address.service';
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

@@ -1,4 +1,5 @@
 import { PaginationOptions } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { Combo } from '@/modules/combo/domain/entities/combo.domain';
 
 export interface IComboRepository {
@@ -11,5 +12,5 @@ export interface IComboRepository {
   softDelete(id: string): Promise<boolean>;
   delete(id: string): Promise<boolean>;
   createMany(entities: Partial<Combo>[]): Promise<Combo[]>;
-  findPaginated(options: PaginationOptions, where?: Record<string, any>): Promise<[Combo[], number]>;
+  findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Combo[], number]>;
 }

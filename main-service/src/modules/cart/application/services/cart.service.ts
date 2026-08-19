@@ -1,18 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { AddToCartDto, UpdateCartItemDto } from '@/modules/cart/presentation/dto';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
 import { Cart } from '@/modules/cart/domain/entities/cart.domain';
 import { type ICartRepository } from '@/modules/cart/domain/repositories/cart.repository.interface';
-import {
-  CartItemsEntity,
-  CartItemIngredientsEntity,
-  ProductEntity,
-  ProductVariantsEntity,
-  IngredientsEntity,
-} from '@/entities';
+import { ProductService } from '@/modules/product/application/services/product.service';
+import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
+import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 
 @Injectable()
 export class CartService {
@@ -21,16 +15,9 @@ export class CartService {
   constructor(
     @Inject('ICartRepository')
     private readonly cartRepository: ICartRepository,
-    @InjectRepository(CartItemsEntity)
-    private readonly cartItemRepository: Repository<CartItemsEntity>,
-    @InjectRepository(CartItemIngredientsEntity)
-    private readonly cartItemIngredientRepository: Repository<CartItemIngredientsEntity>,
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: Repository<ProductEntity>,
-    @InjectRepository(ProductVariantsEntity)
-    private readonly productVariantRepository: Repository<ProductVariantsEntity>,
-    @InjectRepository(IngredientsEntity)
-    private readonly ingredientRepository: Repository<IngredientsEntity>,
+    private readonly productService: ProductService,
+    private readonly productVariantService: ProductVariantService,
+    private readonly ingredientService: IngredientService,
   ) {}
 
   /**
@@ -57,83 +44,44 @@ export class CartService {
   async addItemToCart(userId: string, dto: AddToCartDto): Promise<Cart> {
     const cart = await this.getOrCreateCart(userId);
 
-    const product = await this.productRepository.findOne({
-      where: { id: dto.productId, isActive: 1 },
-    });
-
+    const product = await this.productService.findOne({ id: dto.productId, isActive: 1 });
     if (!product) {
       throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
     }
 
-    let variant: ProductVariantsEntity | null = null;
     let variantPriceOffset = 0;
     if (dto.productVariantId) {
-      variant = await this.productVariantRepository.findOne({
-        where: { id: dto.productVariantId, isActive: 1 },
-      });
+      const variants = await this.productVariantService.findByProductId(product.id);
+      const variant = variants.find(
+        (productVariant) => productVariant.id === dto.productVariantId && productVariant.isActive === 1,
+      );
       if (variant) {
         variantPriceOffset = variant.modifiedPrice || 0;
       }
     }
 
-    const validIngredients: { ingredient: IngredientsEntity; quantity: number }[] = [];
+    const validIngredients: { ingredientId: number; quantity: number }[] = [];
     let ingredientsPriceTotal = 0;
 
     if (dto.ingredients && dto.ingredients.length > 0) {
       for (const ingDto of dto.ingredients) {
-        const ing = await this.ingredientRepository.findOne({
-          where: { id: ingDto.ingredientId, isActive: 1 },
-        });
+        const ing = await this.ingredientService.findOne({ id: ingDto.ingredientId, isActive: 1 });
         if (ing) {
           const qty = ingDto.quantity || 1;
           ingredientsPriceTotal += (ing.price || 0) * qty;
-          validIngredients.push({ ingredient: ing, quantity: qty });
+          validIngredients.push({ ingredientId: ing.id, quantity: qty });
         }
       }
     }
 
     const unitPrice = product.basePrice + variantPriceOffset + ingredientsPriceTotal;
-    const targetIngIds = validIngredients.map((i) => i.ingredient.id).sort((a, b) => a - b);
-
-    let existingItem: CartItemsEntity | null = null;
-
-    if (cart.cartItems && cart.cartItems.length > 0) {
-      for (const item of cart.cartItems) {
-        if (item.productId === dto.productId && item.productVariantId === (dto.productVariantId || null)) {
-          const itemIngIds = (item.cartItemIngredients || []).map((i) => i.ingredientId).sort((a, b) => a - b);
-
-          if (targetIngIds.length === itemIngIds.length && targetIngIds.every((id, idx) => id === itemIngIds[idx])) {
-            existingItem = item;
-            break;
-          }
-        }
-      }
-    }
-
-    if (existingItem) {
-      existingItem.quantity += dto.quantity;
-      existingItem.price = unitPrice;
-      await this.cartItemRepository.save(existingItem);
-    } else {
-      const newItem = this.cartItemRepository.create({
-        cartId: cart.id,
-        productId: product.id,
-        productVariantId: variant ? variant.id : null,
-        quantity: dto.quantity,
-        price: unitPrice,
-      });
-
-      const savedItem = await this.cartItemRepository.save(newItem);
-
-      for (const ing of validIngredients) {
-        const cartIng = this.cartItemIngredientRepository.create({
-          cartItemId: savedItem.id,
-          ingredientId: ing.ingredient.id,
-          quantity: ing.quantity,
-        });
-        await this.cartItemIngredientRepository.save(cartIng);
-      }
-    }
+    await this.cartRepository.addItem(cart.id, {
+      productId: product.id,
+      productVariantId: dto.productVariantId ?? null,
+      quantity: dto.quantity,
+      price: unitPrice,
+      ingredients: validIngredients,
+    });
 
     await this.recalculateCart(cart.id);
     return this.getCart(userId);
@@ -145,20 +93,16 @@ export class CartService {
   async updateCartItemQuantity(userId: string, cartItemId: string, dto: UpdateCartItemDto): Promise<Cart> {
     const cart = await this.getOrCreateCart(userId);
 
-    const item = await this.cartItemRepository.findOne({
-      where: { id: cartItemId, cartId: cart.id },
-    });
+    const item = await this.cartRepository.findItemById(cart.id, cartItemId);
 
     if (!item) {
       throw new BusinessException(ErrorEnum.VALIDATION_ERROR);
     }
 
     if (dto.quantity <= 0) {
-      await this.cartItemIngredientRepository.delete({ cartItemId: item.id });
-      await this.cartItemRepository.delete({ id: item.id });
+      await this.cartRepository.removeItem(item.id);
     } else {
-      item.quantity = dto.quantity;
-      await this.cartItemRepository.save(item);
+      await this.cartRepository.updateItemQuantity(item.id, dto.quantity);
     }
 
     await this.recalculateCart(cart.id);
@@ -171,13 +115,10 @@ export class CartService {
   async removeCartItem(userId: string, cartItemId: string): Promise<Cart> {
     const cart = await this.getOrCreateCart(userId);
 
-    const item = await this.cartItemRepository.findOne({
-      where: { id: cartItemId, cartId: cart.id },
-    });
+    const item = await this.cartRepository.findItemById(cart.id, cartItemId);
 
     if (item) {
-      await this.cartItemIngredientRepository.delete({ cartItemId: item.id });
-      await this.cartItemRepository.delete({ id: item.id });
+      await this.cartRepository.removeItem(item.id);
       await this.recalculateCart(cart.id);
     }
 
@@ -194,9 +135,7 @@ export class CartService {
   }
 
   private async recalculateCart(cartId: string): Promise<void> {
-    const items = await this.cartItemRepository.find({
-      where: { cartId },
-    });
+    const items = await this.cartRepository.findItemsByCartId(cartId);
 
     let totalCartPrice = 0;
     let totalItems = 0;

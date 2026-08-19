@@ -17,7 +17,7 @@ export class PaginationMetaDto {
   currentPage: number;
 }
 
-export class ApiResponseDto<T = any> {
+export class ApiResponseDto<T = unknown> {
   @ApiProperty({ example: true, description: 'Trạng thái thành công' })
   success: boolean = true;
 

@@ -21,5 +21,5 @@ export class UserFilterDto {
 
   @ApiPropertyOptional({ description: 'Điều kiện lọc bổ sung', type: Object })
   @IsOptional()
-  filter?: Record<string, any>;
+  filter?: Record<string, unknown>;
 }

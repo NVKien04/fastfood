@@ -1,4 +1,5 @@
-import { PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { PaginationOptions, PaginationResponse, buildPaginationResponse } from '@/common/core';
+import { type QueryWhere } from '@/common/types';
 import { ErrorEnum } from '@/common/constants';
 import { BusinessException } from '@/common/exception';
 import { Fn } from '@/utils';
@@ -62,7 +63,7 @@ export class CategoryService {
     return this.repo.softDelete(id);
   }
 
-  async findPaginated(options: any, where?: Record<string, any>): Promise<[Category[], number]> {
+  async findPaginated(options: PaginationOptions, where?: QueryWhere): Promise<[Category[], number]> {
     return this.repo.findPaginated(options, where);
   }
 
@@ -101,7 +102,7 @@ export class CategoryService {
     return await this.softDeleteRaw(categoryId);
   }
 
-  async getPage(filterObject: any): Promise<PaginationResponse<any>> {
+  async getPage(filterObject: Record<string, unknown>): Promise<PaginationResponse<Category>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;
@@ -109,7 +110,7 @@ export class CategoryService {
     const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
-      orderBy: filterObject?.orderby,
+      orderBy: typeof filterObject?.orderby === 'string' ? filterObject.orderby : undefined,
     });
 
     return buildPaginationResponse(data, totalItems, page, limit);

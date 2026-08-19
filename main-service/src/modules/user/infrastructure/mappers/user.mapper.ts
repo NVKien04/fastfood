@@ -4,7 +4,9 @@ import { UserResponseDto } from '@/modules/user/presentation/dto';
 
 export class UserMapper {
   static toDomain(ormEntity: UserEntity): User {
-    if (!ormEntity) return null as any;
+    if (!ormEntity) {
+      throw new Error('UserMapper.toDomain requires an entity');
+    }
 
     return new User({
       id: ormEntity.id,

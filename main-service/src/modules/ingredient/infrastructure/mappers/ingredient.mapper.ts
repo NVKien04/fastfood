@@ -3,7 +3,9 @@ import { Ingredient } from '@/modules/ingredient/domain/entities/ingredient.doma
 
 export class IngredientMapper {
   static toDomain(ormEntity: IngredientsEntity): Ingredient {
-    if (!ormEntity) return null as any;
+    if (!ormEntity) {
+      throw new Error('IngredientMapper.toDomain requires an entity');
+    }
 
     return new Ingredient({
       id: ormEntity.id,
