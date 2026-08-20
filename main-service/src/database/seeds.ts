@@ -8,13 +8,14 @@ async function bootstrap() {
   try {
     await DataSource.query(`
       DO $$
+      DECLARE
+        val text;
       BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid WHERE t.typname = 'product_variants_size_enum' AND e.enumlabel = '1 Miếng') THEN
-          ALTER TYPE product_variants_size_enum ADD VALUE '1 Miếng';
-        END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid WHERE t.typname = 'product_variants_size_enum' AND e.enumlabel = '2 Miếng') THEN
-          ALTER TYPE product_variants_size_enum ADD VALUE '2 Miếng';
-        END IF;
+        FOR val IN SELECT unnest(ARRAY['20cm', '25cm', '30cm', '35cm']) LOOP
+          IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid WHERE t.typname = 'product_variants_size_enum' AND e.enumlabel = val) THEN
+            EXECUTE format('ALTER TYPE product_variants_size_enum ADD VALUE %L', val);
+          END IF;
+        END LOOP;
       END $$;
     `);
     await DataSource.query(

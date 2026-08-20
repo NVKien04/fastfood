@@ -6,7 +6,6 @@ import { ProductApiModule } from './module/Product.api';
 import { CategoryApiModule } from './module/Category.api';
 import { UploadApiModule } from './module/Upload.api';
 import { OrderApiModule } from './module/Order.api';
-import { CartApiModule } from './module/Cart.api';
 import { useStore } from '@/stores';
 
 export class ApiMain {
@@ -18,7 +17,6 @@ export class ApiMain {
   readonly category = new CategoryApiModule(DEFAULT_API_MAIN_CONFIG);
   readonly upload = new UploadApiModule(DEFAULT_API_MAIN_CONFIG);
   readonly order = new OrderApiModule(DEFAULT_API_MAIN_CONFIG);
-  readonly cart = new CartApiModule(DEFAULT_API_MAIN_CONFIG);
 
   private constructor() {
     // ─── onRefresh ──────────────────────────────────────────────────
@@ -51,7 +49,6 @@ export class ApiMain {
     setupInterceptors(this.category.api.instance, onRefresh, onLogout);
     setupInterceptors(this.upload.http.instance, onRefresh, onLogout);
     setupInterceptors(this.order.http.instance, onRefresh, onLogout);
-    setupInterceptors(this.cart.http.instance, onRefresh, onLogout);
   }
 
   static get instance() {

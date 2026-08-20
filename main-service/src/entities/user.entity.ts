@@ -1,5 +1,5 @@
 import { RoleEnum } from '@/enums';
-import { AddressesEntity, CartEntity, NotificationEntity, OrdersEntity, UserCouponsEntity } from '@/entities';
+import { AddressesEntity, NotificationEntity, OrdersEntity, UserCouponsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,7 +8,6 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToMany,
-  OneToOne,
 } from 'typeorm';
 
 @Entity('users')
@@ -58,9 +57,6 @@ export class UserEntity {
 
   @OneToMany(() => OrdersEntity, (order) => order.user_obj)
   orders: OrdersEntity[];
-
-  @OneToOne(() => CartEntity, (cart) => cart.user_obj)
-  cart: CartEntity;
 
   @OneToMany(() => NotificationEntity, (notification) => notification.user_obj)
   notifications: NotificationEntity[];

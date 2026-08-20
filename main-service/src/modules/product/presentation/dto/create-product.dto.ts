@@ -13,7 +13,7 @@ export class CreateProductVariantDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ description: 'Kích thước', enum: SizeEnum, example: SizeEnum.SIZE_12 })
+  @ApiProperty({ description: 'Kích thước', enum: SizeEnum, example: SizeEnum.SIZE_20 })
   @IsEnum(SizeEnum)
   size: SizeEnum;
 

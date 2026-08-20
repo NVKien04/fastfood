@@ -1,4 +1,4 @@
-import { CartItemIngredientsEntity, CategoryEntity, OrderItemsIngredientsEntity } from '@/entities';
+import { CategoryEntity, OrderItemsIngredientsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -52,9 +52,6 @@ export class IngredientsEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
-
-  @OneToMany(() => CartItemIngredientsEntity, (cartItemIngredientsEntity) => cartItemIngredientsEntity.ingredient_obj)
-  cartItemIngredients: CartItemIngredientsEntity[];
 
   @OneToMany(() => OrderItemsIngredientsEntity, (oii) => oii.ingredient_obj)
   orderItemIngredients: OrderItemsIngredientsEntity[];

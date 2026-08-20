@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { CreateOrderPayload, OrderResponseDto } from '@/services/apis/main/module/Order.api';
 import { ORDER_MY_ORDERS } from '../constants/order-keys';
-import { CART_DETAIL } from '../constants/cart-keys';
 import { invalidateListQueries } from '../query-client';
 import { Nullable } from '@/types';
 
@@ -17,7 +16,7 @@ export const useOrderCreate = () => {
     mutationFn,
     onSuccess: (data) => {
       if (data) {
-        invalidateListQueries([ORDER_MY_ORDERS], [CART_DETAIL]);
+        invalidateListQueries([ORDER_MY_ORDERS]);
       }
     },
   });

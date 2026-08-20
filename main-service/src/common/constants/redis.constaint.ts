@@ -36,11 +36,6 @@ export const REDIS_KEYS = {
     USER_COUPONS: 'cache:coupon:user:',
     PATTERN: 'cache:coupon:*',
   },
-  CART: {
-    PREFIX: 'cache:cart:',
-    USER_CART: 'cache:cart:user:',
-    PATTERN: 'cache:cart:*',
-  },
   ORDER: {
     PREFIX: 'cache:order:',
     USER_ORDERS: 'cache:order:user:',
@@ -66,7 +61,6 @@ export const REDIS_TTL = {
   COMBO: 3600, // 1h
   INGREDIENT: 86400, // 24h
   COUPON: 1800, // 30 phút
-  CART: 604800, // 7 ngày
   ORDER: 300, // 5 phút
   SEARCH: 300, // 5 phút
 };

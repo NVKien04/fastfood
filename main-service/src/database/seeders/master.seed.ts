@@ -7,6 +7,7 @@ import {
   ProductIngredientsEntity,
   ProductVariantsEntity,
 } from '@/entities';
+import { SizeEnum, TypeEnum } from '@/enums';
 
 import {
   categories,
@@ -24,22 +25,23 @@ export async function MasterSeed(dataSource: DataSource) {
   const categoryRepo = dataSource.getRepository(CategoryEntity);
   const categoryMap = new Map<number, CategoryEntity>();
 
-  for (const item of categories) {
+  for (let i = 0; i < categories.length; i++) {
+    const item = categories[i];
     let category = await categoryRepo.findOne({ where: { slug: item.slug } });
     if (!category) {
       category = categoryRepo.create({
         name: item.name,
         slug: item.slug,
         description: item.description,
-        sortOrder: item.sortOrder,
-        isActive: item.isActive,
+        sortOrder: item.sortOrder ?? i + 1,
+        isActive: item.isActive ?? 1,
       });
       category = await categoryRepo.save(category);
       console.log(`✅ Seeded Category: ${category.name}`);
     } else {
       console.log(`⚠️ Category Existed: ${category.name}`);
     }
-    categoryMap.set(item.id, category);
+    categoryMap.set(i + 1, category);
   }
 
   // 2. Seed Ingredients
@@ -55,8 +57,8 @@ export async function MasterSeed(dataSource: DataSource) {
         description: item.description,
         price: item.price,
         imageUrl: item.imageUrl || '',
-        isActive: item.isActive,
-        isRequired: item.isRequired,
+        isActive: item.isActive ?? 1,
+        isRequired: item.isRequired ?? 0,
         categoryId: categoryMap.get(item.categoryId)?.id || 1,
       });
       ingredient = await ingredientRepo.save(ingredient);
@@ -81,11 +83,11 @@ export async function MasterSeed(dataSource: DataSource) {
         slug: item.slug,
         description: item.description,
         basePrice: item.basePrice,
-        sortOrder: item.sortOrder,
+        sortOrder: 'sortOrder' in item && typeof item.sortOrder === 'number' ? item.sortOrder : i + 1,
         img: item.img || '',
-        isFeatured: item.isFeatured,
+        isFeatured: item.isFeatured ?? 0,
         categoryId: dbCategory?.id || 1,
-        isActive: item.isActive,
+        isActive: item.isActive ?? 1,
       });
       product = await productRepo.save(product);
       console.log(`✅ Seeded Product: ${product.name}`);
@@ -97,7 +99,8 @@ export async function MasterSeed(dataSource: DataSource) {
 
   // 4. Seed Product Variants
   const variantRepo = dataSource.getRepository(ProductVariantsEntity);
-  for (const item of productVariants) {
+  for (let i = 0; i < productVariants.length; i++) {
+    const item = productVariants[i];
     const parentProduct = productMap.get(item.productId);
     if (!parentProduct) continue;
 
@@ -111,11 +114,11 @@ export async function MasterSeed(dataSource: DataSource) {
     if (!exists) {
       const variant = variantRepo.create({
         name: item.name,
-        size: item.size as any,
-        type: item.type as any,
-        modifiedPrice: item.modifiedPrice,
-        isActive: item.isActive,
-        sortOrder: item.sortOrder,
+        size: (item.size as SizeEnum) || SizeEnum.SIZE_20,
+        type: (item.type as TypeEnum) || TypeEnum.MEDIUM,
+        modifiedPrice: item.modifiedPrice ?? 0,
+        isActive: item.isActive ?? 1,
+        sortOrder: 'sortOrder' in item && typeof item.sortOrder === 'number' ? item.sortOrder : i + 1,
         productId: parentProduct.id,
       });
       await variantRepo.save(variant);
@@ -125,17 +128,25 @@ export async function MasterSeed(dataSource: DataSource) {
 
   // 5. Seed Combos
   const comboRepo = dataSource.getRepository(CombosEntity);
-  for (const item of combos) {
+  for (let i = 0; i < combos.length; i++) {
+    const item = combos[i];
     const exists = await comboRepo.findOne({ where: { slug: item.slug } });
     if (!exists) {
+      const price =
+        'price' in item && typeof item.price === 'number'
+          ? item.price
+          : 'basePrice' in item && typeof item.basePrice === 'number'
+            ? item.basePrice
+            : 0;
+
       const combo = comboRepo.create({
         name: item.name,
         slug: item.slug,
         description: item.description,
-        price: item.price,
+        price,
         img: item.img || '',
-        sortOrder: item.sortOrder,
-        isActive: item.isActive,
+        sortOrder: 'sortOrder' in item && typeof item.sortOrder === 'number' ? item.sortOrder : i + 1,
+        isActive: item.isActive ?? 1,
       });
       await comboRepo.save(combo);
       console.log(`✅ Seeded Combo: ${item.name}`);

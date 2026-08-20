@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { MainLayout } from '@/components/layout';
-import { ProductList } from '@/modules/product';
+import { ProductList } from '@/features/product';
 
 export const metadata: Metadata = {
   title: 'Pizza Hut - Đặt Pizza & Món Ăn Nhanh Giao Tận Nơi',

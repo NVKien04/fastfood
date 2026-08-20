@@ -182,8 +182,8 @@ export class ProductService {
     const [data, totalItems] = await this.findPaginated({
       skip,
       take: limit,
-      orderBy: filterObject?.orderby,
-      orderDirection: filterObject?.orderDirection,
+      orderBy: filterObject?.orderby || filterObject?.sortBy,
+      orderDirection: filterObject?.orderDirection || filterObject?.sortOrder,
       search: filterObject?.search,
       categoryId: filterObject?.categoryId !== undefined ? Number(filterObject.categoryId) : undefined,
       isFeatured: filterObject?.isFeatured !== undefined ? Number(filterObject.isFeatured) : undefined,

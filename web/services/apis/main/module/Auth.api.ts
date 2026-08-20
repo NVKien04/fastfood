@@ -2,7 +2,13 @@ import { AxiosRequestConfig } from 'axios';
 import { Auth } from '../generated/Auth';
 import { apiFormat } from '../../api';
 import { BaseResponse } from '../../api.type';
-import { LoginDto, LoginResponseDto, AuthControllerLogoutData } from '../generated/data-contracts';
+import {
+  LoginDto,
+  LoginResponseDto,
+  AuthControllerLogoutData,
+  CreateUserDto,
+  AuthControllerRegisterData,
+} from '../generated/data-contracts';
 
 export class AuthApiModule {
   public api: Auth<string>;
@@ -12,6 +18,20 @@ export class AuthApiModule {
       ...config,
     });
   }
+
+  /**
+   * Đăng ký tài khoản
+   */
+  register = async (data: CreateUserDto): Promise<BaseResponse<AuthControllerRegisterData>> => {
+    try {
+      const response = await this.api.authControllerRegister(data);
+      return apiFormat<AuthControllerRegisterData>(response);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error registering:', error);
+      return { kind: 'ERROR', data: null, error: message };
+    }
+  };
 
   /**
    * Đăng nhập hệ thống

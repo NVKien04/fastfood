@@ -14,7 +14,6 @@ import { ProductModule } from '@/modules/product/product.module';
 import { IngredientModule } from '@/modules/ingredient/ingredient.module';
 import { AddressModule } from '@/modules/address/address.module';
 import { CouponModule } from '@/modules/coupon/coupon.module';
-import { CartModule } from '@/modules/cart/cart.module';
 import { OrderModule } from '@/modules/order/order.module';
 import { ProductVariantModule } from '@/modules/product-variant/product-variant.module';
 import { ProductIngredientModule } from '@/modules/product-ingredient/product-ingredient.module';
@@ -71,7 +70,6 @@ import { DeliverySimulationModule } from '@/modules/delivery-simulation/delivery
     IngredientModule,
     AddressModule,
     CouponModule,
-    CartModule,
     OrderModule,
     ProductVariantModule,
     ProductIngredientModule,

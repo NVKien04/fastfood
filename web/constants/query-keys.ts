@@ -6,9 +6,6 @@ export const PRODUCT_BY_SLUG = 'PRODUCT_BY_SLUG';
 // Category Query Keys
 export const CATEGORY_LIST = 'CATEGORY_LIST';
 
-// Cart Query Keys
-export const CART_DETAIL = 'CART_DETAIL';
-
 // Order Query Keys
 export const ORDER_MY_ORDERS = 'ORDER_MY_ORDERS';
 export const ORDER_DETAIL = 'ORDER_DETAIL';

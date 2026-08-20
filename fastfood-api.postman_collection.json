@@ -1,0 +1,614 @@
+{
+  "info": {
+    "_postman_id": "b3e6c981-d142-4f27-a068-d01c875699aa",
+    "name": "FastFood API - Full Collection",
+    "description": "Toàn bộ API cho hệ thống FastFood (Pizza, Burger, Combo, Topping, Order, Auth, etc.)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Đăng ký tài khoản (Register)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Nguyễn Văn A\",\n  \"phone\": \"0901234567\",\n  \"role\": \"customer\",\n  \"provider\": \"local\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Đăng nhập (Login - Customer/Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "var token = '';",
+                  "if (jsonData && jsonData.data && jsonData.data.accessToken) {",
+                  "    token = jsonData.data.accessToken;",
+                  "} else if (jsonData && jsonData.accessToken) {",
+                  "    token = jsonData.accessToken;",
+                  "}",
+                  "if (token) {",
+                  "    pm.environment.set('token', token);",
+                  "    pm.collectionVariables.set('token', token);",
+                  "    console.log('Saved token to environment:', token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"password\": \"{{customerPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Làm mới Access Token (Refresh Token)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Đổi mật khẩu (Change Password)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Đăng xuất (Logout)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Products",
+      "item": [
+        {
+          "name": "Danh sách sản phẩm phân trang & Lọc",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 10,\n  \"search\": \"\",\n  \"categoryId\": 1,\n  \"orderby\": \"sortOrder\",\n  \"orderDirection\": \"ASC\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product/get-page",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "get-page"]
+            }
+          }
+        },
+        {
+          "name": "Chi tiết sản phẩm theo Slug (SEO)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/product/slug/pizza-hai-san-pesto",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", "slug", "pizza-hai-san-pesto"]
+            }
+          }
+        },
+        {
+          "name": "Chi tiết sản phẩm theo ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/product/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", ":id"],
+              "variable": [{ "key": "id", "value": "uuid-product-id" }]
+            }
+          }
+        },
+        {
+          "name": "Sản phẩm liên quan (Cùng danh mục)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/product/:id/related",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", ":id", "related"],
+              "variable": [{ "key": "id", "value": "uuid-product-id" }]
+            }
+          }
+        },
+        {
+          "name": "Tạo mới sản phẩm (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pizza Thịt Bò Thượng Hạng\",\n  \"slug\": \"pizza-thit-bo-thuong-hang\",\n  \"description\": \"Thịt bò mềm hảo hạng nướng bơ tỏi cùng phô mai Mozzarella\",\n  \"basePrice\": 189000,\n  \"sortOrder\": 1,\n  \"img\": \"https://example.com/pizza-beef.jpg\",\n  \"isFeatured\": 1,\n  \"categoryId\": 1,\n  \"variants\": [\n    {\n      \"name\": \"Nhỏ (20cm) Mỏng\",\n      \"size\": \"20cm\",\n      \"type\": \"nhỏ\",\n      \"modifiedPrice\": 0,\n      \"sortOrder\": 1\n    },\n    {\n      \"name\": \"Lớn (30cm) Vừa\",\n      \"size\": \"30cm\",\n      \"type\": \"vừa\",\n      \"modifiedPrice\": 50000,\n      \"sortOrder\": 2\n    }\n  ],\n  \"ingredients\": [\n    {\n      \"ingredientId\": 1,\n      \"isDefault\": 1,\n      \"quantity\": 1\n    },\n    {\n      \"ingredientId\": 2,\n      \"isDefault\": 0,\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": ["{{baseUrl}}"],
+              "path": ["product"]
+            }
+          }
+        },
+        {
+          "name": "Cập nhật trạng thái nhanh (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": 1,\n  \"isFeatured\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", ":id", "status"],
+              "variable": [{ "key": "id", "value": "uuid-product-id" }]
+            }
+          }
+        },
+        {
+          "name": "Xóa sản phẩm (Admin)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/product/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["product", ":id"],
+              "variable": [{ "key": "id", "value": "uuid-product-id" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Categories",
+      "item": [
+        {
+          "name": "Danh sách danh mục phân trang",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 20\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/category/get-page",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "get-page"]
+            }
+          }
+        },
+        {
+          "name": "Chi tiết danh mục theo Slug",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/category/slug/pizza",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "slug", "pizza"]
+            }
+          }
+        },
+        {
+          "name": "Chi tiết danh mục theo ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/category/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["category", "1"]
+            }
+          }
+        },
+        {
+          "name": "Tạo mới danh mục (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Món Ăn Nhẹ\",\n  \"slug\": \"mon-an-nhe\",\n  \"description\": \"Các món ăn nhẹ giòn ngon hấp dẫn\",\n  \"sortOrder\": 7\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/category",
+              "host": ["{{baseUrl}}"],
+              "path": ["category"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Ingredients (Toppings)",
+      "item": [
+        {
+          "name": "Danh sách Topping / Nguyên liệu",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ingredient/get-page",
+              "host": ["{{baseUrl}}"],
+              "path": ["ingredient", "get-page"]
+            }
+          }
+        },
+        {
+          "name": "Chi tiết Topping theo ID",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/ingredient/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["ingredient", "1"]
+            }
+          }
+        },
+        {
+          "name": "Tạo mới Topping (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Thêm Sốt Phô Mai Kem\",\n  \"description\": \"Sốt phô mai kem béo ngậy\",\n  \"price\": 25000,\n  \"imageUrl\": \"https://cdn.dodostatic.net/static/Img/Ingredients/cdea869ef287426386ed634e6099a5ba.png\",\n  \"categoryId\": 1,\n  \"isRequired\": 0,\n  \"sortOrder\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ingredient",
+              "host": ["{{baseUrl}}"],
+              "path": ["ingredient"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Combos",
+      "item": [
+        {
+          "name": "Lấy danh sách Combo",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/combos",
+              "host": ["{{baseUrl}}"],
+              "path": ["combos"]
+            }
+          }
+        },
+        {
+          "name": "Chi tiết Combo theo Slug",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/combos/slug/combo-2-nguoi-pizza",
+              "host": ["{{baseUrl}}"],
+              "path": ["combos", "slug", "combo-2-nguoi-pizza"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Orders (Checkout)",
+      "item": [
+        {
+          "name": "Tạo đơn hàng (Create Order - Guest/User)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"026ff8c5-950c-4f7f-94ad-024fe86f8c7b\",\n      \"productVariantId\": 20,\n      \"quantity\": 1,\n      \"ingredients\": [\n        { \"ingredientId\": 1, \"quantity\": 1 },\n        { \"ingredientId\": 2, \"quantity\": 1 }\n      ]\n    }\n  ],\n  \"guestName\": \"Nguyễn Văn A\",\n  \"guestPhone\": \"0901234567\",\n  \"guestAddress\": \"123 Lê Lợi, Phường Bến Nghé, Quận 1, TP.HCM\",\n  \"guestEmail\": \"customer@example.com\",\n  \"notes\": \"Bánh nướng giòn, giao giờ hành chính\",\n  \"couponCode\": \"\",\n  \"paymentMethod\": \"cash\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order",
+              "host": ["{{baseUrl}}"],
+              "path": ["order"]
+            }
+          }
+        },
+        {
+          "name": "Lịch sử đơn hàng của tôi (My Orders)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/order/my-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["order", "my-orders"]
+            }
+          }
+        },
+        {
+          "name": "Chi tiết đơn hàng theo ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/order/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["order", ":id"],
+              "variable": [{ "key": "id", "value": "uuid-order-id" }]
+            }
+          }
+        },
+        {
+          "name": "Khách hàng hủy đơn hàng (Cancel Order)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Tôi đổi ý muốn đặt món khác\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/:id/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["order", ":id", "cancel"],
+              "variable": [{ "key": "id", "value": "uuid-order-id" }]
+            }
+          }
+        },
+        {
+          "name": "Danh sách đơn hàng phân trang (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 10,\n  \"status\": \"đang chờ\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/get-page",
+              "host": ["{{baseUrl}}"],
+              "path": ["order", "get-page"]
+            }
+          }
+        },
+        {
+          "name": "Cập nhật trạng thái đơn (Admin - State Machine)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"đã xác nhận\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["order", ":id", "status"],
+              "variable": [{ "key": "id", "value": "uuid-order-id" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Coupons",
+      "item": [
+        {
+          "name": "Áp dụng mã giảm giá khi thanh toán (Public)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SAVE10\",\n  \"subTotal\": 300000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupon/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupon", "apply"]
+            }
+          }
+        },
+        {
+          "name": "Danh sách mã giảm giá (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page\": 1,\n  \"limit\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupon/get-page",
+              "host": ["{{baseUrl}}"],
+              "path": ["coupon", "get-page"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Users & Profile",
+      "item": [
+        {
+          "name": "Thông tin cá nhân (Get Profile / Me)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "info"]
+            }
+          }
+        },
+        {
+          "name": "Cập nhật thông tin cá nhân",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nguyễn Văn A (Updated)\",\n  \"phone\": \"0909999888\",\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/update",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "update"]
+            }
+          }
+        },
+        {
+          "name": "Danh sách người dùng (Admin)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Address",
+      "item": [
+        {
+          "name": "Lấy danh sách địa chỉ của tôi",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/address/my",
+              "host": ["{{baseUrl}}"],
+              "path": ["address", "my"]
+            }
+          }
+        },
+        {
+          "name": "Thêm địa chỉ giao hàng",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"street\": \"456 Nguyễn Huệ\",\n  \"ward\": \"Bến Nghé\",\n  \"district\": \"Quận 1\",\n  \"city\": \"Hồ Chí Minh\",\n  \"latitude\": 10.7745,\n  \"longitude\": 106.7022,\n  \"isDefault\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/address",
+              "host": ["{{baseUrl}}"],
+              "path": ["address"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Notifications",
+      "item": [
+        {
+          "name": "Lấy danh sách thông báo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"]
+            }
+          }
+        },
+        {
+          "name": "Đánh dấu đọc tất cả",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/notifications/read-all",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "read-all"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

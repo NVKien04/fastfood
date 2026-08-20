@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { MainLayout } from '@/components/layout';
-import { CheckoutModule } from '@/modules/checkout/CheckoutModule';
+import { CheckoutModule } from '@/features/checkout';
 
 export const metadata: Metadata = {
   title: 'Thanh Toán Đơn Hàng | Pizza Hut',

@@ -1,7 +1,4 @@
 export * from '@/entities/addresses.entity';
-export * from '@/entities/cart-item-ingredient.entity';
-export * from '@/entities/cart-items.entity';
-export * from '@/entities/cart.entity';
 export * from '@/entities/category.entity';
 export * from '@/entities/combo-items.entity';
 export * from '@/entities/combos.entity';

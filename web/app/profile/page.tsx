@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { MainLayout } from '@/components/layout';
-import { UserProfile } from '@/modules/profile';
+import { UserProfile } from '@/features/profile';
 
 export const metadata: Metadata = {
   title: 'Hồ Sơ Cá Nhân | Pizza Hut',

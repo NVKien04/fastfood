@@ -1,4 +1,4 @@
-import { CartItemsEntity, CategoryEntity, OrderItemsEntity, ProductVariantsEntity } from '@/entities';
+import { CategoryEntity, OrderItemsEntity, ProductVariantsEntity } from '@/entities';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -55,9 +55,6 @@ export class ProductEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
-
-  @OneToMany(() => CartItemsEntity, (cartItem) => cartItem.product_obj)
-  cartItems: CartItemsEntity[];
 
   @OneToMany(() => ProductVariantsEntity, (product) => product.product_obj)
   productVariants: ProductVariantsEntity[];

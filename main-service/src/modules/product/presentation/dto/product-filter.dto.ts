@@ -27,10 +27,20 @@ export class ProductFilterDto {
   @IsString()
   orderby?: string;
 
+  @ApiPropertyOptional({ description: 'Alias của orderby', example: 'sortOrder' })
+  @IsOptional()
+  @IsString()
+  sortBy?: string;
+
   @ApiPropertyOptional({ description: 'Hướng sắp xếp (ASC hoặc DESC)', example: 'ASC', enum: ['ASC', 'DESC'] })
   @IsOptional()
   @IsIn(['ASC', 'DESC'])
   orderDirection?: 'ASC' | 'DESC';
+
+  @ApiPropertyOptional({ description: 'Alias của orderDirection', example: 'ASC', enum: ['ASC', 'DESC'] })
+  @IsOptional()
+  @IsIn(['ASC', 'DESC'])
+  sortOrder?: 'ASC' | 'DESC';
 
   @ApiPropertyOptional({ description: 'Lọc theo ID danh mục', example: 1 })
   @IsOptional()

@@ -12,7 +12,7 @@ export class ProductVariantResponseDto {
   @ApiProperty({ description: 'Tên biến thể', example: 'Nhỏ - Mỏng' })
   name: string;
 
-  @ApiProperty({ description: 'Kích thước', enum: SizeEnum, example: SizeEnum.SIZE_12 })
+  @ApiProperty({ description: 'Kích thước', enum: SizeEnum, example: SizeEnum.SIZE_20 })
   size: SizeEnum;
 
   @ApiProperty({ description: 'Loại đế/vỏ', enum: TypeEnum, example: TypeEnum.MEDIUM })

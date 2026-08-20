@@ -1,4 +1,4 @@
-import { CartItemsEntity, OrderItemsEntity, ProductEntity } from '@/entities';
+import { OrderItemsEntity, ProductEntity } from '@/entities';
 import { SizeEnum, TypeEnum } from '@/enums';
 import {
   Entity,
@@ -23,7 +23,7 @@ export class ProductVariantsEntity {
   @Column({
     type: 'enum',
     enum: SizeEnum,
-    default: SizeEnum.SIZE_12,
+    default: SizeEnum.SIZE_20,
   })
   size: SizeEnum;
 
@@ -58,9 +58,6 @@ export class ProductVariantsEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt?: Date;
-
-  @OneToMany(() => CartItemsEntity, (cartItem) => cartItem.productVariant_obj)
-  cartItems: CartItemsEntity[];
 
   @OneToMany(() => OrderItemsEntity, (orderItemsEntity) => orderItemsEntity.productVariant_obj)
   orderItems: OrderItemsEntity[];

@@ -1,6 +1,5 @@
 import { IngredientController } from '@/modules/ingredient/presentation/controllers/ingredient.controller';
 import {
-  CartItemIngredientsEntity,
   IngredientsEntity,
   OrderItemsIngredientsEntity,
   ProductIngredientsEntity,
@@ -14,7 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forFeature([
       IngredientsEntity,
-      CartItemIngredientsEntity,
       ProductIngredientsEntity,
       OrderItemsIngredientsEntity,
     ]),
