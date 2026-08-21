@@ -10,19 +10,14 @@ type MainLayoutProps = {
   className?: string;
 };
 
-export const MainLayout: React.FC<MainLayoutProps> = ({
-  children,
-  className = '',
-}) => {
+export const MainLayout: React.FC<MainLayoutProps> = ({ children, className = '' }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-[#fdfdfd] text-gray-900 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#fdfdfd] dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 font-sans transition-colors">
       {/* 1. Header (72px) */}
       <Header />
 
       {/* 2. Main Content Area */}
-      <main className={`flex-1 w-full ${className}`}>
-        {children}
-      </main>
+      <main className={`flex-1 w-full ${className}`}>{children}</main>
 
       {/* 3. Footer */}
       <Footer />

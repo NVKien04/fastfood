@@ -5,7 +5,7 @@ export class User {
   email: string;
   password: string;
   name: string;
-  phone: string;
+  phone?: string;
   avatar?: string;
   role: RoleEnum;
   provider: string;

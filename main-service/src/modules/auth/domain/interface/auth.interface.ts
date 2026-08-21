@@ -16,3 +16,12 @@ export interface TokenPair {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface GoogleProfile {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  displayName: string;
+  avatar?: string;
+}

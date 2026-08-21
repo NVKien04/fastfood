@@ -1,18 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Flame,
-  Pizza,
-  Sparkles,
-  Smile,
-  UtensilsCrossed,
-  Drumstick,
-  CupSoda,
-  Leaf,
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pizza, Flame, Sparkles, Smile, UtensilsCrossed, Drumstick, CupSoda, Leaf } from 'lucide-react';
 
 export type CategoryItem = {
   id: number | string;
@@ -24,7 +13,8 @@ export type CategoryItem = {
 export const getCategoryIcon = (name: string): React.ReactNode => {
   const upper = name.toUpperCase();
   if (upper.includes('MELT')) return <Sparkles className="w-5 h-5" />;
-  if (upper.includes('GIÁ ĐỈNH') || upper.includes('HOT') || upper.includes('DEAL')) return <Flame className="w-5 h-5" />;
+  if (upper.includes('GIÁ ĐỈNH') || upper.includes('HOT') || upper.includes('DEAL'))
+    return <Flame className="w-5 h-5" />;
   if (upper.includes('PIZZA')) return <Pizza className="w-5 h-5" />;
   if (upper.includes('KID') || upper.includes('TRẺ EM')) return <Smile className="w-5 h-5" />;
   if (upper.includes('KHAI VỊ') || upper.includes('STARTER')) return <UtensilsCrossed className="w-5 h-5" />;
@@ -36,17 +26,14 @@ export const getCategoryIcon = (name: string): React.ReactNode => {
   return <Pizza className="w-5 h-5" />;
 };
 
-// Default category tabs matching the image
+// Default category tabs matching the minimal screenshot
 export const DEFAULT_CATEGORY_TABS: CategoryItem[] = [
-  { id: 'the-melts', name: 'THE MELTS', icon: <Sparkles className="w-5 h-5" /> },
-  { id: 'pizza-gia-dinh', name: 'PIZZA GIÁ ĐỈNH', icon: <Flame className="w-5 h-5" /> },
-  { id: 'pizza', name: 'PIZZA', icon: <Pizza className="w-5 h-5" /> },
-  { id: 'kids-menu', name: 'KIDS MENU', icon: <Smile className="w-5 h-5" /> },
-  { id: 'mon-khai-vi', name: 'MÓN KHAI VỊ', icon: <UtensilsCrossed className="w-5 h-5" /> },
-  { id: 'ghien-ga', name: 'GHIỀN GÀ', icon: <Drumstick className="w-5 h-5" /> },
-  { id: 'thuc-uong', name: 'THỨC UỐNG', icon: <CupSoda className="w-5 h-5" /> },
-  { id: 'cay', name: 'CAY', icon: <Flame className="w-5 h-5" /> },
-  { id: 'chay', name: 'CHAY', icon: <Leaf className="w-5 h-5" /> },
+  { id: 'pizza', name: 'Pizza' },
+  { id: 'combo', name: 'Combo' },
+  { id: 'roman-pizza', name: 'Roman pizza' },
+  { id: 'snacks', name: 'Snacks' },
+  { id: 'coffee-and-tea', name: 'Coffee and tea' },
+  { id: 'drinks', name: 'Drinks' },
 ];
 
 type CategoryBarProps = {
@@ -58,30 +45,22 @@ type CategoryBarProps = {
 
 export const CategoryBar: React.FC<CategoryBarProps> = ({
   categories = DEFAULT_CATEGORY_TABS,
-  selectedCategoryId = 'thuc-uong',
+  selectedCategoryId = 'pizza',
   onSelectCategory,
   className = '',
 }) => {
-  // 1. Next.js Router & navigation hooks (none needed)
-
-  // 2. Translation hook (none needed)
-
-  // 3. Local state & refs
+  // 1. Local state & refs
   const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
   const activeTabRef = React.useRef<HTMLButtonElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = React.useState<boolean>(false);
   const [canScrollRight, setCanScrollRight] = React.useState<boolean>(true);
 
-  // 4. Zustand global state (none needed)
-
-  // 5. React Query hooks (none needed)
-
-  // 6. Memoized values (useMemo)
+  // 2. Memoized values (useMemo)
   const categoryList = React.useMemo(() => {
     return categories.length > 0 ? categories : DEFAULT_CATEGORY_TABS;
   }, [categories]);
 
-  // 7. Effects (useEffect)
+  // 3. Effects (useEffect)
   const _checkScrollLimits = React.useCallback(() => {
     if (!scrollContainerRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
@@ -114,7 +93,7 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
     }
   }, [selectedCategoryId]);
 
-  // 8. Event handlers & internal functions (useCallback)
+  // 4. Event handlers
   const _handleScroll = React.useCallback((direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const scrollAmount = 240;
@@ -133,17 +112,28 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
     [onSelectCategory],
   );
 
-  // 9. Return JSX
+  // Helper to format category title nicely (e.g. "PIZZA" -> "Pizza", "THỨC UỐNG" -> "Thức uống")
+  const formatCategoryName = (name: string) => {
+    if (!name) return '';
+    if (name === name.toUpperCase() && name.length > 2) {
+      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+    return name;
+  };
+
+  // 5. Return JSX
   return (
-    <div className={`w-full bg-white border-b border-gray-100 shadow-[0_2px_4px_rgba(0,0,0,0.02)] sticky top-[72px] z-30 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 flex items-center relative">
+    <div
+      className={`w-full bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800/80 sticky top-[110px] z-30 transition-colors ${className}`}
+    >
+      <div className="max-w-[1200px] w-full mx-auto px-4 flex items-center relative">
         {/* Left Scroll Button */}
         {canScrollLeft && (
           <button
             type="button"
             onClick={() => _handleScroll('left')}
             aria-label="Cuộn trái"
-            className="absolute left-2 z-10 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-600 hover:text-red-600 hover:border-red-500 transition-all"
+            className="absolute left-2 z-10 w-8 h-8 rounded-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 shadow-md flex items-center justify-center text-gray-700 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-all cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -152,7 +142,7 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
         {/* Categories Scrollable Container */}
         <div
           ref={scrollContainerRef}
-          className="flex items-center gap-1 sm:gap-4 overflow-x-auto scrollbar-none py-2 px-1 scroll-smooth w-full select-none"
+          className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 overflow-x-auto scrollbar-none py-3 px-1 scroll-smooth w-full select-none"
         >
           {categoryList.map((category) => {
             const isSelected =
@@ -166,27 +156,15 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
                 ref={isSelected ? activeTabRef : null}
                 type="button"
                 onClick={() => _handleCategoryClick(category.id)}
-                className={`flex flex-col items-center justify-center gap-1.5 px-4 py-2 min-w-[90px] sm:min-w-[105px] rounded-lg transition-all relative shrink-0 cursor-pointer ${
+                className={`flex items-center justify-center px-5 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-bold transition-all relative shrink-0 cursor-pointer ${
                   isSelected
-                    ? 'text-red-600 font-extrabold'
-                    : 'text-gray-700 hover:text-gray-900 font-bold opacity-80 hover:opacity-100'
+                    ? 'bg-[#f0f3f6] dark:bg-zinc-800 text-gray-900 dark:text-white font-extrabold shadow-xs'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/70 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-900/60 font-semibold'
                 }`}
               >
-                <div
-                  className={`w-6 h-6 flex items-center justify-center transition-transform ${
-                    isSelected ? 'scale-110 text-red-600' : 'text-gray-600'
-                  }`}
-                >
-                  {category.icon || getCategoryIcon(category.name)}
-                </div>
-                <span className="text-[11px] sm:text-xs tracking-tight whitespace-nowrap text-center">
-                  {category.name}
+                <span className="whitespace-nowrap">
+                  {formatCategoryName(category.name)}
                 </span>
-
-                {/* Red Underline Indicator */}
-                {isSelected && (
-                  <span className="absolute bottom-0 left-2 right-2 h-[3px] bg-red-600 rounded-full" />
-                )}
               </button>
             );
           })}
@@ -198,7 +176,7 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
             type="button"
             onClick={() => _handleScroll('right')}
             aria-label="Cuộn phải"
-            className="absolute right-2 z-10 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-600 hover:text-red-600 hover:border-red-500 transition-all"
+            className="absolute right-2 z-10 w-8 h-8 rounded-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 shadow-md flex items-center justify-center text-gray-700 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-all cursor-pointer"
           >
             <ChevronRight className="w-4 h-4" />
           </button>

@@ -7,6 +7,7 @@ import { CategoryBar, CategoryItem, getCategoryIcon } from '@/components/layout/
 import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { formatVND } from '@/utils';
+import { categoryToSlug } from '@/helpers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Utensils, Search, Loader2, ShoppingBag } from 'lucide-react';
@@ -23,6 +24,7 @@ export const ProductList: FC = () => {
     setSearchQuery,
     isModalOpen,
     activeModalProduct,
+    detailLoading,
     isLoading,
     productError,
     refetchProducts,
@@ -35,15 +37,19 @@ export const ProductList: FC = () => {
   } = useProductMenu();
 
   const categoryBarItems: CategoryItem[] = useMemo(() => {
-    return categories.map((cat) => ({
-      id: cat.id,
-      name: cat.name,
-      icon: getCategoryIcon(cat.name),
-    }));
+    return categories.map((cat) => {
+      const slug = categoryToSlug(cat.name);
+      return {
+        id: slug,
+        name: cat.name,
+        icon: getCategoryIcon(cat.name),
+        slug,
+      };
+    });
   }, [categories]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#fafaf9] text-gray-900">
+    <div className="flex flex-col min-h-screen bg-[#fafaf9] dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 transition-colors">
       {/* 1. Category Bar Header Sticky */}
       {categoryBarItems.length > 0 && (
         <CategoryBar
@@ -54,35 +60,12 @@ export const ProductList: FC = () => {
       )}
 
       {/* 2. Main Content Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Search & Filter Header */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-              {t('PRODUCT.MENU_TITLE', 'Thực Đơn Món Ăn')}
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">
-              {t('PRODUCT.MENU_SUBTITLE', 'Khám phá các món ăn nhanh thơm ngon, đậm đà hương vị')}
-            </p>
-          </div>
-
-          <div className="relative w-full sm:w-72">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('PRODUCT.SEARCH_PLACEHOLDER', 'Tìm kiếm món ăn...')}
-              className="pl-10 h-11 rounded-2xl bg-white border-gray-200 focus:border-red-500 focus:ring-red-500/20 text-xs sm:text-sm"
-            />
-          </div>
-        </div>
-
+      <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 py-6 sm:py-8">
         {/* Loading State */}
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-red-600 mb-3" />
-            <p className="text-sm font-medium text-gray-500">
+            <p className="text-sm font-medium text-gray-500 dark:text-zinc-400">
               {t('COMMON.LOADING', 'Đang tải thực đơn...')}
             </p>
           </div>
@@ -91,18 +74,18 @@ export const ProductList: FC = () => {
         {/* Error State */}
         {!isLoading && productError && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-3">
+            <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center mb-3">
               <Utensils className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 mb-1">
+            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
               {t('COMMON.ERROR', 'Không thể tải danh sách món ăn')}
             </h3>
-            <p className="text-xs text-gray-500 max-w-sm mb-4">
+            <p className="text-xs text-gray-500 dark:text-zinc-400 max-w-sm mb-4">
               Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.
             </p>
             <Button
               onClick={() => refetchProducts()}
-              className="bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold px-4 py-2"
+              className="bg-[#ff6900] hover:bg-[#e05d00] text-white rounded-xl text-xs font-bold px-4 py-2 cursor-pointer"
             >
               {t('COMMON.RETRY', 'Thử lại')}
             </Button>
@@ -112,13 +95,13 @@ export const ProductList: FC = () => {
         {/* Empty State */}
         {!isLoading && !productError && categoryGroups.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-500 flex items-center justify-center mb-4">
               <Utensils className="w-8 h-8" />
             </div>
-            <h3 className="text-lg font-black text-gray-900 mb-1">
+            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1">
               {t('PRODUCT.EMPTY_PRODUCTS', 'Không tìm thấy món ăn nào')}
             </h3>
-            <p className="text-xs sm:text-sm text-gray-500 max-w-md">
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 max-w-md">
               {t('PRODUCT.EMPTY_PRODUCTS_DESC', 'Vui lòng thử chọn danh mục khác hoặc thay đổi từ khóa tìm kiếm.')}
             </p>
           </div>
@@ -128,21 +111,14 @@ export const ProductList: FC = () => {
         {!isLoading &&
           !productError &&
           categoryGroups.map((group) => (
-            <section
-              key={group.category.id}
-              id={group.category.slug}
-              className="mb-12 scroll-mt-28"
-            >
-              <div className="flex items-center gap-3 mb-6 pb-2 border-b border-gray-100">
-                <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+            <section key={group.category.id} id={group.category.slug} className="mb-14 scroll-mt-48">
+              <div className="flex items-center gap-3 mb-6 sm:mb-8 pb-2 ">
+                <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                   {group.category.name}
                 </h2>
-                <span className="text-xs font-bold text-gray-400 px-2 py-0.5 rounded-full bg-gray-100">
-                  {group.products.length}
-                </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
                 {group.products.map((product) => (
                   <ProductCard
                     key={product.id}
@@ -164,7 +140,7 @@ export const ProductList: FC = () => {
             className="w-full flex items-center justify-between p-4 rounded-2xl bg-gray-900 hover:bg-black text-white shadow-2xl shadow-gray-900/40 border border-gray-800 transition-transform active:scale-[0.99] group"
           >
             <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white shadow-md shadow-red-600/30">
+              <div className="relative w-10 h-10 rounded-xl bg-[#ff6900] flex items-center justify-center text-white shadow-md shadow-orange-500/30">
                 <ShoppingBag className="w-5 h-5" />
                 <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white text-gray-900 text-[10px] font-black flex items-center justify-center shadow-xs">
                   {cartTotalCount}
@@ -172,13 +148,11 @@ export const ProductList: FC = () => {
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-xs font-bold text-gray-300">Giỏ hàng của bạn</span>
-                <span className="text-sm font-black text-white">
-                  {formatVND(cartTotalPrice)}
-                </span>
+                <span className="text-sm font-black text-white">{formatVND(cartTotalPrice)}</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs font-bold text-red-500 group-hover:text-red-400 transition-colors">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#ff6900] group-hover:text-orange-400 transition-colors">
               <span>Xem đơn</span>
               <span>→</span>
             </div>
@@ -190,6 +164,7 @@ export const ProductList: FC = () => {
       <ProductDetailModal
         product={activeModalProduct}
         isOpen={isModalOpen}
+        isLoading={detailLoading}
         onClose={handleCloseDetailModal}
       />
     </div>

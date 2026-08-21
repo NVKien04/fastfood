@@ -45,4 +45,19 @@ export class AuthService {
   async refresh(token: string): Promise<TokenPair> {
     return this.tokenService.rotateRefreshToken(token);
   }
+
+  async googleLogin(user: { id: string; role: string }): Promise<TokenPair> {
+    await this.tokenService.cleanExpiredTokens();
+
+    const payload: JwtPayLoad = {
+      userId: user.id,
+      role: user.role,
+    };
+
+    return this.tokenService.generateTokenPair(payload);
+  }
+
+  async validateOrCreateGoogleUser(profile: { email: string; displayName: string; avatar?: string }) {
+    return this.userService.findOrCreateGoogleUser(profile);
+  }
 }

@@ -2,7 +2,7 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-@custom-variant dark (&:is(.dark *));
+@variant dark (&:is(.dark, .dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -11,8 +11,8 @@
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
 
-  --color-brand-primary: rgb(200 16 46);
-  --color-brand-primary-active: rgb(170 10 35);
+  --color-brand-primary: rgb(255 105 0);
+  --color-brand-primary-active: rgb(230 90 0);
   --color-brand-primary-disabled: #e6dfd8;
   --color-brand-ink: #141413;
   --color-brand-body: #3d3d3a;
@@ -77,7 +77,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: rgb(200 16 46);
+  --primary: rgb(255 105 0);
   --primary-foreground: rgb(255 255 255);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -154,4 +154,3 @@
     font-style: normal;
   }
 }
-

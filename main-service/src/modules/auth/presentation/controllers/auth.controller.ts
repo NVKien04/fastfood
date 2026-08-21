@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, Res, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '@/modules/auth/application/services/auth.service';
@@ -7,6 +7,7 @@ import { type CookieName } from '@/modules/auth/domain/interface/auth.interface'
 import { ChangePasswordDto, LoginDto, LoginResponseDto } from '@/modules/auth/presentation/dto';
 import { CreateUserDto, UserResponseDto } from '@/modules/user/presentation/dto';
 import { Auth } from '@/common/decorators';
+import { GoogleAuthGuard } from '@/guards';
 import { RoleEnum } from '@/enums';
 import ms, { StringValue } from 'ms';
 import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
@@ -69,6 +70,28 @@ export class AuthController {
     return {
       data: user,
     };
+  }
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ summary: 'Đăng nhập với Google OAuth2' })
+  googleAuth() {
+    // Kích hoạt Passport Google OAuth flow
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ summary: 'Callback chuyển hướng sau khi đăng nhập Google thành công' })
+  async googleAuthCallback(@Request() req: { user: { id: string; role: string } }, @Res() res: Response) {
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000');
+    try {
+      const tokens = await this.authService.googleLogin(req.user);
+      this.setAuthCookie(res, tokens.refreshToken);
+      return res.redirect(`${frontendUrl}/login?token=${tokens.accessToken}`);
+    } catch (error) {
+      console.error('Google Auth Callback Error:', error);
+      return res.redirect(`${frontendUrl}/login?error=oauth_failed`);
+    }
   }
 
   @Post('login')

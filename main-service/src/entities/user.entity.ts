@@ -24,8 +24,8 @@ export class UserEntity {
   @Column({ type: 'varchar', nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', name: 'so_dien_thoai', unique: true })
-  phone: string;
+  @Column({ type: 'varchar', name: 'so_dien_thoai', unique: true, nullable: true })
+  phone?: string;
 
   @Column({ type: 'varchar', nullable: true })
   avatar: string;

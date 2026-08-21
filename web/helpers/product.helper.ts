@@ -48,6 +48,25 @@ export const calculateProductTotalPrice = (
 };
 
 /**
+ * Kiểm tra xem sản phẩm có cần mở modal tùy chỉnh (Pizza, Combo, hoặc có nhiều biến thể/topping) hay không
+ */
+export const isCustomizableProduct = (product: {
+  name?: string;
+  variants?: unknown[];
+  ingredients?: unknown[];
+  categoryId?: number | string;
+}): boolean => {
+  if (!product) return false;
+  if (product.variants && product.variants.length > 1) return true;
+  if (product.ingredients && product.ingredients.length > 0) return true;
+
+  const nameLower = (product.name || '').toLowerCase();
+  if (nameLower.includes('pizza')) return true;
+  if (nameLower.includes('combo')) return true;
+  return false;
+};
+
+/**
  * Chuyển đổi tên danh mục thành slug URL (vd: "THỨC UỐNG" -> "thuc-uong", "PIZZA GIÁ ĐỈNH" -> "pizza-gia-dinh")
  */
 export const categoryToSlug = (name: string): string => {

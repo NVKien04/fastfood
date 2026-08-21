@@ -153,4 +153,32 @@ export class UserService {
 
     return buildPaginationResponse(dataDto, totalItems, page, limit);
   }
+
+  async findOrCreateGoogleUser(profile: {
+    email: string;
+    displayName: string;
+    avatar?: string;
+  }): Promise<{ id: string; role: RoleEnum }> {
+    let user = await this.findByEmail(profile.email);
+
+    if (!user) {
+      const randomPassword = (await HashUtil.hash(Math.random().toString(36) + Date.now().toString())) || 'oauth_google_user';
+      user = await this.save({
+        email: profile.email,
+        name: profile.displayName || profile.email.split('@')[0],
+        password: randomPassword,
+        avatar: profile.avatar,
+        provider: 'google',
+        role: RoleEnum.CUSTOMER,
+      });
+    } else {
+      // Nếu user chưa có avatar, cập nhật avatar từ Google
+      if (!user.avatar && profile.avatar) {
+        await this.updateRaw(user.id, { avatar: profile.avatar });
+      }
+    }
+
+    return { id: user.id, role: user.role };
+  }
 }
+

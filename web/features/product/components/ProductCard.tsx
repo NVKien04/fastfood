@@ -3,9 +3,8 @@
 import { FC, MouseEvent } from 'react';
 import { ProductDetailResponseDto } from '../types';
 import { formatVND } from '@/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Utensils } from 'lucide-react';
+import { isCustomizableProduct } from '@/helpers';
+import { Utensils } from 'lucide-react';
 
 type ProductCardProps = {
   product: ProductDetailResponseDto;
@@ -13,69 +12,65 @@ type ProductCardProps = {
   onQuickAdd: (product: ProductDetailResponseDto, e: MouseEvent) => void;
 };
 
-export const ProductCard: FC<ProductCardProps> = ({
-  product,
-  onOpenDetail,
-  onQuickAdd,
-}) => {
+export const ProductCard: FC<ProductCardProps> = ({ product, onOpenDetail, onQuickAdd }) => {
+  const hasOptions = isCustomizableProduct(product);
+
+  const handleClick = (e: MouseEvent) => {
+    if (hasOptions) {
+      onOpenDetail(product);
+    } else {
+      onQuickAdd(product, e);
+    }
+  };
+
   return (
     <div
-      onClick={() => onOpenDetail(product)}
-      className="group relative flex flex-col bg-white rounded-2xl sm:rounded-3xl border border-gray-100 overflow-hidden shadow-xs hover:shadow-xl hover:border-red-100 transition-all duration-300 cursor-pointer"
+      onClick={handleClick}
+      className="group relative flex flex-col items-center select-none cursor-pointer transition-all duration-300"
     >
-      {/* Product Image */}
-      <div className="relative w-full pt-[75%] bg-gray-50 overflow-hidden">
+      {/* 1. Product Image Container */}
+      <div className="relative w-full aspect-square flex items-center justify-center p-2 sm:p-3">
+        {/* Flat Best Price Pill Badge (rgb(249, 122, 168)) */}
+        {product.isFeatured === 1 && (
+          <div className="absolute top-1 left-1 sm:top-2 sm:left-2 z-10 -rotate-[10deg] transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-[12deg] pointer-events-none">
+            <div
+              style={{ backgroundColor: 'rgb(249, 122, 168)' }}
+              className="px-3.5 sm:px-4 py-1 rounded-full text-white font-black text-xs sm:text-sm tracking-tight text-center whitespace-nowrap shadow-xs select-none"
+            >
+              best price
+            </div>
+          </div>
+        )}
+
         {product.img ? (
           <img
             src={product.img}
             alt={product.name}
             loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] group-hover:scale-105 transition-transform duration-300 ease-out"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-500 rounded-full">
             <Utensils className="w-12 h-12" />
           </div>
         )}
-
-        {/* Featured Badge */}
-        {product.isFeatured === 1 && (
-          <Badge className="absolute top-3 left-3 bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] tracking-wider uppercase px-2.5 py-1 rounded-full shadow-sm">
-            Nổi bật
-          </Badge>
-        )}
       </div>
 
-      {/* Product Info */}
-      <div className="flex-1 flex flex-col p-4 sm:p-5">
-        <h3 className="text-base sm:text-lg font-black text-gray-900 group-hover:text-red-600 transition-colors line-clamp-1">
-          {product.name}
-        </h3>
+      {/* 2. Product Title */}
+      <h3 className="text-center font-bold text-sm sm:text-base text-gray-900 dark:text-white mt-2 sm:mt-3 line-clamp-2 px-1 group-hover:text-[#ff6900] dark:group-hover:text-[#ff6900] transition-colors">
+        {product.name}
+      </h3>
 
-        {product.description && (
-          <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">
-            {product.description}
-          </p>
-        )}
-
-        <div className="mt-auto pt-4 flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-[10px] uppercase font-bold text-gray-400">Giá từ</span>
-            <span className="text-base sm:text-lg font-black text-red-600">
-              {formatVND(Number(product.basePrice))}
-            </span>
-          </div>
-
-          <Button
-            size="sm"
-            onClick={(e) => onQuickAdd(product, e)}
-            className="h-9 px-3.5 rounded-xl bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold text-xs transition-colors shadow-xs group/btn"
-          >
-            <Plus className="w-4 h-4 mr-1 transition-transform group-hover/btn:rotate-90" />
-            <span>Chọn</span>
-          </Button>
-        </div>
-      </div>
+      {/* 3. Price Pill Button */}
+      <button
+        type="button"
+        onClick={(e) => onQuickAdd(product, e)}
+        className="mt-2.5 sm:mt-3 inline-flex items-center justify-center px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-gray-100 dark:bg-[#252528] hover:bg-gray-200 dark:hover:bg-[#323236] text-gray-900 dark:text-zinc-100 text-xs sm:text-sm font-extrabold transition-all group-hover:scale-105 active:scale-95 shadow-xs cursor-pointer"
+      >
+        <span>
+          {hasOptions ? `từ ${formatVND(Number(product.basePrice))}` : formatVND(Number(product.basePrice))}
+        </span>
+      </button>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef, MouseEvent } from 'react';
 import { useCategoryList } from '@/services/react-query/queries/category';
 import { useProductList, useProductDetail } from '@/services/react-query/queries/product';
 import { useStore } from '@/stores';
-import { categoryToSlug } from '@/helpers/product.helper';
+import { categoryToSlug, isCustomizableProduct } from '@/helpers/product.helper';
 import { CategoryGroup, ProductDetailResponseDto } from '../types';
 
 export const useProductMenu = () => {
@@ -36,10 +36,7 @@ export const useProductMenu = () => {
   );
 
   const categories = useMemo(() => categoriesData ?? [], [categoriesData]);
-  const products = useMemo(
-    () => (productsData?.kind === 'OK' ? (productsData.data ?? []) : []),
-    [productsData],
-  );
+  const products = useMemo(() => (productsData?.kind === 'OK' ? (productsData.data ?? []) : []), [productsData]);
 
   const activeModalProduct = useMemo(
     () => productDetail || selectedProductFallback,
@@ -52,11 +49,7 @@ export const useProductMenu = () => {
 
     const query = searchQuery.trim().toLowerCase();
     const filtered = query
-      ? products.filter(
-          (p) =>
-            p.name?.toLowerCase().includes(query) ||
-            p.description?.toLowerCase().includes(query),
-        )
+      ? products.filter((p) => p.name?.toLowerCase().includes(query) || p.description?.toLowerCase().includes(query))
       : products;
 
     if (categories.length > 0) {
@@ -94,23 +87,37 @@ export const useProductMenu = () => {
     return Object.values(groups);
   }, [products, categories, searchQuery]);
 
-  // Set default active category
+  // Set default active category and scroll to hash on load
   useEffect(() => {
-    if (!activeCategorySlug && categoryGroups.length > 0 && !hasInitializedHashRef.current) {
+    if (categoryGroups.length > 0 && !hasInitializedHashRef.current) {
       if (typeof window !== 'undefined' && window.location.hash) {
         const hashSlug = window.location.hash.replace('#', '');
         if (categoryGroups.some((g) => g.category.slug === hashSlug)) {
           setActiveCategorySlug(hashSlug);
           hasInitializedHashRef.current = true;
+
+          // Scroll to matching section
+          setTimeout(() => {
+            const el = document.getElementById(hashSlug);
+            if (el) {
+              const headerOffset = 180;
+              const elementPosition = el.getBoundingClientRect().top;
+              const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+              window.scrollTo({
+                top: Math.max(0, offsetPosition),
+                behavior: 'smooth',
+              });
+            }
+          }, 150);
           return;
         }
       }
       setActiveCategorySlug(categoryGroups[0].category.slug);
       hasInitializedHashRef.current = true;
     }
-  }, [categoryGroups, activeCategorySlug]);
+  }, [categoryGroups]);
 
-  // Scroll spy for active category
+  // Scroll spy for active category and sync with URL hash
   useEffect(() => {
     const handleScroll = () => {
       if (isUserScrollingRef.current) return;
@@ -118,41 +125,44 @@ export const useProductMenu = () => {
       const headerOffset = 180;
       const scrollPosition = window.scrollY + headerOffset;
 
-      for (const group of categoryGroups) {
+      for (let i = categoryGroups.length - 1; i >= 0; i--) {
+        const group = categoryGroups[i];
         const el = document.getElementById(group.category.slug);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
+        if (el && scrollPosition >= el.offsetTop) {
+          if (activeCategorySlug !== group.category.slug) {
             setActiveCategorySlug(group.category.slug);
-            break;
+            if (typeof window !== 'undefined') {
+              window.history.replaceState(null, '', `#${group.category.slug}`);
+            }
           }
+          break;
         }
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [categoryGroups]);
+  }, [categoryGroups, activeCategorySlug]);
 
   const handleCategoryClick = (slug: string) => {
     setActiveCategorySlug(slug);
     isUserScrollingRef.current = true;
 
+    // Update URL hash immediately
+    if (typeof window !== 'undefined') {
+      window.history.replaceState(null, '', `#${slug}`);
+    }
+
     const el = document.getElementById(slug);
     if (el) {
-      const headerOffset = 140;
+      const headerOffset = 180;
       const elementPosition = el.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
       window.scrollTo({
-        top: offsetPosition,
+        top: Math.max(0, offsetPosition),
         behavior: 'smooth',
       });
-
-      if (window.history.pushState) {
-        window.history.pushState(null, '', `#${slug}`);
-      }
 
       setTimeout(() => {
         isUserScrollingRef.current = false;
@@ -163,9 +173,20 @@ export const useProductMenu = () => {
   };
 
   const handleOpenDetailModal = (product: ProductDetailResponseDto) => {
-    setSelectedProductId(product.id);
-    setSelectedProductFallback(product);
-    setIsModalOpen(true);
+    const hasOptions = isCustomizableProduct(product);
+
+    if (hasOptions) {
+      setSelectedProductId(product.id);
+      setSelectedProductFallback(product);
+      setIsModalOpen(true);
+    } else {
+      addItem({
+        product,
+        variant: product.variants?.[0] || null,
+        selectedIngredients: [],
+        quantity: 1,
+      });
+    }
   };
 
   const handleCloseDetailModal = () => {
@@ -176,22 +197,18 @@ export const useProductMenu = () => {
 
   const handleQuickAdd = (product: ProductDetailResponseDto, e: MouseEvent) => {
     e.stopPropagation();
+    const hasOptions = isCustomizableProduct(product);
 
-    // If product has variants or ingredients, open customization modal
-    const hasVariants = product.variants && product.variants.length > 0;
-    const hasIngredients = product.ingredients && product.ingredients.length > 0;
-
-    if (hasVariants || hasIngredients) {
+    if (hasOptions) {
       handleOpenDetailModal(product);
-      return;
+    } else {
+      addItem({
+        product,
+        variant: product.variants?.[0] || null,
+        selectedIngredients: [],
+        quantity: 1,
+      });
     }
-
-    // Direct add
-    addItem({
-      product,
-      quantity: 1,
-      selectedIngredients: [],
-    });
   };
 
   return {

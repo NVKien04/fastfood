@@ -2,6 +2,7 @@ export * from './types';
 export * from './utils/auth.schema';
 export * from './hooks/useLogin';
 export * from './hooks/useRegister';
+export * from './hooks/useGoogleCallback';
 export * from './components/AuthHeader';
 export * from './components/LoginForm';
 export * from './components/RegisterForm';
