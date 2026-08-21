@@ -16,9 +16,12 @@ import {
   ProductControllerGetByIdData,
   ProductControllerGetBySlugData,
   ProductControllerGetPageData,
+  ProductControllerGetRelatedData,
   ProductControllerUpdateData,
+  ProductControllerUpdateStatusData,
   ProductFilterDto,
   UpdateProductDto,
+  UpdateProductStatusDto,
 } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
@@ -28,7 +31,7 @@ export class Product<SecurityDataType = unknown> extends HttpClient<SecurityData
    *
    * @tags Product
    * @name ProductControllerGetPage
-   * @summary Lấy danh sách sản phẩm phân trang
+   * @summary Lấy danh sách sản phẩm phân trang và tìm kiếm/lọc
    * @request POST:/api/product/get-page
    */
   productControllerGetPage = (data: ProductFilterDto, params: RequestParams = {}) =>
@@ -70,6 +73,20 @@ export class Product<SecurityDataType = unknown> extends HttpClient<SecurityData
       path: `/api/product/slug/${slug}`,
       method: 'GET',
       format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Product
+   * @name ProductControllerGetRelated
+   * @summary Lấy danh sách sản phẩm liên quan (cùng danh mục)
+   * @request GET:/api/product/{id}/related
+   */
+  productControllerGetRelated = (id: string, params: RequestParams = {}) =>
+    this.request<ProductControllerGetRelatedData, void>({
+      path: `/api/product/${id}/related`,
+      method: 'GET',
       ...params,
     });
   /**
@@ -119,6 +136,24 @@ export class Product<SecurityDataType = unknown> extends HttpClient<SecurityData
       path: `/api/product/${id}`,
       method: 'DELETE',
       secure: true,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Product
+   * @name ProductControllerUpdateStatus
+   * @summary Cập nhật trạng thái nhanh (isActive, isFeatured) của sản phẩm
+   * @request PATCH:/api/product/{id}/status
+   * @secure
+   */
+  productControllerUpdateStatus = (id: string, data: UpdateProductStatusDto, params: RequestParams = {}) =>
+    this.request<ProductControllerUpdateStatusData, void>({
+      path: `/api/product/${id}/status`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       ...params,
     });
 }

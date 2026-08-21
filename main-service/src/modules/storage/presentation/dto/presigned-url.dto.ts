@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { StorageFolderEnum } from '@/enums';
 
 export class GetPresignedUrlDto {
   @ApiProperty({ description: 'Tên file gốc', example: 'photo.png' })
@@ -12,8 +13,16 @@ export class GetPresignedUrlDto {
   @IsNotEmpty()
   mimetype: string;
 
-  @ApiPropertyOptional({ description: 'Thư mục lưu trữ trên S3', example: 'products', default: 'uploads' })
+  @ApiPropertyOptional({
+    description: 'Thư mục lưu trữ trên S3',
+    enum: StorageFolderEnum,
+    enumName: 'StorageFolderEnum',
+    example: StorageFolderEnum.PRODUCTS,
+    default: StorageFolderEnum.OTHERS,
+  })
   @IsOptional()
-  @IsString()
-  folder?: string;
+  @IsEnum(StorageFolderEnum, {
+    message: `folder phải thuộc một trong các giá trị: ${Object.values(StorageFolderEnum).join(', ')}`,
+  })
+  folder?: StorageFolderEnum;
 }

@@ -10,11 +10,14 @@
  */
 
 import {
+  ApplyCouponDto,
+  CouponControllerApplyCouponData,
   CouponControllerCreateData,
   CouponControllerDeleteData,
   CouponControllerGetByIdData,
   CouponControllerGetPageData,
   CouponControllerUpdateData,
+  CouponFilterDto,
   CreateCouponDto,
   UpdateCouponDto,
 } from './data-contracts';
@@ -25,14 +28,34 @@ export class Coupon<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    * No description
    *
    * @tags Coupon
-   * @name CouponControllerGetPage
-   * @summary Lấy danh sách mã giảm giá phân trang
-   * @request POST:/api/coupon/get-page
+   * @name CouponControllerApplyCoupon
+   * @summary Kiểm tra và áp dụng mã giảm giá khi thanh toán (Công khai)
+   * @request POST:/api/coupon/apply
    */
-  couponControllerGetPage = (params: RequestParams = {}) =>
+  couponControllerApplyCoupon = (data: ApplyCouponDto, params: RequestParams = {}) =>
+    this.request<CouponControllerApplyCouponData, void>({
+      path: `/api/coupon/apply`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Coupon
+   * @name CouponControllerGetPage
+   * @summary Lấy danh sách mã giảm giá phân trang (Admin)
+   * @request POST:/api/coupon/get-page
+   * @secure
+   */
+  couponControllerGetPage = (data: CouponFilterDto, params: RequestParams = {}) =>
     this.request<CouponControllerGetPageData, any>({
       path: `/api/coupon/get-page`,
       method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       ...params,
     });
   /**
@@ -40,7 +63,7 @@ export class Coupon<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    *
    * @tags Coupon
    * @name CouponControllerCreate
-   * @summary Tạo mới mã giảm giá
+   * @summary Tạo mới mã giảm giá (Admin)
    * @request POST:/api/coupon
    * @secure
    */
@@ -72,7 +95,7 @@ export class Coupon<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    *
    * @tags Coupon
    * @name CouponControllerUpdate
-   * @summary Cập nhật mã giảm giá
+   * @summary Cập nhật mã giảm giá (Admin)
    * @request PATCH:/api/coupon/{id}
    * @secure
    */
@@ -90,7 +113,7 @@ export class Coupon<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    *
    * @tags Coupon
    * @name CouponControllerDelete
-   * @summary Xóa mã giảm giá
+   * @summary Xóa mã giảm giá (Admin)
    * @request DELETE:/api/coupon/{id}
    * @secure
    */

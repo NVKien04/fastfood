@@ -9,6 +9,70 @@
  * ---------------------------------------------------------------
  */
 
+/** Thư mục lưu trữ trên S3 */
+export enum StorageFolderEnum {
+  Avatars = 'avatars',
+  Products = 'products',
+  Categories = 'categories',
+  Combos = 'combos',
+  Ingredients = 'ingredients',
+  Banners = 'banners',
+  Reviews = 'reviews',
+  Uploads = 'uploads',
+}
+
+export interface UploadImageDto {
+  /**
+   * File ảnh cần upload (jpg, jpeg, png, webp, gif, svg)
+   * @format binary
+   */
+  file: File;
+  /**
+   * Thư mục lưu trữ trên S3
+   * @default "uploads"
+   * @example "products"
+   */
+  folder?: StorageFolderEnum;
+}
+
+export interface UploadMultipleImagesDto {
+  /** Danh sách các file ảnh */
+  files: File[];
+  /**
+   * Thư mục lưu trữ trên S3
+   * @default "uploads"
+   * @example "products"
+   */
+  folder?: StorageFolderEnum;
+}
+
+export interface DeleteFileDto {
+  /**
+   * S3 Key (vd: avatars/17123.jpg) hoặc URL đầy đủ của file cần xóa
+   * @example "avatars/1787325480204.png"
+   */
+  keyOrUrl: string;
+}
+
+export interface GetPresignedUrlDto {
+  /**
+   * Tên file gốc
+   * @example "photo.png"
+   */
+  filename: string;
+  /**
+   * MIME type của file
+   * @example "image/png"
+   */
+  mimetype: string;
+  /**
+   * Thư mục lưu trữ trên S3
+   * @default "uploads"
+   * @example "products"
+   */
+  folder?: StorageFolderEnum;
+}
+
 /** Vai trò người dùng */
 export enum RoleEnum {
   Admin = 'admin',
@@ -329,15 +393,30 @@ export interface ProductFilterDto {
    */
   limit?: number;
   /**
-   * Trường dùng để sắp xếp
+   * Từ khóa tìm kiếm theo tên hoặc mô tả
+   * @example "Pizza"
+   */
+  search?: string;
+  /**
+   * Trường dùng để sắp xếp (sortOrder, basePrice, createdAt, name, isFeatured)
    * @example "sortOrder"
    */
   orderby?: string;
   /**
+   * Alias của orderby
+   * @example "sortOrder"
+   */
+  sortBy?: string;
+  /**
    * Hướng sắp xếp (ASC hoặc DESC)
    * @example "ASC"
    */
-  orderDirection?: string;
+  orderDirection?: 'ASC' | 'DESC';
+  /**
+   * Alias của orderDirection
+   * @example "ASC"
+   */
+  sortOrder?: 'ASC' | 'DESC';
   /**
    * Lọc theo ID danh mục
    * @example 1
@@ -348,6 +427,21 @@ export interface ProductFilterDto {
    * @example 1
    */
   isFeatured?: number;
+  /**
+   * Lọc theo trạng thái hoạt động (1: đang bán, 0: ngưng bán)
+   * @example 1
+   */
+  isActive?: number;
+  /**
+   * Lọc theo giá tối thiểu
+   * @example 50000
+   */
+  minPrice?: number;
+  /**
+   * Lọc theo giá tối đa
+   * @example 300000
+   */
+  maxPrice?: number;
 }
 
 export interface CreateProductVariantDto {
@@ -358,9 +452,9 @@ export interface CreateProductVariantDto {
   name: string;
   /**
    * Kích thước
-   * @example "12cm"
+   * @example "20cm"
    */
-  size: '12cm' | '15cm' | '17cm' | '1 Miếng' | '2 Miếng';
+  size: '20cm' | '25cm' | '30cm' | '35cm';
   /**
    * Loại đế/vỏ
    * @example "vừa"
@@ -435,9 +529,9 @@ export interface ProductVariantResponseDto {
   name: string;
   /**
    * Kích thước
-   * @example "12cm"
+   * @example "20cm"
    */
-  size: '12cm' | '15cm' | '17cm' | '1 Miếng' | '2 Miếng';
+  size: '20cm' | '25cm' | '30cm' | '35cm';
   /**
    * Loại đế/vỏ
    * @example "vừa"
@@ -570,6 +664,19 @@ export interface ProductDetailResponseDto {
   updatedAt: string;
 }
 
+export interface UpdateProductStatusDto {
+  /**
+   * Trạng thái hoạt động (1: Đang bán, 0: Ngưng bán)
+   * @example 1
+   */
+  isActive?: 0 | 1;
+  /**
+   * Sản phẩm nổi bật (1: Có, 0: Không)
+   * @example 1
+   */
+  isFeatured?: 0 | 1;
+}
+
 export type UpdateProductDto = object;
 
 export interface CreateIngredientDto {
@@ -662,6 +769,44 @@ export interface UpdateIngredientDto {
    * @example 1
    */
   categoryId?: number;
+}
+
+export interface ApplyCouponDto {
+  /**
+   * Mã giảm giá cần áp dụng
+   * @example "FASTFOOD20"
+   */
+  code: string;
+  /**
+   * Tổng tiền hàng trước khi áp dụng voucher (VND)
+   * @example 120000
+   */
+  subTotal: number;
+}
+
+export interface CouponFilterDto {
+  /**
+   * Trang hiện tại (bắt đầu từ 1)
+   * @default 1
+   * @example 1
+   */
+  page?: number;
+  /**
+   * Số lượng mục trên mỗi trang
+   * @default 10
+   * @example 10
+   */
+  limit?: number;
+  /**
+   * Sắp xếp theo trường
+   * @example "createdAt"
+   */
+  orderby?: string;
+  /**
+   * Lọc theo trạng thái kích hoạt (1: Đang hoạt động, 0: Tắt)
+   * @example 1
+   */
+  isActive?: number;
 }
 
 export interface CreateCouponDto {
@@ -766,7 +911,131 @@ export interface UpdateCouponDto {
   isActive?: number;
 }
 
+export interface CreateOrderItemIngredientDto {
+  /**
+   * ID nguyên liệu / topping
+   * @example 1
+   */
+  ingredientId: number;
+  /**
+   * Số lượng nguyên liệu
+   * @default 1
+   * @example 1
+   */
+  quantity?: number;
+}
+
+export interface CreateOrderItemDto {
+  /**
+   * ID sản phẩm (UUID)
+   * @example "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+   */
+  productId: string;
+  /**
+   * ID biến thể sản phẩm (size/loại đế)
+   * @example 2
+   */
+  productVariantId?: number;
+  /** Danh sách nguyên liệu / topping chọn thêm */
+  ingredients?: CreateOrderItemIngredientDto[];
+  /**
+   * Số lượng mua
+   * @default 1
+   * @example 2
+   */
+  quantity: number;
+}
+
+export interface CreateOrderDto {
+  /** Danh sách món ăn trong đơn */
+  items: CreateOrderItemDto[];
+  /**
+   * ID địa chỉ giao hàng của User (nếu đã đăng nhập)
+   * @example "uuid-address-id"
+   */
+  addressId?: string;
+  /**
+   * Họ tên khách hàng (nếu mua không cần tài khoản)
+   * @example "Nguyen Van A"
+   */
+  guestName?: string;
+  /**
+   * Số điện thoại nhận hàng
+   * @example "0901234567"
+   */
+  guestPhone?: string;
+  /**
+   * Địa chỉ giao hàng đầy đủ
+   * @example "123 Đường ABC, Quận 1, TP.HCM"
+   */
+  guestAddress?: string;
+  /**
+   * Ghi chú cho nhà hàng / shipper
+   * @example "Giao giờ hành chính, không cay"
+   */
+  notes?: string;
+  /**
+   * Mã giảm giá áp dụng cho đơn hàng
+   * @example "FASTFOOD20"
+   */
+  couponCode?: string;
+  /**
+   * Phương thức thanh toán
+   * @example "thanh toán khi giao hàng"
+   */
+  paymentMethod?: 'thanh toán khi giao hàng' | 'thanh toán online';
+}
+
+export interface OrderFilterDto {
+  /**
+   * Trang hiện tại
+   * @default 1
+   * @example 1
+   */
+  page?: number;
+  /**
+   * Số lượng phần tử trên trang
+   * @default 10
+   * @example 10
+   */
+  limit?: number;
+  /** Lọc theo trạng thái đơn hàng */
+  status?: 'đang chờ' | 'đã xác nhận' | 'đang chuẩn bị' | 'sẵn sàng' | 'đã giao hàng' | 'đã hủy';
+  /**
+   * Lọc theo ID người dùng
+   * @example "uuid-user-id"
+   */
+  userId?: string;
+}
+
+export interface CancelOrderDto {
+  /**
+   * Lý do hủy đơn hàng
+   * @example "Tôi đổi ý, không muốn đặt nữa"
+   */
+  reason?: string;
+}
+
 export type CreateComboDto = object;
+
+export interface SimulateDeliveryDto {
+  /**
+   * Thời gian chờ giữa mỗi bước chuyển trạng thái (giây)
+   * @min 1
+   * @max 60
+   * @default 5
+   * @example 5
+   */
+  stepDelaySeconds?: number;
+}
+
+export type UploadControllerUploadImageData = any;
+
+export type UploadControllerUploadMultipleImagesData = any;
+
+export type UploadControllerDeleteFileData = any;
+
+export type UploadControllerGetPresignedUrlData = any;
 
 export type UserControllerGetAllData = UserResponseDto[];
 
@@ -793,6 +1062,10 @@ export type AddressControllerUpdateData = any;
 export type AddressControllerDeleteData = any;
 
 export type AuthControllerRegisterData = UserResponseDto;
+
+export type AuthControllerGoogleAuthData = any;
+
+export type AuthControllerGoogleAuthCallbackData = any;
 
 export type AuthControllerLoginData = LoginResponseDto;
 
@@ -824,11 +1097,15 @@ export type ProductControllerCreateData = any;
 
 export type ProductControllerGetBySlugData = ProductDetailResponseDto;
 
+export type ProductControllerGetRelatedData = any;
+
 export type ProductControllerGetByIdData = ProductDetailResponseDto;
 
 export type ProductControllerUpdateData = any;
 
 export type ProductControllerDeleteData = any;
+
+export type ProductControllerUpdateStatusData = any;
 
 export type IngredientControllerGetPageData = any;
 
@@ -840,6 +1117,8 @@ export type IngredientControllerUpdateData = any;
 
 export type IngredientControllerDeleteData = any;
 
+export type CouponControllerApplyCouponData = any;
+
 export type CouponControllerGetPageData = any;
 
 export type CouponControllerCreateData = any;
@@ -850,7 +1129,17 @@ export type CouponControllerUpdateData = any;
 
 export type CouponControllerDeleteData = any;
 
-export type ReviewControllerGetPageData = any;
+export type OrderControllerCreateOrderData = any;
+
+export type OrderControllerGetMyOrdersData = any;
+
+export type OrderControllerGetOrdersPageData = any;
+
+export type OrderControllerGetOrderByIdData = any;
+
+export type OrderControllerCancelOrderData = any;
+
+export type OrderControllerUpdateStatusData = any;
 
 export type NotificationControllerGetNotificationsData = any;
 
@@ -869,3 +1158,5 @@ export type ComboControllerFindOneData = any;
 export type ComboControllerRemoveData = any;
 
 export type ComboControllerFindBySlugData = any;
+
+export type DeliverySimulationControllerSimulateDeliveryData = any;

@@ -12,7 +12,13 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { IStorageService } from '@/modules/storage/domain/interface/storage.interface';
-import { UploadImageDto, DeleteFileDto, GetPresignedUrlDto } from '@/modules/storage/presentation/dto';
+import {
+  UploadImageDto,
+  UploadMultipleImagesDto,
+  DeleteFileDto,
+  GetPresignedUrlDto,
+} from '@/modules/storage/presentation/dto';
+import { StorageFolderEnum } from '@/enums';
 
 @ApiTags('Upload & Storage')
 @Controller('upload')
@@ -25,24 +31,7 @@ export class UploadController {
   @Post('image')
   @ApiOperation({ summary: 'Upload 1 file ảnh lên AWS S3' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-          description: 'File ảnh cần upload (jpg, jpeg, png, webp, gif, svg)',
-        },
-        folder: {
-          type: 'string',
-          description: 'Thư mục trên S3 (vd: avatars, products, combos)',
-          example: 'avatars',
-        },
-      },
-      required: ['file'],
-    },
-  })
+  @ApiBody({ type: UploadImageDto })
   @ApiResponse({ status: 201, description: 'Upload thành công' })
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@UploadedFile() file?: Express.Multer.File, @Body() body?: UploadImageDto) {
@@ -58,7 +47,7 @@ export class UploadController {
         size: file.size,
       },
       {
-        folder: body?.folder || 'uploads',
+        folder: body?.folder || StorageFolderEnum.OTHERS,
       },
     );
 
@@ -71,35 +60,15 @@ export class UploadController {
   @Post('multiple')
   @ApiOperation({ summary: 'Upload nhiều file ảnh cùng lúc lên AWS S3' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        files: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
-          description: 'Danh sách các file ảnh',
-        },
-        folder: {
-          type: 'string',
-          description: 'Thư mục lưu trữ trên S3',
-          example: 'products',
-        },
-      },
-      required: ['files'],
-    },
-  })
+  @ApiBody({ type: UploadMultipleImagesDto })
   @ApiResponse({ status: 201, description: 'Upload nhiều file thành công' })
   @UseInterceptors(FilesInterceptor('files', 10))
-  async uploadMultipleImages(@UploadedFiles() files?: Express.Multer.File[], @Body() body?: UploadImageDto) {
+  async uploadMultipleImages(@UploadedFiles() files?: Express.Multer.File[], @Body() body?: UploadMultipleImagesDto) {
     if (!files || files.length === 0) {
       throw new BadRequestException('Vui lòng chọn ít nhất 1 file để upload');
     }
 
-    const folder = body?.folder || 'uploads';
+    const folder = body?.folder || StorageFolderEnum.OTHERS;
     const uploadPromises = files.map((file) =>
       this.storageService.uploadFile(
         {

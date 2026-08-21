@@ -9,8 +9,8 @@ import {
   Menu,
   User as UserIcon,
   ChevronDown,
+  ChevronRight,
   LogOut,
-  UserCheck,
   ShoppingBag,
   Sun,
   Moon,
@@ -18,14 +18,13 @@ import {
   Check,
   Globe,
   Palette,
-  Utensils,
-  Tag,
-  MapPin,
-  PhoneCall,
-  Info,
+  PackageSearch,
+  Headphones,
+  LogIn,
+  UserPlus,
 } from 'lucide-react';
 import { useStore } from '@/stores';
-import { THEME, LanguageEnum, Language } from '@/constants';
+import { THEME, LANGUAGES, LanguageEnum, type Language } from '@/constants';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { formatVND } from '@/utils';
 
@@ -48,7 +47,11 @@ export const Header: React.FC<HeaderProps> = ({
 
   // 3. Local state & refs
   const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
+  const [isLanguageOpen, setIsLanguageOpen] = React.useState<boolean>(false);
+  const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = React.useState<boolean>(false);
+
   const menuRef = React.useRef<HTMLDivElement | null>(null);
+  const languageRef = React.useRef<HTMLDivElement | null>(null);
 
   // 4. Zustand global state
   const user = useStore((s) => s.user);
@@ -64,16 +67,39 @@ export const Header: React.FC<HeaderProps> = ({
 
   const userDisplayName = React.useMemo(() => {
     if (!user) return '';
-    return user.fullName || user.email || 'Người dùng';
+    return user.fullName || user.email || 'Tài khoản';
   }, [user]);
 
-  const currentLanguage = i18n.language || 'vi';
+  const currentLanguage = (i18n.language || 'vi').toLowerCase();
 
-  // 6. Effects (handle click outside menu)
+  const currentLangLabel = React.useMemo(() => {
+    if (currentLanguage.startsWith('en')) return 'EN';
+    if (currentLanguage.startsWith('ja')) return 'JA';
+    return 'VI';
+  }, [currentLanguage]);
+
+  const currentThemeLabel = React.useMemo(() => {
+    switch (theme) {
+      case 'light':
+        return 'Sáng';
+      case 'dark':
+        return 'Tối';
+      case 'system':
+      default:
+        return 'Hệ thống';
+    }
+  }, [theme]);
+
+  // 6. Effects (handle click outside menus)
   React.useEffect(() => {
     const _handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target)) {
         setIsMenuOpen(false);
+        setIsThemeSubmenuOpen(false);
+      }
+      if (languageRef.current && !languageRef.current.contains(target)) {
+        setIsLanguageOpen(false);
       }
     };
     document.addEventListener('mousedown', _handleClickOutside);
@@ -85,11 +111,17 @@ export const Header: React.FC<HeaderProps> = ({
   // 7. Event handlers
   const _handleToggleMenu = React.useCallback(() => {
     setIsMenuOpen((prev) => !prev);
+    setIsThemeSubmenuOpen(false);
+  }, []);
+
+  const _handleToggleLanguage = React.useCallback(() => {
+    setIsLanguageOpen((prev) => !prev);
   }, []);
 
   const _handleNavigate = React.useCallback(
     (path: string) => {
       setIsMenuOpen(false);
+      setIsThemeSubmenuOpen(false);
       router.push(path);
     },
     [router],
@@ -97,6 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const _handleLogout = React.useCallback(async () => {
     setIsMenuOpen(false);
+    setIsThemeSubmenuOpen(false);
     try {
       await ApiMain.instance.auth.logout();
     } catch {
@@ -109,10 +142,12 @@ export const Header: React.FC<HeaderProps> = ({
 
   const _handleLanguageChange = (lang: Language) => {
     updateLocale(lang);
+    setIsLanguageOpen(false);
   };
 
   const _handleThemeChange = (newTheme: THEME) => {
     updateTheme(newTheme);
+    setIsThemeSubmenuOpen(false);
   };
 
   return (
@@ -121,10 +156,10 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="max-w-[1200px] w-full h-full mx-auto px-4 flex items-center justify-between gap-4">
         {/* ========================================================= */}
-        {/* Left Side: Brand (1) and Delivery Address (2) next to each other */}
+        {/* Left Side: Brand Logo (1) and Delivery Address (2) */}
         {/* ========================================================= */}
         <div className="flex items-center gap-6 sm:gap-8 lg:gap-10 min-w-0">
-          {/* 1. Logo + Brand "KeiPizza" + Short Subtitle */}
+          {/* 1. Logo + Brand "KeiPizza" + Subtitle */}
           <Link href="/" className="flex items-center gap-3.5 group select-none shrink-0">
             {/* Logo Badge */}
             <div className="w-12 h-12 rounded-full bg-[#ff6900] flex items-center justify-center text-white shadow-md shadow-orange-500/25 group-hover:scale-105 transition-transform duration-200">
@@ -133,7 +168,7 @@ export const Header: React.FC<HeaderProps> = ({
               </svg>
             </div>
 
-            {/* Brand Name & Short Description */}
+            {/* Brand Name & Description */}
             <div className="flex flex-col">
               <span className="text-2xl sm:text-[28px] font-black tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-[#ff6900] transition-colors">
                 KeiPizza
@@ -165,9 +200,9 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* ========================================================= */}
-        {/* 3. Right Section: Notification, Orange Cart, Menu Dropdown */}
+        {/* Right Side: Notification, Language Dropdown, Cart, User Menu */}
         {/* ========================================================= */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
           {/* Notification Bell */}
           <button
             type="button"
@@ -178,10 +213,64 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#ff6900]" />
           </button>
 
+          {/* ========================================================= */}
+          {/* Language Selector (Tách ra bên ngoài Header) */}
+          {/* ========================================================= */}
+          <div className="relative" ref={languageRef}>
+            <button
+              type="button"
+              onClick={_handleToggleLanguage}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-800 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
+              aria-label="Chọn ngôn ngữ"
+            >
+              <Globe className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+              <span className="tracking-wide font-extrabold">{currentLangLabel}</span>
+              <ChevronDown
+                className={`w-3 h-3 text-gray-400 dark:text-zinc-500 transition-transform duration-200 ${
+                  isLanguageOpen ? 'rotate-180 text-gray-900 dark:text-white' : ''
+                }`}
+              />
+            </button>
+
+            {/* Language Dropdown Menu (Trắng đen tối giản) */}
+            {isLanguageOpen && (
+              <div className="absolute right-0 mt-2 w-44 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-xl shadow-black/10 dark:shadow-black/60 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 select-none">
+                <div className="space-y-0.5">
+                  {LANGUAGES.map((lang) => {
+                    const isSelected =
+                      currentLanguage === lang.code ||
+                      (lang.code === LanguageEnum.VI && currentLanguage.startsWith('vi')) ||
+                      (lang.code === LanguageEnum.EN && currentLanguage.startsWith('en')) ||
+                      (lang.code === LanguageEnum.JA && currentLanguage.startsWith('ja'));
+
+                    return (
+                      <button
+                        key={lang.code}
+                        type="button"
+                        onClick={() => _handleLanguageChange(lang.code)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
+                          isSelected
+                            ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
+                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800/60'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className="text-sm leading-none">{lang.flag}</span>
+                          <span>{lang.name}</span>
+                        </span>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Orange Cart Pill Button */}
           <Link
             href="/checkout"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#ff6900] hover:bg-[#e05d00] active:scale-95 text-white font-black text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all cursor-pointer select-none"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-[#ff6900] hover:bg-[#e05d00] active:scale-95 text-white font-black text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all cursor-pointer select-none"
           >
             <ShoppingBag className="w-4 h-4 text-white" />
             <span>
@@ -193,12 +282,14 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </Link>
 
-          {/* Menu Dropdown Trigger Button */}
+          {/* ========================================================= */}
+          {/* User / Navigation Menu Trigger Button */}
+          {/* ========================================================= */}
           <div className="relative" ref={menuRef}>
             <button
               type="button"
               onClick={_handleToggleMenu}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
+              className="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
             >
               <Menu className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
               <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-600 dark:text-zinc-300 overflow-hidden">
@@ -210,193 +301,160 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </button>
 
-            {/* Comprehensive Navigation & Settings Menu Dropdown */}
+            {/* ========================================================= */}
+            {/* User Dropdown Menu (Màu sắc tối giản Trắng Đen) */}
+            {/* ========================================================= */}
             {isMenuOpen && (
-              <div className="absolute right-0 mt-2.5 w-72 rounded-3xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-2xl shadow-black/10 dark:shadow-black/60 p-3 z-50 animate-in fade-in zoom-in-95 duration-150 transition-colors select-none">
-                {/* 1. User Header Section */}
-                <div className="pb-3 border-b border-gray-100 dark:border-zinc-800">
+              <div className="absolute right-0 mt-2.5 w-60 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-xl shadow-black/10 dark:shadow-black/60 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 select-none">
+                <div className="space-y-0.5">
+                  {/* 1. Trạng thái Auth: Tài khoản (auth=true) hoặc Đăng nhập/Đăng ký (auth=false) */}
                   {isLoggedIn ? (
-                    <div className="px-2 py-1.5 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-950/60 text-[#ff6900] font-black flex items-center justify-center overflow-hidden shrink-0">
-                        {user?.avatar ? (
-                          <img src={user.avatar} alt={userDisplayName} className="w-full h-full object-cover" />
-                        ) : (
-                          <span>{userDisplayName.charAt(0).toUpperCase()}</span>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{userDisplayName}</p>
-                        <p className="text-[11px] text-gray-500 dark:text-zinc-400 truncate">{user?.email}</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-2 px-1 py-1">
-                      <p className="text-xs text-gray-500 dark:text-zinc-400">Chào mừng bạn đến với KeiPizza</p>
-                      <button
-                        type="button"
-                        onClick={() => _handleNavigate('/login')}
-                        className="w-full flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-[#ff6900] hover:bg-[#e05d00] rounded-xl transition-colors shadow-xs cursor-pointer"
-                      >
-                        {t('AUTH.LOGIN_BUTTON', 'Đăng nhập / Đăng ký')}
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* 2. Main Navigation Menu Links */}
-                <div className="py-2 space-y-0.5 border-b border-gray-100 dark:border-zinc-800">
-                  <button
-                    type="button"
-                    onClick={() => _handleNavigate('/')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-800/80 rounded-xl transition-colors cursor-pointer"
-                  >
-                    <Utensils className="w-4 h-4 text-[#ff6900]" />
-                    <span>Thực đơn món ăn</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => _handleNavigate('/#combo')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-800/80 rounded-xl transition-colors cursor-pointer"
-                  >
-                    <Tag className="w-4 h-4 text-[#ff6900]" />
-                    <span>Ưu đãi &amp; Khuyến mãi</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => _handleNavigate('/checkout')}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-800/80 rounded-xl transition-colors cursor-pointer"
-                  >
-                    <ShoppingBag className="w-4 h-4 text-[#ff6900]" />
-                    <span>Đơn hàng &amp; Giỏ của bạn</span>
-                  </button>
-
-                  {isLoggedIn && (
+                    /* Khi đã đăng nhập: Mục "Tài khoản" dạng list item đơn giản */
                     <button
                       type="button"
                       onClick={() => _handleNavigate('/profile')}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-800/80 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                     >
-                      <UserCheck className="w-4 h-4 text-[#ff6900]" />
-                      <span>Hồ sơ tài khoản</span>
+                      <UserIcon className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                      <span className="truncate">{userDisplayName || 'Tài khoản'}</span>
                     </button>
+                  ) : (
+                    /* Khi chưa đăng nhập: Mục "Đăng nhập" & "Đăng ký" */
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => _handleNavigate('/login')}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                      >
+                        <LogIn className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                        <span>Đăng nhập</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => _handleNavigate('/register')}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                      >
+                        <UserPlus className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                        <span>Đăng ký</span>
+                      </button>
+                    </>
                   )}
 
+                  {/* 2. Theo dõi đơn hàng */}
+                  <button
+                    type="button"
+                    onClick={() => _handleNavigate(isLoggedIn ? '/profile' : '/checkout')}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                  >
+                    <PackageSearch className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                    <span>Theo dõi đơn hàng</span>
+                  </button>
+
+                  {/* 3. Hỗ trợ khách hàng */}
                   <a
                     href="tel:19001822"
-                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-800/80 rounded-xl transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
-                    <PhoneCall className="w-4 h-4 text-[#ff6900]" />
-                    <span>Tổng đài đặt hàng: 1900 1822</span>
+                    <Headphones className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                    <span>Hỗ trợ khách hàng</span>
                   </a>
-                </div>
 
-                {/* 3. Settings: Language & Theme */}
-                <div className="py-2.5 space-y-2 border-b border-gray-100 dark:border-zinc-800">
-                  {/* Language */}
-                  <div>
-                    <div className="flex items-center gap-1.5 px-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500">
-                      <Globe className="w-3 h-3" />
-                      <span>Ngôn ngữ</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => _handleLanguageChange(LanguageEnum.VI)}
-                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
-                          currentLanguage.startsWith('vi')
-                            ? 'bg-orange-50 dark:bg-orange-950/40 text-[#ff6900] font-bold'
-                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
-                        }`}
-                      >
-                        <span className="flex items-center gap-1.5">
-                          <span>🇻🇳</span>
-                          <span>Tiếng Việt</span>
-                        </span>
-                        {currentLanguage.startsWith('vi') && <Check className="w-3.5 h-3.5 text-[#ff6900]" />}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => _handleLanguageChange(LanguageEnum.EN)}
-                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
-                          currentLanguage.startsWith('en')
-                            ? 'bg-orange-50 dark:bg-orange-950/40 text-[#ff6900] font-bold'
-                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
-                        }`}
-                      >
-                        <span className="flex items-center gap-1.5">
-                          <span>🇬🇧</span>
-                          <span>English</span>
-                        </span>
-                        {currentLanguage.startsWith('en') && <Check className="w-3.5 h-3.5 text-[#ff6900]" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Theme */}
-                  <div>
-                    <div className="flex items-center gap-1.5 px-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500">
-                      <Palette className="w-3 h-3" />
-                      <span>Giao diện</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-1">
-                      <button
-                        type="button"
-                        onClick={() => _handleThemeChange('light')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[11px] font-semibold transition-colors cursor-pointer ${
-                          theme === 'light'
-                            ? 'bg-orange-50 dark:bg-orange-950/40 text-[#ff6900] font-bold border border-orange-200 dark:border-orange-900'
-                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
-                        }`}
-                      >
-                        <Sun className="w-3.5 h-3.5" />
-                        <span>Sáng</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => _handleThemeChange('dark')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[11px] font-semibold transition-colors cursor-pointer ${
-                          theme === 'dark'
-                            ? 'bg-orange-50 dark:bg-orange-950/40 text-[#ff6900] font-bold border border-orange-200 dark:border-orange-900'
-                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
-                        }`}
-                      >
-                        <Moon className="w-3.5 h-3.5" />
-                        <span>Tối</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => _handleThemeChange('system')}
-                        className={`flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl text-[11px] font-semibold transition-colors cursor-pointer ${
-                          theme === 'system'
-                            ? 'bg-orange-50 dark:bg-orange-950/40 text-[#ff6900] font-bold border border-orange-200 dark:border-orange-900'
-                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800'
-                        }`}
-                      >
-                        <Laptop className="w-3.5 h-3.5" />
-                        <span>Hệ thống</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4. Logout Action if Logged In */}
-                {isLoggedIn && (
-                  <div className="pt-2">
+                  {/* 4. Giao diện (Menu Cấp 2) */}
+                  <div className="pt-0.5">
                     <button
                       type="button"
-                      onClick={_handleLogout}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors cursor-pointer"
+                      onClick={() => setIsThemeSubmenuOpen((prev) => !prev)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${
+                        isThemeSubmenuOpen
+                          ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
+                          : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800'
+                      }`}
                     >
-                      <LogOut className="w-4 h-4 text-red-600" />
-                      <span>{t('NAV.LOGOUT', 'Đăng xuất tài khoản')}</span>
+                      <span className="flex items-center gap-3">
+                        <Palette className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
+                        <span>Giao diện</span>
+                      </span>
+                      <span className="flex items-center gap-1 text-[11px] text-gray-500 dark:text-zinc-400">
+                        <span>{currentThemeLabel}</span>
+                        <ChevronRight
+                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                            isThemeSubmenuOpen ? 'rotate-90 text-gray-900 dark:text-white' : ''
+                          }`}
+                        />
+                      </span>
                     </button>
+
+                    {/* Submenu cấp 2 mở rộng bên dưới */}
+                    {isThemeSubmenuOpen && (
+                      <div className="mt-1 ml-2 pl-2 border-l border-gray-200 dark:border-zinc-800 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                        {/* Sáng */}
+                        <button
+                          type="button"
+                          onClick={() => _handleThemeChange('light')}
+                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                            theme === 'light'
+                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
+                              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800/50 hover:text-gray-900 dark:hover:text-white'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <Sun className="w-3.5 h-3.5" />
+                            <span>Sáng</span>
+                          </span>
+                          {theme === 'light' && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
+                        </button>
+
+                        {/* Tối */}
+                        <button
+                          type="button"
+                          onClick={() => _handleThemeChange('dark')}
+                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                            theme === 'dark'
+                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
+                              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800/50 hover:text-gray-900 dark:hover:text-white'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <Moon className="w-3.5 h-3.5" />
+                            <span>Tối</span>
+                          </span>
+                          {theme === 'dark' && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
+                        </button>
+
+                        {/* Hệ thống */}
+                        <button
+                          type="button"
+                          onClick={() => _handleThemeChange('system')}
+                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                            theme === 'system'
+                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
+                              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800/50 hover:text-gray-900 dark:hover:text-white'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <Laptop className="w-3.5 h-3.5" />
+                            <span>Hệ thống</span>
+                          </span>
+                          {theme === 'system' && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
+
+                  {/* 5. Đăng xuất (Cuối cùng khi đã đăng nhập) */}
+                  {isLoggedIn && (
+                    <div className="pt-1 mt-1 border-t border-gray-100 dark:border-zinc-800">
+                      <button
+                        type="button"
+                        onClick={_handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4 text-red-600 dark:text-red-400" />
+                        <span>{t('NAV.LOGOUT', 'Đăng xuất')}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

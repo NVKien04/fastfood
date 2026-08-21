@@ -11,6 +11,8 @@
 
 import {
   AuthControllerChangePasswordData,
+  AuthControllerGoogleAuthCallbackData,
+  AuthControllerGoogleAuthData,
   AuthControllerLoginData,
   AuthControllerLogoutData,
   AuthControllerRefreshData,
@@ -39,6 +41,34 @@ export class Auth<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
       body: data,
       type: ContentType.Json,
       format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerGoogleAuth
+   * @summary Đăng nhập với Google OAuth2
+   * @request GET:/api/auth/google
+   */
+  authControllerGoogleAuth = (params: RequestParams = {}) =>
+    this.request<AuthControllerGoogleAuthData, any>({
+      path: `/api/auth/google`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name AuthControllerGoogleAuthCallback
+   * @summary Callback chuyển hướng sau khi đăng nhập Google thành công
+   * @request GET:/api/auth/google/callback
+   */
+  authControllerGoogleAuthCallback = (params: RequestParams = {}) =>
+    this.request<AuthControllerGoogleAuthCallbackData, any>({
+      path: `/api/auth/google/callback`,
+      method: 'GET',
       ...params,
     });
   /**
