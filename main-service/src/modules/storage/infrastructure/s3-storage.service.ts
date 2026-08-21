@@ -34,7 +34,11 @@ export class S3StorageService implements IStorageService, OnModuleInit {
 
     const accessKeyId = this.configService.get<string>('AWS_ACCESS_KEY_ID', '');
     const secretAccessKey = this.configService.get<string>('AWS_SECRET_ACCESS_KEY', '');
-    const endpoint = this.configService.get<string>('AWS_S3_ENDPOINT');
+    const rawEndpoint = this.configService.get<string>('AWS_S3_ENDPOINT');
+    const endpoint =
+      rawEndpoint && (rawEndpoint.startsWith('http://') || rawEndpoint.startsWith('https://'))
+        ? rawEndpoint
+        : undefined;
 
     this.s3Client = new S3Client({
       region: this.region,
@@ -196,7 +200,7 @@ export class S3StorageService implements IStorageService, OnModuleInit {
       return `${cleanCdn}/${key}`;
     }
     const endpoint = this.configService.get<string>('AWS_S3_ENDPOINT');
-    if (endpoint) {
+    if (endpoint && (endpoint.startsWith('http://') || endpoint.startsWith('https://'))) {
       const cleanEndpoint = endpoint.replace(/\/+$/, '');
       return `${cleanEndpoint}/${this.bucket}/${key}`;
     }
