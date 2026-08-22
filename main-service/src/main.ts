@@ -35,8 +35,15 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
   });
 
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  const allowedOrigins = Array.from(
+    new Set(
+      [frontendUrl, 'http://localhost:3000', 'http://localhost:5173', 'https://your-frontend.com'].filter(Boolean),
+    ),
+  );
+
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:5173', 'https://your-frontend.com'],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With', 'Access-Control-Allow-Origin'],
     exposedHeaders: ['Authorization', 'Content-Length', 'X-Kuma-Revision'],

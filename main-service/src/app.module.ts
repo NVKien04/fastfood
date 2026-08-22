@@ -33,22 +33,40 @@ import { DeliverySimulationModule } from '@/modules/delivery-simulation/delivery
     StorageModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST', 'localhost'),
-        port: parseInt(configService.get<string>('DB_PORT', '5432')),
-        username: configService.get<string>('DB_USERNAME', 'postgres'),
-        password: configService.get<string>('DB_PASSWORD') ?? '',
-        database: configService.get<string>('DB_NAME', 'fastfood'),
-        // synchronize: configService.get<string>('DB_SYNC', 'false') === 'true',
-        synchronize: false,
-        autoLoadEntities: true,
-        logging: configService.get<string>('DB_LOGGING', 'false') === 'true',
-        ssl: false,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isProd = configService.get<string>('NODE_ENV') === 'production';
+        const dbUrl = configService.get<string>('DATABASE_URL');
+        const isSsl =
+          configService.get<string>('DB_SSL') === 'true' || isProd || (!!dbUrl && dbUrl.includes('sslmode=require'));
+
+        if (dbUrl && dbUrl !== 'DATABASE_URL') {
+          return {
+            type: 'postgres',
+            url: dbUrl,
+            synchronize: false,
+            autoLoadEntities: true,
+            logging: configService.get<string>('DB_LOGGING', 'false') === 'true',
+            ssl: isSsl ? { rejectUnauthorized: false } : false,
+          };
+        }
+
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DB_HOST', 'localhost'),
+          port: parseInt(configService.get<string>('DB_PORT', '5432'), 10),
+          username: configService.get<string>('DB_USERNAME', 'postgres'),
+          password: configService.get<string>('DB_PASSWORD') ?? '',
+          database: configService.get<string>('DB_NAME', 'fastfood'),
+          synchronize: false,
+          autoLoadEntities: true,
+          logging: configService.get<string>('DB_LOGGING', 'false') === 'true',
+          ssl: isSsl ? { rejectUnauthorized: false } : false,
+        };
+      },
       inject: [ConfigService],
     }),
     JwtModule.registerAsync({
@@ -56,9 +74,9 @@ import { DeliverySimulationModule } from '@/modules/delivery-simulation/delivery
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
+        secret: configService.get<string>('JWT_ACCESS_SECRET'),
         signOptions: {
-          expiresIn: configService.get<StringValue>('JWT_EXPIRES_IN', '60s'),
+          expiresIn: configService.get<StringValue>('JWT_ACCESS_EXPIRES_IN', '15m'),
         },
         global: true,
       }),
