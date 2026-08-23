@@ -4,7 +4,7 @@ import { ErrorEnum } from '@/common/constants';
 import { BusinessException } from '@/common/exception';
 import { Fn } from '@/utils';
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateCategoryDto, UpdateCategoryDto } from '@/modules/category/presentation/dto';
+import { CreateCategoryDto, UpdateCategoryDto, CategoryFilterDto } from '@/modules/category/presentation/dto';
 import { Category } from '@/modules/category/domain/entities/category.domain';
 import { type ICategoryRepository } from '@/modules/category/domain/repositories/category.repository.interface';
 
@@ -102,7 +102,7 @@ export class CategoryService {
     return await this.softDeleteRaw(categoryId);
   }
 
-  async getPage(filterObject: Record<string, unknown>): Promise<PaginationResponse<Category>> {
+  async getPage(filterObject: CategoryFilterDto): Promise<PaginationResponse<Category>> {
     const page = Math.max(1, Number(filterObject?.page ?? 1));
     const limit = Math.max(1, Math.min(100, Number(filterObject?.limit ?? 10)));
     const skip = (page - 1) * limit;

@@ -15,7 +15,7 @@ export class OrderFilterDto {
   @IsOptional()
   limit?: number;
 
-  @ApiPropertyOptional({ description: 'Lọc theo trạng thái đơn hàng', enum: OrderStatus })
+  @ApiPropertyOptional({ description: 'Lọc theo trạng thái đơn hàng', enum: OrderStatus, enumName: 'OrderStatus' })
   @IsEnum(OrderStatus)
   @IsOptional()
   status?: OrderStatus;

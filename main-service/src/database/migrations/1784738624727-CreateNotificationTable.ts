@@ -6,7 +6,7 @@ export class CreateNotificationTable1784738624727 implements MigrationInterface 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Create notifications enum type
     await queryRunner.query(
-      `CREATE TYPE "public"."notifications_type_enum" AS ENUM('order_status', 'promotion', 'system')`,
+      `CREATE TYPE "public"."notifications_type_enum" AS ENUM('ORDER_STATUS', 'PROMOTION', 'SYSTEM')`,
     );
 
     // Create notifications table
@@ -15,7 +15,7 @@ export class CreateNotificationTable1784738624727 implements MigrationInterface 
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
         "title" character varying NOT NULL,
         "content" text NOT NULL,
-        "type" "public"."notifications_type_enum" NOT NULL DEFAULT 'system',
+        "type" "public"."notifications_type_enum" NOT NULL DEFAULT 'SYSTEM',
         "isRead" boolean NOT NULL DEFAULT false,
         "userId" uuid,
         "created_at" TIMESTAMP NOT NULL DEFAULT now(),

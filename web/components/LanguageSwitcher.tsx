@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES, SupportedLanguage } from '@/constants';
 import { Globe, Check } from 'lucide-react';
@@ -12,13 +12,13 @@ type LanguageSwitcherProps = {
   className?: string;
 };
 
-export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'compact', className = '' }) => {
+export const LanguageSwitcher = ({ variant = 'compact', className = '' }: LanguageSwitcherProps) => {
   const { i18n } = useTranslation();
   const updateLocale = useStore((s) => s.updateLocale);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const currentLang = React.useMemo(() => {
+  const currentLang = useMemo(() => {
     const code = (i18n.language?.split('-')[0] || 'vi') as SupportedLanguage;
     return LANGUAGES.find((l) => l.code === code) || LANGUAGES[0];
   }, [i18n.language]);
@@ -29,7 +29,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ variant = 'c
   };
 
   // Close dropdown on outside click
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsOpen(false);

@@ -1,16 +1,27 @@
 'use client';
 
-import * as React from 'react';
-import { ChevronLeft, ChevronRight, Pizza, Flame, Sparkles, Smile, UtensilsCrossed, Drumstick, CupSoda, Leaf } from 'lucide-react';
+import { ReactNode, useRef, useState, useMemo, useCallback, useEffect } from 'react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Pizza,
+  Flame,
+  Sparkles,
+  Smile,
+  UtensilsCrossed,
+  Drumstick,
+  CupSoda,
+  Leaf,
+} from 'lucide-react';
 
 export type CategoryItem = {
   id: number | string;
   name: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   slug?: string;
 };
 
-export const getCategoryIcon = (name: string): React.ReactNode => {
+export const getCategoryIcon = (name: string): ReactNode => {
   const upper = name.toUpperCase();
   if (upper.includes('MELT')) return <Sparkles className="w-5 h-5" />;
   if (upper.includes('GIÁ ĐỈNH') || upper.includes('HOT') || upper.includes('DEAL'))
@@ -43,32 +54,32 @@ type CategoryBarProps = {
   className?: string;
 };
 
-export const CategoryBar: React.FC<CategoryBarProps> = ({
+export const CategoryBar = ({
   categories = DEFAULT_CATEGORY_TABS,
   selectedCategoryId = 'pizza',
   onSelectCategory,
   className = '',
-}) => {
+}: CategoryBarProps) => {
   // 1. Local state & refs
-  const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
-  const activeTabRef = React.useRef<HTMLButtonElement | null>(null);
-  const [canScrollLeft, setCanScrollLeft] = React.useState<boolean>(false);
-  const [canScrollRight, setCanScrollRight] = React.useState<boolean>(true);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const activeTabRef = useRef<HTMLButtonElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
+  const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
 
   // 2. Memoized values (useMemo)
-  const categoryList = React.useMemo(() => {
+  const categoryList = useMemo(() => {
     return categories.length > 0 ? categories : DEFAULT_CATEGORY_TABS;
   }, [categories]);
 
   // 3. Effects (useEffect)
-  const _checkScrollLimits = React.useCallback(() => {
+  const _checkScrollLimits = useCallback(() => {
     if (!scrollContainerRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
     setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     _checkScrollLimits();
     const container = scrollContainerRef.current;
     if (container) {
@@ -80,7 +91,7 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
   }, [_checkScrollLimits]);
 
   // Auto scroll active tab into horizontal view
-  React.useEffect(() => {
+  useEffect(() => {
     if (activeTabRef.current && scrollContainerRef.current) {
       const container = scrollContainerRef.current;
       const tab = activeTabRef.current;
@@ -94,7 +105,7 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
   }, [selectedCategoryId]);
 
   // 4. Event handlers
-  const _handleScroll = React.useCallback((direction: 'left' | 'right') => {
+  const _handleScroll = useCallback((direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const scrollAmount = 240;
     scrollContainerRef.current.scrollBy({
@@ -103,7 +114,7 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
     });
   }, []);
 
-  const _handleCategoryClick = React.useCallback(
+  const _handleCategoryClick = useCallback(
     (id: number | string) => {
       if (onSelectCategory) {
         onSelectCategory(id);
@@ -124,9 +135,9 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
   // 5. Return JSX
   return (
     <div
-      className={`w-full bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800/80 sticky top-[110px] z-30 transition-colors ${className}`}
+      className={`w-full bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800/80 sticky top-27.5 z-30 transition-colors ${className}`}
     >
-      <div className="max-w-[1200px] w-full mx-auto px-4 flex items-center relative">
+      <div className="max-w-300 w-full mx-auto px-4 flex items-center relative">
         {/* Left Scroll Button */}
         {canScrollLeft && (
           <button
@@ -162,9 +173,7 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
                     : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100/70 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-900/60 font-semibold'
                 }`}
               >
-                <span className="whitespace-nowrap">
-                  {formatCategoryName(category.name)}
-                </span>
+                <span className="whitespace-nowrap">{formatCategoryName(category.name)}</span>
               </button>
             );
           })}

@@ -5,8 +5,8 @@ export enum LanguageEnum {
 }
 
 export const LANGUAGES = [
-  { code: LanguageEnum.VI, name: 'Tiếng Việt', flag: '🇻🇳' },
   { code: LanguageEnum.EN, name: 'English', flag: '🇬🇧' },
+  { code: LanguageEnum.VI, name: 'Tiếng Việt', flag: '🇻🇳' },
   { code: LanguageEnum.JA, name: '日本語', flag: '🇯🇵' },
 ] as const;
 

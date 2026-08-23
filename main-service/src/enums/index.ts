@@ -8,4 +8,3 @@ export * from '@/enums/size.enum';
 export * from '@/enums/status.enum';
 export * from '@/enums/type.enum';
 export * from '@/enums/storage-folder.enum';
-

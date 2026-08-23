@@ -319,6 +319,26 @@ export interface ChangePasswordDto {
   newPassword: string;
 }
 
+export interface CategoryFilterDto {
+  /**
+   * @default 1
+   * @example 1
+   */
+  page?: number;
+  /**
+   * @default 100
+   * @example 10
+   */
+  limit?: number;
+  /** @example "sortOrder" */
+  orderby?: string;
+  /**
+   * @default "ASC"
+   * @example "ASC"
+   */
+  orderDirection?: string;
+}
+
 export interface CreateCategoryDto {
   /**
    * Tên danh mục
@@ -444,6 +464,21 @@ export interface ProductFilterDto {
   maxPrice?: number;
 }
 
+/** Kích thước */
+export enum SizeEnum {
+  Value20Cm = '20cm',
+  Value25Cm = '25cm',
+  Value30Cm = '30cm',
+  Value35Cm = '35cm',
+}
+
+/** Loại đế/vỏ */
+export enum TypeEnum {
+  SMALL = 'SMALL',
+  MEDIUM = 'MEDIUM',
+  LARGE = 'LARGE',
+}
+
 export interface CreateProductVariantDto {
   /**
    * Tên biến thể
@@ -454,12 +489,12 @@ export interface CreateProductVariantDto {
    * Kích thước
    * @example "20cm"
    */
-  size: '20cm' | '25cm' | '30cm' | '35cm';
+  size: SizeEnum;
   /**
    * Loại đế/vỏ
-   * @example "vừa"
+   * @example "MEDIUM"
    */
-  type: 'nhỏ' | 'vừa' | 'lớn';
+  type: TypeEnum;
   /**
    * Giá chênh lệch so với giá gốc (VND)
    * @default 0
@@ -531,12 +566,12 @@ export interface ProductVariantResponseDto {
    * Kích thước
    * @example "20cm"
    */
-  size: '20cm' | '25cm' | '30cm' | '35cm';
+  size: SizeEnum;
   /**
    * Loại đế/vỏ
-   * @example "vừa"
+   * @example "MEDIUM"
    */
-  type: 'nhỏ' | 'vừa' | 'lớn';
+  type: TypeEnum;
   /**
    * Giá chênh lệch so với giá gốc (VND)
    * @example 5000
@@ -946,6 +981,12 @@ export interface CreateOrderItemDto {
   quantity: number;
 }
 
+/** Phương thức thanh toán */
+export enum PaymentMethod {
+  COD = 'COD',
+  ONLINE = 'ONLINE',
+}
+
 export interface CreateOrderDto {
   /** Danh sách món ăn trong đơn */
   items: CreateOrderItemDto[];
@@ -981,9 +1022,19 @@ export interface CreateOrderDto {
   couponCode?: string;
   /**
    * Phương thức thanh toán
-   * @example "thanh toán khi giao hàng"
+   * @example "COD"
    */
-  paymentMethod?: 'thanh toán khi giao hàng' | 'thanh toán online';
+  paymentMethod?: PaymentMethod;
+}
+
+/** Lọc theo trạng thái đơn hàng */
+export enum OrderStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  PREPARING = 'PREPARING',
+  READY_FOR_SHIPMENT = 'READY_FOR_SHIPMENT',
+  DELIVERED = 'DELIVERED',
+  CANCELLED = 'CANCELLED',
 }
 
 export interface OrderFilterDto {
@@ -1000,7 +1051,7 @@ export interface OrderFilterDto {
    */
   limit?: number;
   /** Lọc theo trạng thái đơn hàng */
-  status?: 'đang chờ' | 'đã xác nhận' | 'đang chuẩn bị' | 'sẵn sàng' | 'đã giao hàng' | 'đã hủy';
+  status?: OrderStatus;
   /**
    * Lọc theo ID người dùng
    * @example "uuid-user-id"

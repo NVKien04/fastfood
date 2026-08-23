@@ -1,5 +1,5 @@
 export enum PaymentMethod {
-  COD = 'thanh toán khi giao hàng',
+  COD = 'COD',
 
-  ONLINE = 'thanh toán online',
+  ONLINE = 'ONLINE',
 }

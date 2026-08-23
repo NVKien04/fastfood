@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '@/common/decorators';
-import { CreateCategoryDto, UpdateCategoryDto } from '@/modules/category/presentation/dto';
+import { CreateCategoryDto, UpdateCategoryDto, CategoryFilterDto } from '@/modules/category/presentation/dto';
 import { RoleEnum } from '@/enums';
 import { CategoryService } from '@/modules/category/application/services/category.service';
 
@@ -13,7 +13,7 @@ export class CategoryController {
   @Post('get-page')
   @ApiOperation({ summary: 'Lấy danh sách danh mục phân trang' })
   @ApiResponse({ status: 200, description: 'Lấy dữ liệu thành công' })
-  async getPage(@Body() filterObject: Record<string, unknown>) {
+  async getPage(@Body() filterObject: CategoryFilterDto) {
     return await this.categoryService.getPage(filterObject);
   }
 

@@ -1,11 +1,11 @@
 export enum PaymentStatus {
-  PENDING = 'đang chờ',
+  PENDING = 'PENDING',
 
-  PAID = 'đã thanh toán',
+  PAID = 'PAID',
 
-  FAILED = 'thanh toán thất bại',
+  FAILED = 'FAILED',
 
-  REFUNDED = 'đã hoàn trả',
+  REFUNDED = 'REFUNDED',
 
-  CANCELLED = 'đã hủy',
+  CANCELLED = 'CANCELLED',
 }

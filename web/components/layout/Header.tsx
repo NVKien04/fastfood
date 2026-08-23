@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
@@ -34,11 +34,11 @@ type HeaderProps = {
   onAddressClick?: () => void;
 };
 
-export const Header: React.FC<HeaderProps> = ({
+export const Header = ({
   className = '',
   deliveryAddress = 'Đường Trương Định/Ngõ 58 Tổ 10D, Tương Mai, Hoàng Mai, Hà Nội',
   onAddressClick,
-}) => {
+}: HeaderProps) => {
   // 1. Next.js Router & navigation hooks
   const router = useRouter();
 
@@ -46,12 +46,12 @@ export const Header: React.FC<HeaderProps> = ({
   const { t, i18n } = useTranslation();
 
   // 3. Local state & refs
-  const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
-  const [isLanguageOpen, setIsLanguageOpen] = React.useState<boolean>(false);
-  const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = React.useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState<boolean>(false);
+  const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState<boolean>(false);
 
-  const menuRef = React.useRef<HTMLDivElement | null>(null);
-  const languageRef = React.useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const languageRef = useRef<HTMLDivElement | null>(null);
 
   // 4. Zustand global state
   const user = useStore((s) => s.user);
@@ -63,22 +63,22 @@ export const Header: React.FC<HeaderProps> = ({
   const updateLocale = useStore((s) => s.updateLocale);
 
   // 5. Memoized values
-  const isLoggedIn = React.useMemo(() => !!accessToken, [accessToken]);
+  const isLoggedIn = useMemo(() => !!accessToken, [accessToken]);
 
-  const userDisplayName = React.useMemo(() => {
+  const userDisplayName = useMemo(() => {
     if (!user) return '';
     return user.fullName || user.email || 'Tài khoản';
   }, [user]);
 
   const currentLanguage = (i18n.language || 'vi').toLowerCase();
 
-  const currentLangLabel = React.useMemo(() => {
+  const currentLangLabel = useMemo(() => {
     if (currentLanguage.startsWith('en')) return 'EN';
     if (currentLanguage.startsWith('ja')) return 'JA';
     return 'VI';
   }, [currentLanguage]);
 
-  const currentThemeLabel = React.useMemo(() => {
+  const currentThemeLabel = useMemo(() => {
     switch (theme) {
       case 'light':
         return 'Sáng';
@@ -91,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({
   }, [theme]);
 
   // 6. Effects (handle click outside menus)
-  React.useEffect(() => {
+  useEffect(() => {
     const _handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (menuRef.current && !menuRef.current.contains(target)) {
@@ -109,16 +109,16 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   // 7. Event handlers
-  const _handleToggleMenu = React.useCallback(() => {
+  const _handleToggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
     setIsThemeSubmenuOpen(false);
   }, []);
 
-  const _handleToggleLanguage = React.useCallback(() => {
+  const _handleToggleLanguage = useCallback(() => {
     setIsLanguageOpen((prev) => !prev);
   }, []);
 
-  const _handleNavigate = React.useCallback(
+  const _handleNavigate = useCallback(
     (path: string) => {
       setIsMenuOpen(false);
       setIsThemeSubmenuOpen(false);
@@ -127,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({
     [router],
   );
 
-  const _handleLogout = React.useCallback(async () => {
+  const _handleLogout = useCallback(async () => {
     setIsMenuOpen(false);
     setIsThemeSubmenuOpen(false);
     try {
@@ -152,9 +152,9 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full h-[110px] min-h-[110px] max-h-[110px] bg-white dark:bg-zinc-950/95 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-colors ${className}`}
+      className={`sticky top-0 z-40 w-full h-27.5 min-h-27.5 max-h-27.5 bg-white dark:bg-zinc-950/95 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-colors ${className}`}
     >
-      <div className="max-w-[1200px] w-full h-full mx-auto px-4 flex items-center justify-between gap-4">
+      <div className="max-w-300 w-full h-full mx-auto px-4 flex items-center justify-between gap-4">
         {/* ========================================================= */}
         {/* Left Side: Brand Logo (1) and Delivery Address (2) */}
         {/* ========================================================= */}
@@ -182,7 +182,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* 2. Delivery Address Information */}
           <div
             onClick={onAddressClick}
-            className="hidden md:flex flex-col text-left cursor-pointer group hover:opacity-90 transition-opacity select-none min-w-0 max-w-[260px] lg:max-w-xs"
+            className="hidden md:flex flex-col text-left cursor-pointer group hover:opacity-90 transition-opacity select-none min-w-0 max-w-65 lg:max-w-xs"
             role="button"
             tabIndex={0}
           >
@@ -255,7 +255,6 @@ export const Header: React.FC<HeaderProps> = ({
                         }`}
                       >
                         <span className="flex items-center gap-2">
-                          <span className="text-sm leading-none">{lang.flag}</span>
                           <span>{lang.name}</span>
                         </span>
                         {isSelected && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
@@ -294,6 +293,7 @@ export const Header: React.FC<HeaderProps> = ({
               <Menu className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
               <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-600 dark:text-zinc-300 overflow-hidden">
                 {isLoggedIn && user?.avatar ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={user.avatar} alt={userDisplayName} className="w-full h-full object-cover" />
                 ) : (
                   <UserIcon className="w-3.5 h-3.5 text-gray-600 dark:text-zinc-400" />
@@ -386,56 +386,62 @@ export const Header: React.FC<HeaderProps> = ({
 
                     {/* Submenu cấp 2 mở rộng bên dưới */}
                     {isThemeSubmenuOpen && (
-                      <div className="mt-1 ml-2 pl-2 border-l border-gray-200 dark:border-zinc-800 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                      <div className="mt-1 ml-2 pl-2 border-l border-gray-250 dark:border-zinc-800 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-150">
                         {/* Sáng */}
                         <button
                           type="button"
                           onClick={() => _handleThemeChange('light')}
-                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                             theme === 'light'
-                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
-                              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800/50 hover:text-gray-900 dark:hover:text-white'
+                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
+                              : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
                           }`}
                         >
-                          <span className="flex items-center gap-2">
-                            <Sun className="w-3.5 h-3.5" />
+                          <span className="flex items-center gap-3">
+                            <Sun className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                             <span>Sáng</span>
                           </span>
-                          {theme === 'light' && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
+                          {theme === 'light' && (
+                            <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
+                          )}
                         </button>
 
                         {/* Tối */}
                         <button
                           type="button"
                           onClick={() => _handleThemeChange('dark')}
-                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                             theme === 'dark'
-                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
-                              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800/50 hover:text-gray-900 dark:hover:text-white'
+                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
+                              : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
                           }`}
                         >
-                          <span className="flex items-center gap-2">
-                            <Moon className="w-3.5 h-3.5" />
+                          <span className="flex items-center gap-3">
+                            <Moon className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                             <span>Tối</span>
                           </span>
-                          {theme === 'dark' && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
+                          {theme === 'dark' && (
+                            <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
+                          )}
                         </button>
 
                         {/* Hệ thống */}
                         <button
                           type="button"
                           onClick={() => _handleThemeChange('system')}
-                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                             theme === 'system'
-                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
-                              : 'text-gray-600 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800/50 hover:text-gray-900 dark:hover:text-white'
+                              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
+                              : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
                           }`}
                         >
-                          <span className="flex items-center gap-2">
-                            <Laptop className="w-3.5 h-3.5" />
+                          <span className="flex items-center gap-3">
+                            <Laptop className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                             <span>Hệ thống</span>
                           </span>
-                          {theme === 'system' && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
+                          {theme === 'system' && (
+                            <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
+                          )}
                         </button>
                       </div>
                     )}

@@ -14,7 +14,7 @@ export const RegisterModule: FC = () => {
       <AuthHeader />
 
       {/* Subheader */}
-      <div className="max-w-[480px] w-full mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
+      <div className="max-w-120 w-full mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
         <button
           type="button"
           onClick={() => router.push('/login')}
@@ -30,7 +30,7 @@ export const RegisterModule: FC = () => {
       </div>
 
       <main className="flex-1 flex items-center justify-center px-4 py-4 sm:py-8">
-        <div className="w-full max-w-[480px]">
+        <div className="w-full max-w-120">
           <RegisterForm />
         </div>
       </main>

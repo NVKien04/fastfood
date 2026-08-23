@@ -11,9 +11,9 @@ export class InitSchema1784738624725 implements MigrationInterface {
       `CREATE TABLE "order-items" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "productId" uuid NOT NULL, "orderId" uuid NOT NULL, "productVariantId" integer NOT NULL, "quantity" integer NOT NULL DEFAULT '1', "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "PK_605fbaee38242facaa1a34b67ad" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(`CREATE TYPE "public"."product_variants_size_enum" AS ENUM('12cm', '15cm', '17cm')`);
-    await queryRunner.query(`CREATE TYPE "public"."product_variants_type_enum" AS ENUM('nhỏ', 'vừa', 'lớn')`);
+    await queryRunner.query(`CREATE TYPE "public"."product_variants_type_enum" AS ENUM('SMALL', 'MEDIUM', 'LARGE')`);
     await queryRunner.query(
-      `CREATE TABLE "product_variants" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "size" "public"."product_variants_size_enum" NOT NULL DEFAULT '12cm', "type" "public"."product_variants_type_enum" NOT NULL DEFAULT 'vừa', "modifiedPrice" integer NOT NULL DEFAULT '0', "isActive" integer NOT NULL DEFAULT '1', "sortOrder" integer NOT NULL DEFAULT '0', "productId" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "PK_281e3f2c55652d6a22c0aa59fd7" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "product_variants" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "size" "public"."product_variants_size_enum" NOT NULL DEFAULT '12cm', "type" "public"."product_variants_type_enum" NOT NULL DEFAULT 'MEDIUM', "modifiedPrice" integer NOT NULL DEFAULT '0', "isActive" integer NOT NULL DEFAULT '1', "sortOrder" integer NOT NULL DEFAULT '0', "productId" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "PK_281e3f2c55652d6a22c0aa59fd7" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "cart" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "userId" uuid NOT NULL, "totalCartPrice" integer NOT NULL, "totalItemDiff" integer NOT NULL, "totalItems" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "REL_756f53ab9466eb52a52619ee01" UNIQUE ("userId"), CONSTRAINT "PK_c524ec48751b9b5bcfbf6e59be7" PRIMARY KEY ("id"))`,
@@ -40,16 +40,14 @@ export class InitSchema1784738624725 implements MigrationInterface {
       `CREATE TABLE "reviews" ("id" SERIAL NOT NULL, "rating" integer NOT NULL, "comment" text NOT NULL, "userId" uuid NOT NULL, "productId" uuid NOT NULL, "order_id" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "UQ_e4b0ed40bdd0f318108612c2851" UNIQUE ("order_id"), CONSTRAINT "REL_e4b0ed40bdd0f318108612c285" UNIQUE ("order_id"), CONSTRAINT "PK_231ae565c273ee700b283f15c1d" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."orders_status_enum" AS ENUM('đang chờ', 'đã xác nhận', 'đang chuẩn bị', 'sẵn sàng', 'đã giao hàng', 'đã hủy')`,
+      `CREATE TYPE "public"."orders_status_enum" AS ENUM('PENDING', 'CONFIRMED', 'PREPARING', 'READY_FOR_SHIPMENT', 'DELIVERED', 'CANCELLED')`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."orders_paymentstatus_enum" AS ENUM('đang chờ', 'đã thanh toán', 'thanh toán thất bại', 'đã hoàn trả')`,
+      `CREATE TYPE "public"."orders_paymentstatus_enum" AS ENUM('PENDING', 'PAID', 'FAILED', 'REFUNDED')`,
     );
+    await queryRunner.query(`CREATE TYPE "public"."orders_paymentmethod_enum" AS ENUM('COD', 'ONLINE')`);
     await queryRunner.query(
-      `CREATE TYPE "public"."orders_paymentmethod_enum" AS ENUM('thanh toán khi giao hàng', 'thanh toán online')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "orders" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "orderNumber" character varying NOT NULL, "status" "public"."orders_status_enum" NOT NULL DEFAULT 'đang chờ', "paymentStatus" "public"."orders_paymentstatus_enum" NOT NULL DEFAULT 'đang chờ', "paymentMethod" "public"."orders_paymentmethod_enum", "subTotal" integer NOT NULL, "deliveryFee" integer NOT NULL, "discount" integer NOT NULL, "total" integer NOT NULL, "notes" text, "userId" uuid NOT NULL, "addressId" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "UQ_59b0c3b34ea0fa5562342f24143" UNIQUE ("orderNumber"), CONSTRAINT "PK_710e2d4957aa5878dfe94e4ac2f" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "orders" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "orderNumber" character varying NOT NULL, "status" "public"."orders_status_enum" NOT NULL DEFAULT 'PENDING', "paymentStatus" "public"."orders_paymentstatus_enum" NOT NULL DEFAULT 'PENDING', "paymentMethod" "public"."orders_paymentmethod_enum", "subTotal" integer NOT NULL, "deliveryFee" integer NOT NULL, "discount" integer NOT NULL, "total" integer NOT NULL, "notes" text, "userId" uuid NOT NULL, "addressId" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "UQ_59b0c3b34ea0fa5562342f24143" UNIQUE ("orderNumber"), CONSTRAINT "PK_710e2d4957aa5878dfe94e4ac2f" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "addresses" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "street" character varying NOT NULL, "city" character varying NOT NULL, "district" character varying NOT NULL, "ward" character varying NOT NULL, "longitude" numeric(10,7) NOT NULL, "latitude" numeric(10,7) NOT NULL, "isDefault" integer NOT NULL DEFAULT '1', "userId" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, CONSTRAINT "PK_745d8f43d3af10ab8247465e450" PRIMARY KEY ("id"))`,

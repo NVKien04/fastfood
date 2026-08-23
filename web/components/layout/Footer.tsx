@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
     <footer
       className={`w-full bg-white dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-800 transition-colors ${className}`}
     >
-      <div className="max-w-[1200px] w-full mx-auto px-4 pt-14 pb-10">
+      <div className="max-w-300 w-full mx-auto px-4 pt-14 pb-10">
         {/* Main 4-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-gray-100 dark:border-zinc-800">
           {/* ======================================================== */}
@@ -41,7 +41,8 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
 
             {/* Description */}
             <p className="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed max-w-sm">
-              Chuỗi nhà hàng pizza và thức ăn nhanh tiện lợi hàng đầu, chất lượng và đáng tin cậy. Mang hương vị pizza tươi hảo hạng đến hàng triệu khách hàng trên toàn quốc.
+              Chuỗi nhà hàng pizza và thức ăn nhanh tiện lợi hàng đầu, chất lượng và đáng tin cậy. Mang hương vị pizza
+              tươi hảo hạng đến hàng triệu khách hàng trên toàn quốc.
             </p>
 
             {/* Contact Details */}
@@ -53,12 +54,22 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
 
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#ff6900] shrink-0" />
-                <span>Hotline: <strong className="text-gray-900 dark:text-zinc-200">1900 1822</strong> (8:00 - 22:00)</span>
+                <span>
+                  Hotline: <strong className="text-gray-900 dark:text-zinc-200">1900 1822</strong> (8:00 - 22:00)
+                </span>
               </div>
 
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#ff6900] shrink-0" />
-                <span>Email: <a href="mailto:support@keipizza.vn" className="text-gray-900 dark:text-zinc-200 hover:text-[#ff6900] transition-colors">support@keipizza.vn</a></span>
+                <span>
+                  Email:{' '}
+                  <a
+                    href="mailto:support@keipizza.vn"
+                    className="text-gray-900 dark:text-zinc-200 hover:text-[#ff6900] transition-colors"
+                  >
+                    support@keipizza.vn
+                  </a>
+                </span>
               </div>
             </div>
 
@@ -114,9 +125,7 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
           {/* Column 2: MUA SẮM (2.5 cols)                             */}
           {/* ======================================================== */}
           <div className="lg:col-span-2 space-y-3.5">
-            <h4 className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
-              MUA SẮM
-            </h4>
+            <h4 className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">MUA SẮM</h4>
             <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-400">
               <li>
                 <Link href="/" className="hover:text-[#ff6900] transition-colors">

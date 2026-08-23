@@ -69,8 +69,10 @@ export const useGoogleCallback = () => {
   }, [searchParams, setAccessToken, setUser, router]);
 
   const handleGoogleLogin = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_MAIN_URL || 'http://localhost:3001';
-    window.location.href = `${apiUrl}/auth/google`;
+    const googleAuthUrl =
+      process.env.NEXT_PUBLIC_GOOGLE_AUTH_URL ||
+      `${process.env.NEXT_PUBLIC_API_MAIN_URL || 'http://localhost:3001'}/api/auth/google`;
+    window.location.href = googleAuthUrl;
   };
 
   return {

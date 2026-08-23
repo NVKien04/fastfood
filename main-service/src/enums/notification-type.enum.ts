@@ -1,5 +1,5 @@
 export enum NotificationType {
-  ORDER_STATUS = 'order_status',
-  PROMOTION = 'promotion',
-  SYSTEM = 'system',
+  ORDER_STATUS = 'ORDER_STATUS',
+  PROMOTION = 'PROMOTION',
+  SYSTEM = 'SYSTEM',
 }

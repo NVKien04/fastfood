@@ -9,7 +9,16 @@
 - **Không viết trực tiếp code UI/logic nghiệp vụ** trong các file `page.tsx`.
 - Các file `page.tsx` chỉ đóng vai trò là nơi import và export component/module từ thư mục `features/` (hoặc metadata/layout cấu hình).
 
-### 2. Cấu trúc Feature Module (`web/features/<feature-name>/`)
+### 2. Quy tắc về Coding Style trong React & Next.js
+- **Không sử dụng tiền tố `React.`** khi dùng các hooks hoặc types (ví dụ: viết `useState`, `useEffect`, `ReactNode`, `useRef` thay vì `React.useState`, `React.useEffect`, `React.ReactNode`). Hãy import trực tiếp chúng từ thư viện `'react'`.
+- **Không sử dụng kiểu `React.FC` hoặc `FC`** để định nghĩa Functional Components. Thay vào đó, hãy định nghĩa kiểu dữ liệu trực tiếp cho props của component:
+  ```typescript
+  export const MyComponent = ({ prop1, prop2 }: MyComponentProps) => {
+    return <div>...</div>;
+  };
+  ```
+
+### 3. Cấu trúc Feature Module (`web/features/<feature-name>/`)
 Mỗi feature phải tuân theo cấu trúc module hóa khép kín:
 ```
 features/
@@ -21,7 +30,7 @@ features/
     └── index.ts      # Export công khai các component/hook cần dùng bên ngoài
 ```
 
-### 3. Quy tắc về API & Logic State
+### 4. Quy tắc về API & Logic State
 - Tất cả các xử lý API logic bao gồm **Loading, Error, Cache, Refetch, Mutate** đều phải được đóng gói gọn trong custom hook (ví dụ: `useLogin`, `useRegister`, `useCreateProduct`, `useGetProducts`,...).
 - Tách biệt rõ ràng giữa Presentation Component (UI) và Logic Hook.
 - Tất cả các form trong ứng dụng đều bắt buộc sử dụng **React Hook Form + Zod**.

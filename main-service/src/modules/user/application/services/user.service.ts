@@ -162,7 +162,8 @@ export class UserService {
     let user = await this.findByEmail(profile.email);
 
     if (!user) {
-      const randomPassword = (await HashUtil.hash(Math.random().toString(36) + Date.now().toString())) || 'oauth_google_user';
+      const randomPassword =
+        (await HashUtil.hash(Math.random().toString(36) + Date.now().toString())) || 'oauth_google_user';
       user = await this.save({
         email: profile.email,
         name: profile.displayName || profile.email.split('@')[0],
@@ -181,4 +182,3 @@ export class UserService {
     return { id: user.id, role: user.role };
   }
 }
-

@@ -82,7 +82,12 @@ export class CreateOrderDto {
   @IsOptional()
   couponCode?: string;
 
-  @ApiPropertyOptional({ description: 'Phương thức thanh toán', enum: PaymentMethod, example: PaymentMethod.COD })
+  @ApiPropertyOptional({
+    description: 'Phương thức thanh toán',
+    enum: PaymentMethod,
+    enumName: 'PaymentMethod',
+    example: PaymentMethod.COD,
+  })
   @IsEnum(PaymentMethod)
   @IsOptional()
   paymentMethod?: PaymentMethod;
