@@ -10,9 +10,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage() {
   return (
     <MainLayout>
-      <div className="py-6">
-        <CheckoutModule />
-      </div>
+      <CheckoutModule />
     </MainLayout>
   );
 }

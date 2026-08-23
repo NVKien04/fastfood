@@ -132,34 +132,6 @@ export const ProductList: FC = () => {
           ))}
       </main>
 
-      {/* Floating Bottom Cart Bar for Mobile & Desktop */}
-      {cartTotalCount > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 w-full max-w-md px-4 animate-in fade-in slide-in-from-bottom-5 duration-300">
-          <Link
-            href="/checkout"
-            className="w-full flex items-center justify-between p-4 rounded-2xl bg-gray-900 hover:bg-black text-white shadow-2xl shadow-gray-900/40 border border-gray-800 transition-transform active:scale-[0.99] group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-xl bg-[#ff6900] flex items-center justify-center text-white shadow-md shadow-orange-500/30">
-                <ShoppingBag className="w-5 h-5" />
-                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white text-gray-900 text-[10px] font-black flex items-center justify-center shadow-xs">
-                  {cartTotalCount}
-                </span>
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-gray-300">Giỏ hàng của bạn</span>
-                <span className="text-sm font-black text-white">{formatVND(cartTotalPrice)}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1.5 text-xs font-bold text-[#ff6900] group-hover:text-orange-400 transition-colors">
-              <span>Xem đơn</span>
-              <span>→</span>
-            </div>
-          </Link>
-        </div>
-      )}
-
       {/* Product Detail Customization Modal */}
       <ProductDetailModal
         product={activeModalProduct}

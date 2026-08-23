@@ -266,10 +266,10 @@ export const Header = ({
             )}
           </div>
 
-          {/* Orange Cart Pill Button */}
+          {/* Orange Cart Pill Button with Badge on Top-Right Corner */}
           <Link
             href="/checkout"
-            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-[#ff6900] hover:bg-[#e05d00] active:scale-95 text-white font-black text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all cursor-pointer select-none"
+            className="relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-[#ff6900] hover:bg-[#e05d00] active:scale-95 text-white font-black text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all cursor-pointer select-none"
           >
             <ShoppingBag className="w-4 h-4 text-white" />
             <span>
@@ -279,6 +279,13 @@ export const Header = ({
                   ? `${cartTotalCount} món`
                   : 'Giỏ hàng'}
             </span>
+
+            {/* Badge on Top-Right Corner of the Button */}
+            {cartTotalCount > 0 && (
+              <span className="absolute -top-2 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-black flex items-center justify-center shadow-md border-2 border-white dark:border-zinc-900 leading-none">
+                {cartTotalCount}
+              </span>
+            )}
           </Link>
 
           {/* ========================================================= */}

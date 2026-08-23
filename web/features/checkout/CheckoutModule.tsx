@@ -9,7 +9,7 @@ import { OrderSummary } from './components/OrderSummary';
 import { OrderSuccess } from './components/OrderSuccess';
 import { CartReviewSection } from './components/CartReviewSection';
 
-export const CheckoutModule: FC = () => {
+export const CheckoutModule = () => {
   const [step, setStep] = useState<1 | 2>(1);
 
   const {
@@ -32,48 +32,41 @@ export const CheckoutModule: FC = () => {
   }
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 transition-colors">
-      {/* Header Breadcrumb & Title */}
-      <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <div className="flex items-center gap-4">
-          {step === 1 ? (
-            <Link
-              href="/"
-              className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 flex items-center justify-center text-gray-700 dark:text-zinc-300 hover:text-[#ff6900] dark:hover:text-[#ff6900] hover:border-orange-200 dark:hover:border-orange-900 transition-colors shadow-xs cursor-pointer"
-              title="Quay lại thực đơn"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 flex items-center justify-center text-gray-700 dark:text-zinc-300 hover:text-[#ff6900] dark:hover:text-[#ff6900] hover:border-orange-200 dark:hover:border-orange-900 transition-colors shadow-xs cursor-pointer"
-              title="Quay lại giỏ hàng"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-          )}
-
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-              {step === 1 ? 'Giỏ hàng của tôi' : 'Thông tin giao hàng & Thanh toán'}
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 mt-0.5">
-              {step === 1
-                ? 'Kiểm tra và tùy chỉnh các món ăn trước khi tiến hành thanh toán'
-                : 'Vui lòng nhập địa chỉ nhận hàng và chọn phương thức thanh toán'}
-            </p>
+    <div className="w-full transition-colors">
+      {/* Sticky Checkout Sub-Header Bar */}
+      <div className="w-full bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md sticky top-27.5 z-30 transition-colors">
+        <div className="max-w-300 w-full mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 relative flex items-center justify-center">
+          {/* 1. Left Side: Back Arrow Only */}
+          <div className="absolute left-4 sm:left-6 lg:left-8 flex items-center">
+            {step === 1 ? (
+              <Link
+                href="/"
+                className="p-2 -ml-2 text-gray-800 dark:text-zinc-200 hover:text-[#ff6900] dark:hover:text-[#ff6900] transition-colors cursor-pointer flex items-center justify-center"
+                title="Quay lại thực đơn"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="p-2 -ml-2 text-gray-800 dark:text-zinc-200 hover:text-[#ff6900] dark:hover:text-[#ff6900] transition-colors cursor-pointer flex items-center justify-center"
+                title="Quay lại giỏ hàng"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            )}
           </div>
-        </div>
 
-        {/* Step Indicator Pill */}
-        <div className="hidden sm:flex items-center gap-2 bg-gray-100 dark:bg-zinc-800/80 px-4 py-2 rounded-full text-xs font-bold text-gray-600 dark:text-zinc-300">
-          <span className={step === 1 ? 'text-[#ff6900]' : 'text-gray-400'}>1. Giỏ hàng</span>
-          <span>→</span>
-          <span className={step === 2 ? 'text-[#ff6900]' : 'text-gray-400'}>2. Giao hàng &amp; Thanh toán</span>
+          {/* 2. Center: Large Title */}
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 dark:text-white tracking-tight text-center">
+            {step === 1 ? 'Giỏ hàng của tôi' : 'Thông tin giao hàng & Thanh toán'}
+          </h1>
         </div>
       </div>
+
+      {/* Main Content Area (Khoảng cách trên bằng 0) */}
+      <div className="w-full max-w-300 mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-12 transition-colors">
 
       {/* Error Banner */}
       {errorMessage && (
@@ -141,6 +134,7 @@ export const CheckoutModule: FC = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

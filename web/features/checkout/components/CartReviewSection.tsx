@@ -4,18 +4,9 @@ import { FC, useState } from 'react';
 import Link from 'next/link';
 import { CartItem } from '@/stores';
 import { formatVND } from '@/utils';
-import {
-  Trash2,
-  Plus,
-  Minus,
-  Utensils,
-  ChevronRight,
-  Ticket,
-  Sparkles,
-  Info,
-  Edit3,
-} from 'lucide-react';
+import { Trash2, Plus, Minus, Utensils, ChevronRight, Ticket, Sparkles, Info, Edit3, X } from 'lucide-react';
 import { CartUpsell } from './CartUpsell';
+import { VoucherModal, VoucherItem } from './VoucherModal';
 import { ProductDetailModal } from '@/features/product/components/ProductDetailModal';
 
 type CartReviewSectionProps = {
@@ -41,19 +32,21 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
 }) => {
   const [editingItem, setEditingItem] = useState<CartItem | null>(null);
   const [needCutlery, setNeedCutlery] = useState<boolean>(false);
-  const [voucherCode, setVoucherCode] = useState<string>('');
-  const [isVoucherApplied, setIsVoucherApplied] = useState<boolean>(false);
+  const [isVoucherModalOpen, setIsVoucherModalOpen] = useState<boolean>(false);
+  const [selectedVoucher, setSelectedVoucher] = useState<VoucherItem | null>(null);
 
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const rewardPoints = Math.floor(total / 10000);
+  const voucherDiscount = selectedVoucher ? selectedVoucher.discountAmount : 0;
+  const finalTotal = items.length > 0 ? Math.max(0, total - voucherDiscount) : 0;
+  const rewardPoints = Math.floor(finalTotal / 10000);
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 lg:gap-8 items-start">
         {/* ============================================================ */}
         {/* LEFT COLUMN: Cart Items & Upsell "Bạn sẽ thích"              */}
         {/* ============================================================ */}
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-6">
           {/* Main Cart Items Box */}
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 transition-colors">
             {/* Header */}
@@ -109,7 +102,8 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
                       {/* Variant (Size, Crust) */}
                       {item.variant && (
                         <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5 font-medium">
-                          Cỡ: <span className="text-gray-800 dark:text-zinc-200 font-semibold">{item.variant.name}</span>
+                          Cỡ:{' '}
+                          <span className="text-gray-800 dark:text-zinc-200 font-semibold">{item.variant.name}</span>
                         </p>
                       )}
 
@@ -121,7 +115,7 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
                       )}
 
                       {/* Change / Edit Item Button */}
-                      {(item.product.variants?.length || item.product.ingredients?.length) ? (
+                      {item.product.variants?.length || item.product.ingredients?.length ? (
                         <button
                           type="button"
                           onClick={() => setEditingItem(item)}
@@ -143,10 +137,12 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
                       <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-zinc-800/80 p-1 rounded-xl border border-gray-100 dark:border-zinc-700">
                         <button
                           type="button"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="w-6 h-6 rounded-lg bg-white dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 shadow-xs transition-colors cursor-pointer"
+                          onClick={() =>
+                            item.quantity > 1 ? updateQuantity(item.id, item.quantity - 1) : removeItem(item.id)
+                          }
+                          className="w-6 h-6 rounded-lg bg-white dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-zinc-300 hover:text-[#ff6900] shadow-xs transition-colors cursor-pointer"
                         >
-                          {item.quantity <= 1 ? <Trash2 className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+                          <Minus className="w-3 h-3" />
                         </button>
                         <span className="text-xs font-black text-gray-900 dark:text-white w-5 text-center">
                           {item.quantity}
@@ -160,6 +156,16 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
                         </button>
                       </div>
                     </div>
+
+                    {/* Delete item button */}
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.id)}
+                      className="p-1.5 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-105 dark:hover:bg-zinc-800 transition-colors cursor-pointer shrink-0 self-center"
+                      title="Xóa món ăn"
+                    >
+                      <X className="w-4.5 h-4.5" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -173,20 +179,43 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
         {/* ============================================================ */}
         {/* RIGHT COLUMN: Voucher, Special Deals, Pricing & Checkout CTA */}
         {/* ============================================================ */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-24 h-fit">
           {/* 1. Voucher Card */}
-          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/30 dark:shadow-black/30 transition-colors">
-            <div className="flex items-center justify-between cursor-pointer group">
+          <div
+            onClick={() => setIsVoucherModalOpen(true)}
+            className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/30 dark:shadow-black/30 transition-all cursor-pointer hover:border-orange-200 dark:hover:border-zinc-700 group"
+          >
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-950/50 flex items-center justify-center text-[#ff6900]">
+                <div
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
+                    selectedVoucher
+                      ? 'bg-[#ff6900] text-white shadow-xs'
+                      : 'bg-orange-50 dark:bg-orange-950/50 text-[#ff6900]'
+                  }`}
+                >
                   <Ticket className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-gray-900 dark:text-white">Voucher</h4>
-                  <p className="text-[11px] text-[#ff6900] font-medium">Nhập hoặc chọn voucher của bạn</p>
+                  <div className="flex items-center gap-1.5">
+                    <h4 className="text-xs font-bold text-gray-900 dark:text-white">Voucher</h4>
+                    {selectedVoucher && (
+                      <span className="text-[10px] font-black text-[#ff6900] bg-orange-50 dark:bg-orange-950/60 px-1.5 py-0.5 rounded-md border border-orange-200/50">
+                        {selectedVoucher.code}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#ff6900] font-medium">
+                    {selectedVoucher
+                      ? `Đã giảm -${formatVND(selectedVoucher.discountAmount)}`
+                      : 'Nhập hoặc chọn voucher của bạn'}
+                  </p>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-[#ff6900] transition-colors" />
+              <div className="flex items-center gap-1 text-gray-400 group-hover:text-[#ff6900] transition-colors">
+                <span className="text-xs font-semibold">{selectedVoucher ? 'Đổi mã' : 'Chọn'}</span>
+                <ChevronRight className="w-4 h-4" />
+              </div>
             </div>
           </div>
 
@@ -207,7 +236,10 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
               Sản phẩm có giá đặc biệt áp dụng cho đơn tạm tính từ 299,000đ trở lên
             </p>
             <div className="mt-3">
-              <Link href="/" className="text-xs font-bold text-[#ff6900] hover:underline inline-flex items-center gap-1">
+              <Link
+                href="/"
+                className="text-xs font-bold text-[#ff6900] hover:underline inline-flex items-center gap-1"
+              >
                 <span>Thêm món ngay</span>
                 <span>›</span>
               </Link>
@@ -240,6 +272,15 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
               <span className="text-gray-900 dark:text-white font-bold">{formatVND(subTotal)}</span>
             </div>
 
+            {selectedVoucher && (
+              <div className="flex justify-between text-xs text-gray-500 dark:text-zinc-400 font-medium">
+                <span className="flex items-center gap-1">
+                  <span>Mã giảm giá ({selectedVoucher.code})</span>
+                </span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">-{formatVND(voucherDiscount)}</span>
+              </div>
+            )}
+
             <div className="flex justify-between text-xs text-gray-500 dark:text-zinc-400 font-medium">
               <span className="flex items-center gap-1">
                 <span>Giảm giá thành viên</span>
@@ -261,7 +302,7 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
             <div className="pt-3 border-t border-gray-100 dark:border-zinc-800 flex justify-between items-baseline">
               <span className="text-sm font-black text-gray-900 dark:text-white">Tổng cộng:</span>
               <span className="text-xl font-black text-[#ff6900]">
-                {items.length > 0 ? formatVND(total) : '0 đ'}
+                {items.length > 0 ? formatVND(finalTotal) : '0 đ'}
               </span>
             </div>
 
@@ -290,6 +331,15 @@ export const CartReviewSection: FC<CartReviewSectionProps> = ({
         cartItem={editingItem}
         isOpen={!!editingItem}
         onClose={() => setEditingItem(null)}
+      />
+
+      {/* Voucher Selection Modal */}
+      <VoucherModal
+        isOpen={isVoucherModalOpen}
+        onClose={() => setIsVoucherModalOpen(false)}
+        subTotal={subTotal}
+        appliedCode={selectedVoucher?.code}
+        onSelectVoucher={(voucher) => setSelectedVoucher(voucher)}
       />
     </>
   );
