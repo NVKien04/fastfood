@@ -46,6 +46,26 @@
     "TRACK_ORDER": "Track Order",
     "CUSTOMER_SUPPORT": "Customer Support"
   },
+  "NOTIFICATION": {
+    "TITLE": "Notifications",
+    "UNREAD": "unread",
+    "TAB_ALL": "All",
+    "TAB_UNREAD": "Unread",
+    "TAB_ORDER": "Orders",
+    "TAB_PROMO": "Promotions",
+    "MARK_ALL_READ": "Mark all as read",
+    "EMPTY_TITLE": "No notifications yet",
+    "EMPTY_DESC": "You are all caught up! Stay tuned for exciting deals and delicious updates.",
+    "TIME_JUST_NOW": "Just now",
+    "TIME_MINUTES_AGO": "{{count}}m ago",
+    "TIME_HOURS_AGO": "{{count}}h ago",
+    "TIME_DAYS_AGO": "{{count}}d ago",
+    "DELETE": "Delete notification",
+    "VIEW_DETAILS": "View details",
+    "ORDER_UPDATE": "Order Update",
+    "PROMO_OFFER": "Special Offer",
+    "SYSTEM_NOTICE": "System Notice"
+  },
   "AUTH": {
     "LOGIN_TITLE": "Sign In",
     "LOGIN_SUBTITLE": "Welcome back! Please enter your details to continue.",

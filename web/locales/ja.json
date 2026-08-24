@@ -46,6 +46,26 @@
     "TRACK_ORDER": "注文履歴",
     "CUSTOMER_SUPPORT": "カスタマーサポート"
   },
+  "NOTIFICATION": {
+    "TITLE": "お知らせ",
+    "UNREAD": "件の未読",
+    "TAB_ALL": "すべて",
+    "TAB_UNREAD": "未読",
+    "TAB_ORDER": "ご注文",
+    "TAB_PROMO": "クーポン",
+    "MARK_ALL_READ": "すべて既読にする",
+    "EMPTY_TITLE": "通知はありません",
+    "EMPTY_DESC": "すべての通知を確認済みです。お得な情報をお見逃しなく！",
+    "TIME_JUST_NOW": "たった今",
+    "TIME_MINUTES_AGO": "{{count}}分前",
+    "TIME_HOURS_AGO": "{{count}}時間前",
+    "TIME_DAYS_AGO": "{{count}}日前",
+    "DELETE": "通知を削除",
+    "VIEW_DETAILS": "詳細を見る",
+    "ORDER_UPDATE": "注文状況",
+    "PROMO_OFFER": "お得なクーポン",
+    "SYSTEM_NOTICE": "システム通知"
+  },
   "AUTH": {
     "LOGIN_TITLE": "ログイン",
     "LOGIN_SUBTITLE": "おかえりなさい！情報を入力して続行してください。",

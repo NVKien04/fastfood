@@ -46,6 +46,26 @@
     "TRACK_ORDER": "Theo dõi đơn hàng",
     "CUSTOMER_SUPPORT": "Hỗ trợ khách hàng"
   },
+  "NOTIFICATION": {
+    "TITLE": "Thông báo",
+    "UNREAD": "chưa đọc",
+    "TAB_ALL": "Tất cả",
+    "TAB_UNREAD": "Chưa đọc",
+    "TAB_ORDER": "Đơn hàng",
+    "TAB_PROMO": "Khuyến mãi",
+    "MARK_ALL_READ": "Đánh dấu đã đọc tất cả",
+    "EMPTY_TITLE": "Không có thông báo nào",
+    "EMPTY_DESC": "Bạn đã xem hết tất cả thông báo. Hãy đón chờ các ưu đãi và cập nhật mới nhất nhé!",
+    "TIME_JUST_NOW": "Vừa xong",
+    "TIME_MINUTES_AGO": "{{count}} phút trước",
+    "TIME_HOURS_AGO": "{{count}} giờ trước",
+    "TIME_DAYS_AGO": "{{count}} ngày trước",
+    "DELETE": "Xóa thông báo",
+    "VIEW_DETAILS": "Xem chi tiết",
+    "ORDER_UPDATE": "Cập nhật đơn hàng",
+    "PROMO_OFFER": "Ưu đãi hấp dẫn",
+    "SYSTEM_NOTICE": "Thông báo hệ thống"
+  },
   "AUTH": {
     "LOGIN_TITLE": "Đăng nhập",
     "LOGIN_SUBTITLE": "Chào mừng bạn quay trở lại! Vui lòng nhập thông tin để tiếp tục.",
