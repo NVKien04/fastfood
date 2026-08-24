@@ -38,7 +38,7 @@ async function bootstrap() {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   const allowedOrigins = Array.from(
     new Set(
-      [frontendUrl, 'http://localhost:3000', 'http://localhost:5173', 'https://your-frontend.com'].filter(Boolean),
+      [frontendUrl, 'http://localhost:3002', 'http://localhost:5173', 'https://your-frontend.com'].filter(Boolean),
     ),
   );
 

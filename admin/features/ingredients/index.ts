@@ -1,0 +1,1 @@
+export { IngredientListModule } from './IngredientListModule';
