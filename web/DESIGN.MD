@@ -453,8 +453,8 @@ The elevation philosophy is **color-block first, shadow rare**. Most depth comes
 | Token            | Value        | Use                                                             |
 | ---------------- | ------------ | --------------------------------------------------------------- |
 | `{rounded.xs}`   | 4px          | Reserved for badge accents and tiny dropdowns                   |
-| `{rounded.sm}`   | 6px          | Small inline buttons, dropdown items, text inputs              |
-| `{rounded.md}`   | 8px          | Standard CTA buttons, category tabs                            |
+| `{rounded.sm}`   | 6px          | Small inline buttons, dropdown items, text inputs               |
+| `{rounded.md}`   | 8px          | Standard CTA buttons, category tabs                             |
 | `{rounded.lg}`   | 12px         | Content cards (feature, pricing, code-window, model-comparison) |
 | `{rounded.xl}`   | 16px         | Hero illustration container, the larger marquee components      |
 | `{rounded.pill}` | 9999px       | Badge pills, "NEW" tags                                         |

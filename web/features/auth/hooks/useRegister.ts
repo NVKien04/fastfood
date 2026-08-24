@@ -36,9 +36,7 @@ export const useRegister = () => {
 
   const mutation = useMutation({
     mutationFn: async (values: RegisterFormValues) => {
-      const formattedPhone = values.phone.startsWith('+84')
-        ? '0' + values.phone.slice(3)
-        : values.phone;
+      const formattedPhone = values.phone.startsWith('+84') ? '0' + values.phone.slice(3) : values.phone;
 
       const response = await ApiMain.instance.auth.register({
         email: values.email.trim(),

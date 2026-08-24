@@ -7,9 +7,7 @@ import {
 /**
  * Sắp xếp các biến thể theo giá chênh lệch tăng dần (từ thấp đến cao)
  */
-export const sortProductVariants = (
-  variants: ProductVariantResponseDto[] = [],
-): ProductVariantResponseDto[] => {
+export const sortProductVariants = (variants: ProductVariantResponseDto[] = []): ProductVariantResponseDto[] => {
   return [...variants].sort((a, b) => (a.modifiedPrice || 0) - (b.modifiedPrice || 0));
 };
 
@@ -40,10 +38,7 @@ export const calculateProductUnitPrice = (
 /**
  * Tính tổng giá sản phẩm = Đơn giá * Số lượng
  */
-export const calculateProductTotalPrice = (
-  unitPrice: number,
-  quantity: number,
-): number => {
+export const calculateProductTotalPrice = (unitPrice: number, quantity: number): number => {
   return unitPrice * Math.max(1, quantity);
 };
 
@@ -78,4 +73,3 @@ export const categoryToSlug = (name: string): string => {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 };
-

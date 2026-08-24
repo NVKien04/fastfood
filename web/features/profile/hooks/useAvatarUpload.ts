@@ -5,10 +5,7 @@ import { useStore } from '@/stores';
 import { useUploadImage } from '@/services/react-query/mutations/upload';
 import { useUpdateProfile } from '@/services/react-query/mutations/user';
 
-export const useAvatarUpload = (
-  currentAvatar?: string,
-  onAvatarChange?: (newUrl: string) => void,
-) => {
+export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl: string) => void) => {
   const user = useStore((s) => s.user);
   const setUser = useStore((s) => s.setUser);
   const fileInputRef = useRef<HTMLInputElement | null>(null);

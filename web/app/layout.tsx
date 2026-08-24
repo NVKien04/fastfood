@@ -14,11 +14,7 @@ export const metadata: Metadata = {
   description: 'Thưởng thức ẩm thực fast food thơm ngon, giao hàng tận nơi nhanh chóng',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
@@ -27,4 +23,3 @@ export default function RootLayout({
     </html>
   );
 }
-

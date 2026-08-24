@@ -5,8 +5,5 @@ export const profileSchema = z.object({
   phone: z
     .string()
     .optional()
-    .refine(
-      (val) => !val || /^(0|\+84)[0-9]{8,10}$/.test(val.replace(/\s+/g, '')),
-      'Số điện thoại không hợp lệ.',
-    ),
+    .refine((val) => !val || /^(0|\+84)[0-9]{8,10}$/.test(val.replace(/\s+/g, '')), 'Số điện thoại không hợp lệ.'),
 });

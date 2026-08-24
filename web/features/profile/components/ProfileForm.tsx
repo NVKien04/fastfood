@@ -15,13 +15,7 @@ type ProfileFormProps = {
   statusMessage: { type: 'success' | 'error'; text: string } | null;
 };
 
-export const ProfileForm: FC<ProfileFormProps> = ({
-  form,
-  onSubmit,
-  userEmail,
-  isUpdating,
-  statusMessage,
-}) => {
+export const ProfileForm: FC<ProfileFormProps> = ({ form, onSubmit, userEmail, isUpdating, statusMessage }) => {
   const {
     register,
     formState: { errors },
@@ -61,9 +55,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
             }`}
           />
         </div>
-        {errors.name && (
-          <p className="text-[11px] font-medium text-red-500">{errors.name.message}</p>
-        )}
+        {errors.name && <p className="text-[11px] font-medium text-red-500">{errors.name.message}</p>}
       </div>
 
       {/* Email (Read only) */}
@@ -95,9 +87,7 @@ export const ProfileForm: FC<ProfileFormProps> = ({
             }`}
           />
         </div>
-        {errors.phone && (
-          <p className="text-[11px] font-medium text-red-500">{errors.phone.message}</p>
-        )}
+        {errors.phone && <p className="text-[11px] font-medium text-red-500">{errors.phone.message}</p>}
       </div>
 
       {/* Submit Button */}

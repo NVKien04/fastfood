@@ -72,13 +72,7 @@ type VoucherModalProps = {
   onSelectVoucher: (voucher: VoucherItem | null) => void;
 };
 
-export const VoucherModal = ({
-  isOpen,
-  onClose,
-  subTotal,
-  appliedCode = '',
-  onSelectVoucher,
-}: VoucherModalProps) => {
+export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSelectVoucher }: VoucherModalProps) => {
   const [activeTab, setActiveTab] = useState<VoucherType>('ALL');
   const [inputCode, setInputCode] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string>('');
@@ -106,9 +100,7 @@ export const VoucherModal = ({
     }
 
     if (subTotal < found.minOrderAmount) {
-      setErrorMsg(
-        `Đơn hàng chưa đạt giá trị tối thiểu ${formatVND(found.minOrderAmount)} để dùng mã này.`,
-      );
+      setErrorMsg(`Đơn hàng chưa đạt giá trị tối thiểu ${formatVND(found.minOrderAmount)} để dùng mã này.`);
       return;
     }
 
@@ -254,11 +246,7 @@ export const VoucherModal = ({
                   <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white dark:bg-zinc-900" />
 
                   {/* Star Icon in center */}
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-4 h-4 text-white"
-                  >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                   </svg>
                 </div>
@@ -293,9 +281,7 @@ export const VoucherModal = ({
                         : 'border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800'
                     }`}
                   >
-                    {isSelected && (
-                      <div className="w-2 h-2 rounded-full bg-white" />
-                    )}
+                    {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
                   </div>
                 </div>
               </div>

@@ -67,73 +67,72 @@ export const CheckoutModule = () => {
 
       {/* Main Content Area (Khoảng cách trên bằng 0) */}
       <div className="w-full max-w-300 mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-12 transition-colors">
+        {/* Error Banner */}
+        {errorMessage && (
+          <div className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs font-semibold flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
-      {/* Error Banner */}
-      {errorMessage && (
-        <div className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs font-semibold flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
-          <span>{errorMessage}</span>
-        </div>
-      )}
+        {/* ============================================================ */}
+        {/* STEP 1: My Cart Review (Danh sách món, Sửa món, Voucher,...) */}
+        {/* ============================================================ */}
+        {step === 1 && (
+          <CartReviewSection
+            items={items}
+            subTotal={subTotal}
+            deliveryFee={deliveryFee}
+            total={total}
+            updateQuantity={updateQuantity}
+            removeItem={removeItem}
+            clearCart={clearCart}
+            onProceedToCheckout={() => setStep(2)}
+          />
+        )}
 
-      {/* ============================================================ */}
-      {/* STEP 1: My Cart Review (Danh sách món, Sửa món, Voucher,...) */}
-      {/* ============================================================ */}
-      {step === 1 && (
-        <CartReviewSection
-          items={items}
-          subTotal={subTotal}
-          deliveryFee={deliveryFee}
-          total={total}
-          updateQuantity={updateQuantity}
-          removeItem={removeItem}
-          clearCart={clearCart}
-          onProceedToCheckout={() => setStep(2)}
-        />
-      )}
-
-      {/* ============================================================ */}
-      {/* STEP 2: Customer Information & Payment (Sau khi chốt order)   */}
-      {/* ============================================================ */}
-      {step === 2 && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start animate-in fade-in duration-200">
-          {/* Left Column: Order Summary with Back to Edit button */}
-          <div className="lg:col-span-5 order-2 lg:order-1">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                Đơn hàng ({items.length} món)
-              </span>
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="text-xs font-bold text-[#ff6900] hover:underline cursor-pointer"
-              >
-                Thay đổi giỏ hàng
-              </button>
+        {/* ============================================================ */}
+        {/* STEP 2: Customer Information & Payment (Sau khi chốt order)   */}
+        {/* ============================================================ */}
+        {step === 2 && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start animate-in fade-in duration-200">
+            {/* Left Column: Order Summary with Back to Edit button */}
+            <div className="lg:col-span-5 order-2 lg:order-1">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+                  Đơn hàng ({items.length} món)
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-xs font-bold text-[#ff6900] hover:underline cursor-pointer"
+                >
+                  Thay đổi giỏ hàng
+                </button>
+              </div>
+              <OrderSummary
+                items={items}
+                subTotal={subTotal}
+                deliveryFee={deliveryFee}
+                total={total}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+                clearCart={clearCart}
+              />
             </div>
-            <OrderSummary
-              items={items}
-              subTotal={subTotal}
-              deliveryFee={deliveryFee}
-              total={total}
-              updateQuantity={updateQuantity}
-              removeItem={removeItem}
-              clearCart={clearCart}
-            />
-          </div>
 
-          {/* Right Column: Customer Form & Payment Method */}
-          <div className="lg:col-span-7 order-1 lg:order-2">
-            <CheckoutForm
-              form={form}
-              onSubmit={onSubmit}
-              isLoading={isLoading}
-              isCartEmpty={items.length === 0}
-              total={total}
-            />
+            {/* Right Column: Customer Form & Payment Method */}
+            <div className="lg:col-span-7 order-1 lg:order-2">
+              <CheckoutForm
+                form={form}
+                onSubmit={onSubmit}
+                isLoading={isLoading}
+                isCartEmpty={items.length === 0}
+                total={total}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );

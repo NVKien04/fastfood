@@ -17,5 +17,4 @@ export interface BackendResponse<T> {
 }
 
 export type BaseResponse<T> =
-  | { kind: 'OK'; data: T; pagination?: PaginationMeta }
-  | { kind: 'ERROR'; data: null; error?: string; status?: number };
+  { kind: 'OK'; data: T; pagination?: PaginationMeta } | { kind: 'ERROR'; data: null; error?: string; status?: number };

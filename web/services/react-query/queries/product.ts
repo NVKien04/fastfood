@@ -1,9 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ApiMain } from '@/services/apis/main/api.main';
-import {
-  ProductDetailResponseDto,
-  ProductFilterDto,
-} from '@/services/apis/main/generated/data-contracts';
+import { ProductDetailResponseDto, ProductFilterDto } from '@/services/apis/main/generated/data-contracts';
 import { BaseResponse } from '@/services/apis/api.type';
 import { PRODUCT_LIST, PRODUCT_DETAIL, PRODUCT_BY_SLUG } from '../constants/product-keys';
 import { Nullable } from '@/types';

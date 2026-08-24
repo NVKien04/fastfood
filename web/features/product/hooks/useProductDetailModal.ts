@@ -1,10 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import {
-  ProductDetailResponseDto,
-  ProductVariantResponseDto,
-} from '@/services/apis/main/generated/data-contracts';
+import { ProductDetailResponseDto, ProductVariantResponseDto } from '@/services/apis/main/generated/data-contracts';
 import { CartItem, useStore } from '@/stores';
 import {
   sortProductVariants,
@@ -48,7 +45,13 @@ export const useProductDetailModal = (
           // Populate from existing cart item
           setQuantity(cartItem.quantity);
           setSelectedIngredientIds(cartItem.selectedIngredients.map((i) => Number(i.id)));
-          setSelectedVariantId(cartItem.variant ? Number(cartItem.variant.id) : (sortedVariants[0]?.id ? Number(sortedVariants[0].id) : null));
+          setSelectedVariantId(
+            cartItem.variant
+              ? Number(cartItem.variant.id)
+              : sortedVariants[0]?.id
+                ? Number(sortedVariants[0].id)
+                : null,
+          );
         } else {
           // Default fresh product state
           setQuantity(1);
@@ -78,17 +81,11 @@ export const useProductDetailModal = (
     if (selectedVariantId === null || selectedVariantId === undefined) {
       return sortedVariants[0] || null;
     }
-    return (
-      sortedVariants.find((v) => Number(v.id) === Number(selectedVariantId)) ||
-      sortedVariants[0] ||
-      null
-    );
+    return sortedVariants.find((v) => Number(v.id) === Number(selectedVariantId)) || sortedVariants[0] || null;
   }, [sortedVariants, selectedVariantId]);
 
   const selectedIngredientsList = useMemo(() => {
-    return sortedIngredients.filter((ing) =>
-      selectedIngredientIds.some((id) => Number(id) === Number(ing.id)),
-    );
+    return sortedIngredients.filter((ing) => selectedIngredientIds.some((id) => Number(id) === Number(ing.id)));
   }, [sortedIngredients, selectedIngredientIds]);
 
   const unitPrice = useMemo(() => {

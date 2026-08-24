@@ -26,8 +26,7 @@ export const OrderSuccess: FC<OrderSuccessProps> = ({ order }) => {
 
         <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Cảm ơn bạn đã đặt hàng</h1>
         <p className="text-sm text-gray-500 dark:text-zinc-400 mt-2">
-          Mã đơn hàng của bạn là:{' '}
-          <strong className="text-[#ff6900] font-mono text-base">#{order.orderNumber}</strong>
+          Mã đơn hàng của bạn là: <strong className="text-[#ff6900] font-mono text-base">#{order.orderNumber}</strong>
         </p>
 
         {/* Order Details Preview */}
@@ -59,9 +58,7 @@ export const OrderSuccess: FC<OrderSuccessProps> = ({ order }) => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-400 dark:text-zinc-500">Tổng tiền:</span>
-              <strong className="text-lg font-black text-[#ff6900]">
-                {formatVND(Number(order.total || 0))}
-              </strong>
+              <strong className="text-lg font-black text-[#ff6900]">{formatVND(Number(order.total || 0))}</strong>
             </div>
           </div>
         </div>

@@ -70,7 +70,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
               </div>
 
               <div className="flex-1 min-w-0">
-                <h4 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-zinc-100 truncate">{item.product.name}</h4>
+                <h4 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-zinc-100 truncate">
+                  {item.product.name}
+                </h4>
 
                 {item.variant && (
                   <div className="text-[11px] text-gray-500 dark:text-zinc-400 font-medium mt-0.5">
@@ -96,7 +98,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
                 >
                   {item.quantity <= 1 ? <Trash2 className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
                 </button>
-                <span className="text-xs font-black text-gray-900 dark:text-white w-5 text-center">{item.quantity}</span>
+                <span className="text-xs font-black text-gray-900 dark:text-white w-5 text-center">
+                  {item.quantity}
+                </span>
                 <button
                   type="button"
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
@@ -119,7 +123,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 
         <div className="flex justify-between text-gray-500 dark:text-zinc-400 font-medium">
           <span>Phí giao hàng:</span>
-          <span className="text-gray-900 dark:text-white font-bold">{items.length > 0 ? formatVND(deliveryFee) : '0đ'}</span>
+          <span className="text-gray-900 dark:text-white font-bold">
+            {items.length > 0 ? formatVND(deliveryFee) : '0đ'}
+          </span>
         </div>
 
         <div className="flex justify-between text-sm font-black text-gray-900 dark:text-white pt-3 border-t border-gray-100 dark:border-zinc-800">

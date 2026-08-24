@@ -11,11 +11,7 @@ type AvatarUploadProps = {
   onAvatarChange?: (newUrl: string) => void;
 };
 
-export const AvatarUpload: FC<AvatarUploadProps> = ({
-  currentAvatar,
-  userName = 'User',
-  onAvatarChange,
-}) => {
+export const AvatarUpload: FC<AvatarUploadProps> = ({ currentAvatar, userName = 'User', onAvatarChange }) => {
   const {
     fileInputRef,
     selectedFile,
@@ -34,11 +30,7 @@ export const AvatarUpload: FC<AvatarUploadProps> = ({
       <div className="relative group">
         <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl shadow-gray-200/50 dark:shadow-black/50 bg-gray-100 dark:bg-zinc-800 flex items-center justify-center relative transition-colors">
           {activeAvatarUrl ? (
-            <img
-              src={activeAvatarUrl}
-              alt={userName}
-              className="w-full h-full object-cover"
-            />
+            <img src={activeAvatarUrl} alt={userName} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full bg-gradient-to-tr from-red-600 to-rose-400 flex items-center justify-center text-white text-3xl font-black uppercase">
               {userName.charAt(0) || 'U'}

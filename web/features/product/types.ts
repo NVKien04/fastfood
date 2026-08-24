@@ -13,8 +13,4 @@ export type CategoryGroup = {
   products: ProductDetailResponseDto[];
 };
 
-export type {
-  ProductDetailResponseDto,
-  ProductIngredientResponseDto,
-  ProductVariantResponseDto,
-};
+export type { ProductDetailResponseDto, ProductIngredientResponseDto, ProductVariantResponseDto };

@@ -67,9 +67,7 @@ export const ProductCard: FC<ProductCardProps> = ({ product, onOpenDetail, onQui
         onClick={(e) => onQuickAdd(product, e)}
         className="mt-2.5 sm:mt-3 inline-flex items-center justify-center px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-gray-100 dark:bg-[#252528] hover:bg-gray-200 dark:hover:bg-[#323236] text-gray-900 dark:text-zinc-100 text-xs sm:text-sm font-extrabold transition-all group-hover:scale-105 active:scale-95 shadow-xs cursor-pointer"
       >
-        <span>
-          {hasOptions ? `từ ${formatVND(Number(product.basePrice))}` : formatVND(Number(product.basePrice))}
-        </span>
+        <span>{hasOptions ? `từ ${formatVND(Number(product.basePrice))}` : formatVND(Number(product.basePrice))}</span>
       </button>
     </div>
   );

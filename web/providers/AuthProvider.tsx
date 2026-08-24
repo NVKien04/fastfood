@@ -17,9 +17,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (initialized.current) return;
     initialized.current = true;
 
-    const hasLoggedInCookie = document.cookie
-      .split('; ')
-      .some((c) => c.startsWith('logged_in='));
+    const hasLoggedInCookie = document.cookie.split('; ').some((c) => c.startsWith('logged_in='));
 
     // Nếu chưa từng đăng nhập (cookie logged_in không tồn tại) → bỏ qua refresh
     if (!hasLoggedInCookie) {

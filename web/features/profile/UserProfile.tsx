@@ -8,15 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShieldCheck, Sparkles, Loader2 } from 'lucide-react';
 
 export const UserProfile: FC = () => {
-  const {
-    form,
-    user,
-    profileData,
-    isProfileLoading,
-    isUpdating,
-    statusMessage,
-    onSubmit,
-  } = useProfile();
+  const { form, user, profileData, isProfileLoading, isUpdating, statusMessage, onSubmit } = useProfile();
 
   if (isProfileLoading) {
     return (

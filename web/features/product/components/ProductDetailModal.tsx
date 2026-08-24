@@ -114,9 +114,7 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
 
               {/* Description */}
               {product.description && (
-                <p className="text-xs text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
-                  {product.description}
-                </p>
+                <p className="text-xs text-zinc-500 mt-1 line-clamp-2 leading-relaxed">{product.description}</p>
               )}
             </div>
 

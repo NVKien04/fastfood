@@ -51,7 +51,9 @@ export const LanguageSwitcher = ({ variant = 'compact', className = '' }: Langua
         {variant === 'full' ? (
           <span>{currentLang.name}</span>
         ) : (
-          <span className="uppercase text-[11px] font-black tracking-wider text-gray-800 dark:text-zinc-200">{currentLang.code}</span>
+          <span className="uppercase text-[11px] font-black tracking-wider text-gray-800 dark:text-zinc-200">
+            {currentLang.code}
+          </span>
         )}
         <Globe className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 ml-0.5" />
       </Button>

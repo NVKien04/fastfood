@@ -11,10 +11,7 @@ type ThemeToggleProps = {
   variant?: 'dropdown' | 'toggle';
 };
 
-export const ThemeToggle: React.FC<ThemeToggleProps> = ({
-  className = '',
-  variant = 'dropdown',
-}) => {
+export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', variant = 'dropdown' }) => {
   const theme = useStore((s) => s.theme);
   const updateTheme = useStore((s) => s.updateTheme);
   const [isOpen, setIsOpen] = React.useState(false);
