@@ -138,6 +138,7 @@ export class ProductService {
           slug: productSlug,
           description: productDto.description,
           basePrice: productDto.basePrice,
+          salePrice: productDto.salePrice ?? null,
           sortOrder: productDto.sortOrder ?? 0,
           img: productDto.img,
           isFeatured: productDto.isFeatured ?? 0,

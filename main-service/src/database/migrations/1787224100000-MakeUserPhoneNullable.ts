@@ -1,5 +1,4 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { UserEntity } from '../../entities';
 
 export class MakeUserPhoneNullable1787224100000 implements MigrationInterface {
   name = 'MakeUserPhoneNullable1787224100000';

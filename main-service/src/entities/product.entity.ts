@@ -28,6 +28,9 @@ export class ProductEntity {
   @Column({ type: 'integer', nullable: false })
   basePrice: number;
 
+  @Column({ type: 'integer', nullable: true })
+  salePrice?: number | null;
+
   @Column({ type: 'integer', default: 0 })
   sortOrder: number;
 

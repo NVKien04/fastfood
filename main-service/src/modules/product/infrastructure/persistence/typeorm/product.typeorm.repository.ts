@@ -107,11 +107,11 @@ export class ProductTypeOrmRepository implements IProductRepository {
     }
 
     if (options.minPrice !== undefined) {
-      qb.andWhere('product.basePrice >= :minPrice', { minPrice: options.minPrice });
+      qb.andWhere('COALESCE(product.salePrice, product.basePrice) >= :minPrice', { minPrice: options.minPrice });
     }
 
     if (options.maxPrice !== undefined) {
-      qb.andWhere('product.basePrice <= :maxPrice', { maxPrice: options.maxPrice });
+      qb.andWhere('COALESCE(product.salePrice, product.basePrice) <= :maxPrice', { maxPrice: options.maxPrice });
     }
 
     qb.take(options.take).skip(options.skip);

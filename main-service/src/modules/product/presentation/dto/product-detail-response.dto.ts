@@ -78,6 +78,9 @@ export class ProductDetailResponseDto {
   @ApiProperty({ description: 'Giá gốc (VND)', example: 180000 })
   basePrice: number;
 
+  @ApiPropertyOptional({ description: 'Giá khuyến mãi (VND)', example: 150000 })
+  salePrice?: number | null;
+
   @ApiProperty({ description: 'Thứ tự hiển thị', example: 0 })
   sortOrder: number;
 

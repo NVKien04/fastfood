@@ -96,8 +96,12 @@ export class OrderService {
         }
       }
 
-      // 4. Tính đơn giá cho từng món (Base + Variant + Topping)
-      const singleUnitPrice = product.basePrice + variantPriceOffset + ingredientsPriceTotal;
+      // 4. Tính đơn giá cho từng món (Base/SalePrice + Variant + Topping)
+      const effectiveBasePrice =
+        product.salePrice && product.salePrice > 0 && product.salePrice < product.basePrice
+          ? product.salePrice
+          : product.basePrice;
+      const singleUnitPrice = effectiveBasePrice + variantPriceOffset + ingredientsPriceTotal;
       const totalItemPrice = singleUnitPrice * itemDto.quantity;
       subTotal += totalItemPrice;
 

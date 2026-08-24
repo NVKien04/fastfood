@@ -55,6 +55,12 @@ export class CreateProductDto {
   @Min(0)
   basePrice: number;
 
+  @ApiPropertyOptional({ description: 'Giá khuyến mãi (VND)', example: 150000 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  salePrice?: number;
+
   @ApiPropertyOptional({ description: 'Thứ tự hiển thị', example: 0, default: 0 })
   @IsOptional()
   @IsInt()

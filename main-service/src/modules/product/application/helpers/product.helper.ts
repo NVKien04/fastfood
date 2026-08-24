@@ -61,6 +61,7 @@ export class ProductHelper {
       slug: product.slug,
       description: product.description,
       basePrice: product.basePrice,
+      salePrice: product.salePrice ?? null,
       sortOrder: product.sortOrder,
       img: product.img,
       isFeatured: product.isFeatured,

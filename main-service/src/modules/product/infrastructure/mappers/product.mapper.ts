@@ -13,6 +13,7 @@ export class ProductMapper {
       slug: ormEntity.slug,
       description: ormEntity.description,
       basePrice: ormEntity.basePrice,
+      salePrice: ormEntity.salePrice,
       sortOrder: ormEntity.sortOrder,
       img: ormEntity.img,
       isFeatured: ormEntity.isFeatured,
@@ -39,6 +40,7 @@ export class ProductMapper {
     if (domainModel.slug !== undefined) entity.slug = domainModel.slug;
     if (domainModel.description !== undefined) entity.description = domainModel.description;
     if (domainModel.basePrice !== undefined) entity.basePrice = domainModel.basePrice;
+    if (domainModel.salePrice !== undefined) entity.salePrice = domainModel.salePrice;
     if (domainModel.sortOrder !== undefined) entity.sortOrder = domainModel.sortOrder;
     if (domainModel.img !== undefined) entity.img = domainModel.img;
     if (domainModel.isFeatured !== undefined) entity.isFeatured = domainModel.isFeatured;

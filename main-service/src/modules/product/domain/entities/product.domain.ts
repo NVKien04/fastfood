@@ -4,6 +4,7 @@ export class Product {
   slug: string;
   description?: string;
   basePrice: number;
+  salePrice?: number | null;
   sortOrder: number;
   img: string;
   isFeatured: number;

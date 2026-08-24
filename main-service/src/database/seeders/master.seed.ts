@@ -83,6 +83,7 @@ export async function MasterSeed(dataSource: DataSource) {
         slug: item.slug,
         description: item.description,
         basePrice: item.basePrice,
+        salePrice: 'salePrice' in item && typeof item.salePrice === 'number' ? item.salePrice : null,
         sortOrder: 'sortOrder' in item && typeof item.sortOrder === 'number' ? item.sortOrder : i + 1,
         img: item.img || '',
         isFeatured: item.isFeatured ?? 0,

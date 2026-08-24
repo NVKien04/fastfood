@@ -1,22 +1,12 @@
 import { IngredientController } from '@/modules/ingredient/presentation/controllers/ingredient.controller';
-import {
-  IngredientsEntity,
-  OrderItemsIngredientsEntity,
-  ProductIngredientsEntity,
-} from '@/entities';
+import { IngredientsEntity, OrderItemsIngredientsEntity, ProductIngredientsEntity } from '@/entities';
 import { IngredientTypeOrmRepository } from '@/modules/ingredient/infrastructure/persistence/typeorm/ingredient.typeorm.repository';
 import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      IngredientsEntity,
-      ProductIngredientsEntity,
-      OrderItemsIngredientsEntity,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([IngredientsEntity, ProductIngredientsEntity, OrderItemsIngredientsEntity])],
   controllers: [IngredientController],
   providers: [
     IngredientService,
