@@ -1,14 +1,16 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from '@/stores';
 import { ApiMain } from '@/services/apis/main/api.main';
 
 interface AuthProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const { t } = useTranslation();
   const isInitializing = useStore((s) => s.isInitializing);
   const initialized = useRef(false);
 
@@ -57,7 +59,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } finally {
         // Bước 3: Dù thành công hay thất bại, đánh dấu đã khởi tạo xong
         useStore.getState().setInitializing(false);
-        console.log('Đã khởi tạo xong AuthProvider');
       }
     };
 
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       <div className="flex h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-gray-800" />
-          <p className="text-sm text-gray-500">Đang khởi tạo...</p>
+          <p className="text-sm text-gray-500">{t('COMMON.INITIALIZING', 'Đang khởi tạo...')}</p>
         </div>
       </div>
     );

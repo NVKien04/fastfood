@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -12,6 +13,7 @@ import { RegisterFormValues, AuthStep } from '../types';
 
 export const useRegister = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const setAccessToken = useStore((s) => s.setAccessToken);
   const setUser = useStore((s) => s.setUser);
 
@@ -47,7 +49,7 @@ export const useRegister = () => {
       });
 
       if (response.kind === 'ERROR') {
-        throw new Error(response.error || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.');
+        throw new Error(response.error || t('AUTH.REGISTER_FAILED', 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.'));
       }
 
       // Tự động đăng nhập sau khi tạo tài khoản
@@ -82,7 +84,7 @@ export const useRegister = () => {
       setIsSuccess(true);
     },
     onError: (error: Error) => {
-      setErrorMessage(error.message || 'Đã có lỗi xảy ra khi tạo tài khoản.');
+      setErrorMessage(error.message || t('AUTH.REGISTER_FAILED', 'Đã có lỗi xảy ra khi tạo tài khoản.'));
     },
   });
 

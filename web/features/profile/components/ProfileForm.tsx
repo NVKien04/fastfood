@@ -1,6 +1,7 @@
 'use client';
 
-import { FC, BaseSyntheticEvent } from 'react';
+import { BaseSyntheticEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { ProfileFormValues } from '../types';
 import { Input } from '@/components/ui/input';
@@ -15,7 +16,8 @@ type ProfileFormProps = {
   statusMessage: { type: 'success' | 'error'; text: string } | null;
 };
 
-export const ProfileForm: FC<ProfileFormProps> = ({ form, onSubmit, userEmail, isUpdating, statusMessage }) => {
+export const ProfileForm = ({ form, onSubmit, userEmail, isUpdating, statusMessage }: ProfileFormProps) => {
+  const { t } = useTranslation();
   const {
     register,
     formState: { errors },
@@ -43,13 +45,15 @@ export const ProfileForm: FC<ProfileFormProps> = ({ form, onSubmit, userEmail, i
 
       {/* Full Name */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">Họ và tên</label>
+        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
+          {t('PROFILE.FULL_NAME', 'Họ và tên')}
+        </label>
         <div className="relative">
           <User className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <Input
             type="text"
             {...register('name')}
-            placeholder="Nhập họ và tên của bạn"
+            placeholder={t('PROFILE.NAME_PLACEHOLDER', 'Nhập họ và tên của bạn')}
             className={`pl-10 h-12 rounded-2xl bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
               errors.name ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800'
             }`}
@@ -60,7 +64,9 @@ export const ProfileForm: FC<ProfileFormProps> = ({ form, onSubmit, userEmail, i
 
       {/* Email (Read only) */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">Địa chỉ Email</label>
+        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
+          {t('PROFILE.EMAIL', 'Địa chỉ Email')}
+        </label>
         <div className="relative">
           <Mail className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <Input
@@ -70,18 +76,22 @@ export const ProfileForm: FC<ProfileFormProps> = ({ form, onSubmit, userEmail, i
             className="pl-10 h-12 rounded-2xl bg-gray-100/70 dark:bg-zinc-800/80 border-gray-200 dark:border-zinc-700 text-gray-500 dark:text-zinc-400 cursor-not-allowed"
           />
         </div>
-        <p className="text-[10px] text-gray-400 dark:text-zinc-500">Email tài khoản không thể thay đổi</p>
+        <p className="text-[10px] text-gray-400 dark:text-zinc-500">
+          {t('PROFILE.EMAIL_IMMUTABLE', 'Email tài khoản không thể thay đổi')}
+        </p>
       </div>
 
       {/* Phone */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">Số điện thoại</label>
+        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
+          {t('PROFILE.PHONE', 'Số điện thoại')}
+        </label>
         <div className="relative">
           <Phone className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <Input
             type="tel"
             {...register('phone')}
-            placeholder="Nhập số điện thoại của bạn"
+            placeholder={t('PROFILE.PHONE_PLACEHOLDER', 'Nhập số điện thoại của bạn')}
             className={`pl-10 h-12 rounded-2xl bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
               errors.phone ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800'
             }`}
@@ -100,12 +110,12 @@ export const ProfileForm: FC<ProfileFormProps> = ({ form, onSubmit, userEmail, i
           {isUpdating ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Đang lưu thay đổi...</span>
+              <span>{t('PROFILE.SAVING', 'Đang lưu thay đổi...')}</span>
             </>
           ) : (
             <>
               <Save className="w-4 h-4" />
-              <span>Lưu thông tin</span>
+              <span>{t('PROFILE.SAVE_INFO', 'Lưu thông tin')}</span>
             </>
           )}
         </Button>

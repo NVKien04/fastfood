@@ -1,8 +1,9 @@
 'use client';
 
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, AlertCircle, ShoppingBag, ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { useCheckout } from './hooks/useCheckout';
 import { CheckoutForm } from './components/CheckoutForm';
 import { OrderSummary } from './components/OrderSummary';
@@ -10,6 +11,7 @@ import { OrderSuccess } from './components/OrderSuccess';
 import { CartReviewSection } from './components/CartReviewSection';
 
 export const CheckoutModule = () => {
+  const { t } = useTranslation();
   const [step, setStep] = useState<1 | 2>(1);
 
   const {
@@ -42,7 +44,7 @@ export const CheckoutModule = () => {
               <Link
                 href="/"
                 className="p-2 -ml-2 text-gray-800 dark:text-zinc-200 hover:text-[#ff6900] dark:hover:text-[#ff6900] transition-colors cursor-pointer flex items-center justify-center"
-                title="Quay lại thực đơn"
+                title={t('CART.BACK_TO_MENU', 'Quay lại thực đơn')}
               >
                 <ArrowLeft className="w-6 h-6" />
               </Link>
@@ -51,7 +53,7 @@ export const CheckoutModule = () => {
                 type="button"
                 onClick={() => setStep(1)}
                 className="p-2 -ml-2 text-gray-800 dark:text-zinc-200 hover:text-[#ff6900] dark:hover:text-[#ff6900] transition-colors cursor-pointer flex items-center justify-center"
-                title="Quay lại giỏ hàng"
+                title={t('CART.BACK_TO_CART', 'Quay lại giỏ hàng')}
               >
                 <ArrowLeft className="w-6 h-6" />
               </button>
@@ -60,7 +62,9 @@ export const CheckoutModule = () => {
 
           {/* 2. Center: Large Title */}
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 dark:text-white tracking-tight text-center">
-            {step === 1 ? 'Giỏ hàng của tôi' : 'Thông tin giao hàng & Thanh toán'}
+            {step === 1
+              ? t('CART.MY_CART', 'Giỏ hàng của tôi')
+              : t('CHECKOUT.DELIVERY_AND_PAYMENT', 'Thông tin giao hàng & Thanh toán')}
           </h1>
         </div>
       </div>
@@ -100,14 +104,17 @@ export const CheckoutModule = () => {
             <div className="lg:col-span-5 order-2 lg:order-1">
               <div className="mb-4 flex items-center justify-between">
                 <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                  Đơn hàng ({items.length} món)
+                  {t('CART.ITEMS_IN_ORDER', {
+                    count: items.length,
+                    defaultValue: `Đơn hàng (${items.length} món)`,
+                  })}
                 </span>
                 <button
                   type="button"
                   onClick={() => setStep(1)}
                   className="text-xs font-bold text-[#ff6900] hover:underline cursor-pointer"
                 >
-                  Thay đổi giỏ hàng
+                  {t('CART.CHANGE_CART', 'Thay đổi giỏ hàng')}
                 </button>
               </div>
               <OrderSummary

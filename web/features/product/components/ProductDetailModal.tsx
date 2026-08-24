@@ -1,6 +1,5 @@
 'use client';
 
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -18,13 +17,13 @@ export type ProductDetailModalProps = {
   onClose: () => void;
 };
 
-export const ProductDetailModal: FC<ProductDetailModalProps> = ({
+export const ProductDetailModal = ({
   product,
   isOpen,
   isLoading = false,
   cartItem = null,
   onClose,
-}) => {
+}: ProductDetailModalProps) => {
   const { t } = useTranslation();
 
   const {
@@ -51,17 +50,14 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         showCloseButton={false}
-        className="sm:max-w-4xl md:max-w-4xl lg:max-w-5xl w-[95vw] max-h-[92vh] md:h-[640px] p-0 overflow-hidden rounded-3xl border border-zinc-800/80 bg-[#18181b] text-white shadow-2xl flex flex-col md:flex-row focus:outline-none"
+        className="sm:max-w-4xl md:max-w-4xl lg:max-w-5xl w-[95vw] max-h-[92vh] md:h-[640px] p-0 overflow-hidden rounded-3xl border border-gray-200/80 dark:border-zinc-800/80 bg-white dark:bg-[#18181b] text-gray-900 dark:text-white shadow-2xl flex flex-col md:flex-row focus:outline-none"
       >
         {/* ============================================================ */}
         {/* LEFT COLUMN: Pizza Showcase with Interactive Scale Animation */}
         {/* ============================================================ */}
-        <div className="md:w-1/2 lg:w-[52%] bg-[#121215] relative flex flex-col items-center justify-center p-6 sm:p-10 select-none overflow-hidden min-h-[260px] md:min-h-full border-b md:border-b-0 md:border-r border-zinc-800/80">
+        <div className="md:w-1/2 lg:w-[52%] bg-[#fafaf8] dark:bg-[#121215] relative flex flex-col items-center justify-center p-6 sm:p-10 select-none overflow-hidden min-h-[260px] md:min-h-full border-b md:border-b-0 md:border-r border-gray-100 dark:border-zinc-800/80">
           {/* Subtle background glow */}
           <div className="absolute w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
-
-          {/* Size Reference Circular Ring */}
-          <div className="absolute w-60 h-60 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full border border-dashed border-zinc-800/80 pointer-events-none" />
 
           {/* Product Image */}
           <div className="relative z-10 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 flex items-center justify-center">
@@ -69,11 +65,11 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
               <img
                 src={product.img}
                 alt={product.name}
-                className="w-full h-full object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-out"
+                className="w-full h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-out"
                 style={{ transform: `scale(${imageScale})` }}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-zinc-600 bg-zinc-800/50 rounded-full">
+              <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-zinc-600 bg-gray-100 dark:bg-zinc-800/50 rounded-full">
                 <Utensils className="w-16 h-16" />
               </div>
             )}
@@ -81,8 +77,8 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
 
           {/* Featured Badge */}
           {product.isFeatured === 1 && (
-            <Badge className="absolute top-4 left-4 bg-orange-600/90 text-white font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md backdrop-blur-xs">
-              Nổi bật
+            <Badge className="absolute top-4 left-4 bg-orange-500 hover:bg-orange-600 text-white font-black text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md backdrop-blur-xs">
+              {t('PRODUCT.FEATURED', 'Nổi bật')}
             </Badge>
           )}
         </div>
@@ -90,31 +86,33 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
         {/* ============================================================ */}
         {/* RIGHT COLUMN: Customization, Variant Tabs & Topping Grid     */}
         {/* ============================================================ */}
-        <div className="md:w-1/2 flex flex-col justify-between h-full bg-[#18181b] overflow-hidden">
+        <div className="md:w-1/2 flex flex-col justify-between h-full bg-white dark:bg-[#18181b] overflow-hidden">
           {/* 1. Header with Title and Close Button */}
-          <div className="p-5 sm:p-6 pb-3 border-b border-zinc-800/60 flex items-start justify-between gap-3">
+          <div className="p-5 sm:p-6 pb-3 border-b border-gray-100 dark:border-zinc-800/60 flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0 pr-2">
               <div className="flex items-center gap-2">
-                <DialogTitle className="text-xl sm:text-2xl font-black text-white tracking-tight truncate">
+                <DialogTitle className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight truncate">
                   {product.name}
                 </DialogTitle>
                 <button
                   type="button"
-                  aria-label="Thông tin"
-                  className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                  aria-label={t('PRODUCT.INFO', 'Thông tin')}
+                  className="text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
                 >
                   <Info className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Subtitle / Specs (Size & Crust) */}
-              <p className="text-xs text-zinc-400 font-medium mt-1">
-                {productSpecsText || (product.description ? product.description.slice(0, 60) : 'Pizza thơm ngon')}
+              <p className="text-xs text-gray-500 dark:text-zinc-400 font-medium mt-1">
+                {productSpecsText || (product.description ? product.description.slice(0, 60) : t('PRODUCT.DEFAULT_DESC', 'Pizza thơm ngon'))}
               </p>
 
               {/* Description */}
               {product.description && (
-                <p className="text-xs text-zinc-500 mt-1 line-clamp-2 leading-relaxed">{product.description}</p>
+                <p className="text-xs text-gray-600 dark:text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
+                  {product.description}
+                </p>
               )}
             </div>
 
@@ -122,31 +120,31 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              aria-label="Đóng"
-              className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
+              aria-label={t('COMMON.CLOSE', 'Đóng')}
+              className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* 2. Scrollable Body: Variants + Toppings */}
-          <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-800">
+          <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-zinc-800">
             {/* Loading Indicator for Detail Refetch */}
             {isLoading && (
-              <div className="flex items-center justify-center py-4 text-xs text-zinc-400 gap-2">
+              <div className="flex items-center justify-center py-4 text-xs text-gray-500 dark:text-zinc-400 gap-2">
                 <Loader2 className="w-4 h-4 animate-spin text-[#ff5c00]" />
-                <span>Đang tải thông tin tùy chọn...</span>
+                <span>{t('PRODUCT.LOADING_OPTIONS', 'Đang tải thông tin tùy chọn...')}</span>
               </div>
             )}
 
             {/* Segmented Variant Selector (Pills matching Dodo Pizza style) */}
             {!isLoading && sortedVariants.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400">
                   {t('PRODUCT.SELECT_SIZE', 'Kích cỡ & Loại đế')}
                 </h4>
 
-                <div className="bg-[#27272a]/80 p-1.5 rounded-2xl flex items-center gap-1.5 border border-zinc-800/80">
+                <div className="bg-gray-100/90 dark:bg-[#27272a]/80 p-1.5 rounded-2xl flex items-center gap-1.5 border border-gray-200/80 dark:border-zinc-800/80">
                   {sortedVariants.map((variant) => {
                     const isSelected = activeVariant?.id === variant.id || selectedVariantId === variant.id;
                     const basePrice = sortedVariants[0]?.modifiedPrice || 0;
@@ -159,14 +157,14 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
                         onClick={() => setSelectedVariantId(variant.id)}
                         className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all duration-200 flex flex-col sm:flex-row items-center justify-center gap-1 select-none cursor-pointer ${
                           isSelected
-                            ? 'bg-white text-zinc-950 shadow-md font-extrabold scale-[1.02]'
-                            : 'text-zinc-400 hover:text-white hover:bg-zinc-700/50'
+                            ? 'bg-white dark:bg-zinc-700 text-gray-900 dark:text-white shadow-sm font-extrabold scale-[1.02]'
+                            : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200/50 dark:hover:bg-zinc-700/50'
                         }`}
                       >
                         <span className="truncate">{variant.name}</span>
                         {priceDiff !== 0 && (
                           <span
-                            className={`text-[10px] font-semibold ${isSelected ? 'text-orange-400' : 'text-zinc-500'}`}
+                            className={`text-[10px] font-semibold ${isSelected ? 'text-orange-500' : 'text-gray-500 dark:text-zinc-500'}`}
                           >
                             {priceDiff > 0 ? `+${formatVND(priceDiff)}` : `-${formatVND(Math.abs(priceDiff))}`}
                           </span>
@@ -181,8 +179,8 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
             {/* Add to Taste (Ingredients & Toppings Grid) */}
             {!isLoading && sortedIngredients.length > 0 && (
               <div className="space-y-3">
-                <h4 className="text-sm font-bold text-white tracking-wide">
-                  {t('PRODUCT.ADD_TO_TASTE', 'Thêm vị (Add to taste)')}
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">
+                  {t('PRODUCT.ADD_TO_TASTE', 'Thêm vị (Topping)')}
                 </h4>
 
                 <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
@@ -197,8 +195,8 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
                         onClick={() => handleToggleIngredient(ingredient.id)}
                         className={`relative p-2.5 sm:p-3 rounded-2xl border transition-all duration-200 flex flex-col items-center justify-between text-center select-none group cursor-pointer ${
                           isSelected
-                            ? 'border-[#ff5c00] bg-[#27272a] shadow-lg shadow-[#ff5c00]/15 ring-1 ring-[#ff5c00]'
-                            : 'border-zinc-800/90 bg-[#27272a]/50 hover:bg-[#27272a] hover:border-zinc-700'
+                            ? 'border-[#ff5c00] bg-orange-50/40 dark:bg-orange-950/20 shadow-md shadow-[#ff5c00]/10 ring-2 ring-[#ff5c00]'
+                            : 'border-gray-200/80 dark:border-zinc-800/90 bg-white dark:bg-[#27272a]/50 hover:bg-gray-50 dark:hover:bg-[#27272a] hover:border-gray-300 dark:hover:border-zinc-700 shadow-xs'
                         }`}
                       >
                         {/* Checkmark indicator */}
@@ -214,21 +212,21 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
                             <img
                               src={ingredient.imageUrl}
                               alt={ingredient.name}
-                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200 drop-shadow-sm"
+                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200 drop-shadow-xs"
                             />
                           ) : (
-                            <Utensils className="w-6 h-6 text-zinc-500" />
+                            <Utensils className="w-6 h-6 text-gray-400 dark:text-zinc-500" />
                           )}
                         </div>
 
                         {/* Ingredient Name */}
-                        <span className="text-[11px] font-bold text-zinc-200 line-clamp-1 mt-1 group-hover:text-white">
+                        <span className="text-[11px] font-bold text-gray-800 dark:text-zinc-200 line-clamp-2 h-[28px] leading-tight mt-1 group-hover:text-gray-950 dark:group-hover:text-white flex items-center justify-center">
                           {ingredient.name}
                         </span>
 
                         {/* Price */}
-                        <span className="text-[11px] font-extrabold text-zinc-400 mt-0.5">
-                          {price > 0 ? formatVND(price) : 'Miễn phí'}
+                        <span className="text-[11px] font-extrabold text-gray-600 dark:text-zinc-400 mt-0.5">
+                          {price > 0 ? formatVND(price) : t('PRODUCT.FREE', 'Miễn phí')}
                         </span>
                       </button>
                     );
@@ -239,24 +237,24 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
           </div>
 
           {/* 3. Bottom Sticky Action Bar */}
-          <div className="p-4 sm:p-6 pt-3 bg-[#18181b] border-t border-zinc-800/80 flex items-center gap-3">
+          <div className="p-4 sm:p-6 pt-3 bg-white dark:bg-[#18181b] border-t border-gray-100 dark:border-zinc-800/80 flex items-center gap-3">
             {/* Quantity Controls Pill */}
-            <div className="flex items-center gap-2 bg-[#27272a] p-1.5 rounded-2xl border border-zinc-700/60 shadow-xs shrink-0">
+            <div className="flex items-center gap-2 bg-gray-100 dark:bg-[#27272a] p-1.5 rounded-2xl border border-gray-200/80 dark:border-zinc-700/60 shadow-xs shrink-0">
               <button
                 type="button"
                 onClick={handleDecreaseQuantity}
                 disabled={quantity <= 1}
-                aria-label="Giảm số lượng"
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                aria-label={t('PRODUCT.DECREASE_QTY', 'Giảm số lượng')}
+                className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-200 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-700 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
               >
                 <Minus className="w-3.5 h-3.5" />
               </button>
-              <span className="font-black text-sm w-6 text-center text-white">{quantity}</span>
+              <span className="font-black text-sm w-6 text-center text-gray-900 dark:text-white">{quantity}</span>
               <button
                 type="button"
                 onClick={handleIncreaseQuantity}
-                aria-label="Tăng số lượng"
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors cursor-pointer"
+                aria-label={t('PRODUCT.INCREASE_QTY', 'Tăng số lượng')}
+                className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-200 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-700 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
               </button>
@@ -270,8 +268,11 @@ export const ProductDetailModal: FC<ProductDetailModalProps> = ({
             >
               <span>
                 {isEditMode
-                  ? `Lưu thay đổi • ${formatVND(totalPrice)}`
-                  : t('PRODUCT.ADD_TO_CART_PRICE', `Thêm vào giỏ với ${formatVND(totalPrice)}`)}
+                  ? `${t('COMMON.SAVE', 'Lưu thay đổi')} • ${formatVND(totalPrice)}`
+                  : t('PRODUCT.ADD_TO_CART_PRICE', {
+                      price: formatVND(totalPrice),
+                      defaultValue: `Thêm vào giỏ với ${formatVND(totalPrice)}`,
+                    })}
               </span>
             </button>
           </div>

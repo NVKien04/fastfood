@@ -1,12 +1,14 @@
 'use client';
 
-import { FC } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
-export const AuthHeader: FC = () => {
+export const AuthHeader = () => {
+  const { t } = useTranslation();
+
   return (
     <header className="w-full h-16 sm:h-20 bg-white dark:bg-zinc-950 border-b border-gray-100 dark:border-zinc-800 px-4 sm:px-8 flex items-center justify-between shadow-xs transition-colors">
       {/* Back Link */}
@@ -15,7 +17,7 @@ export const AuthHeader: FC = () => {
         className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors p-2 -ml-2 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-900 cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span className="hidden sm:inline">Trang chủ</span>
+        <span className="hidden sm:inline">{t('NAV.HOME', 'Trang chủ')}</span>
       </Link>
 
       {/* Center Logo */}

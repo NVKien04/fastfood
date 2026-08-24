@@ -1,35 +1,28 @@
 'use client';
 
-import { useMemo, FC } from 'react';
-import Link from 'next/link';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CategoryBar, CategoryItem, getCategoryIcon } from '@/components/layout/CategoryBar';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
-import { formatVND } from '@/utils';
 import { categoryToSlug } from '@/helpers';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Utensils, Search, Loader2, ShoppingBag } from 'lucide-react';
+import { Utensils, Loader2 } from 'lucide-react';
 import { useProductMenu } from './hooks/useProductMenu';
 
-export const ProductList: FC = () => {
+export const ProductList = () => {
   const { t } = useTranslation();
 
   const {
     categories,
     categoryGroups,
     activeCategorySlug,
-    searchQuery,
-    setSearchQuery,
     isModalOpen,
     activeModalProduct,
     detailLoading,
     isLoading,
     productError,
     refetchProducts,
-    cartTotalCount,
-    cartTotalPrice,
     handleCategoryClick,
     handleOpenDetailModal,
     handleCloseDetailModal,
@@ -78,10 +71,10 @@ export const ProductList: FC = () => {
               <Utensils className="w-6 h-6" />
             </div>
             <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
-              {t('COMMON.ERROR', 'Không thể tải danh sách món ăn')}
+              {t('PRODUCT.CANT_LOAD_MENU', 'Không thể tải danh sách món ăn')}
             </h3>
             <p className="text-xs text-gray-500 dark:text-zinc-400 max-w-sm mb-4">
-              Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.
+              {t('PRODUCT.CHECK_CONNECTION', 'Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.')}
             </p>
             <Button
               onClick={() => refetchProducts()}

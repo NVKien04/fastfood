@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -12,6 +13,7 @@ import { LoginFormValues } from '../types';
 
 export const useLogin = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const setAccessToken = useStore((s) => s.setAccessToken);
   const setUser = useStore((s) => s.setUser);
 
@@ -34,11 +36,11 @@ export const useLogin = () => {
       });
 
       if (response.kind === 'ERROR') {
-        throw new Error(response.error || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
+        throw new Error(response.error || t('AUTH.LOGIN_FAILED', 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.'));
       }
 
       if (!response.data?.accessToken) {
-        throw new Error('Đăng nhập thất bại.');
+        throw new Error(t('AUTH.LOGIN_FAILED', 'Đăng nhập thất bại.'));
       }
 
       return response.data;
@@ -68,7 +70,7 @@ export const useLogin = () => {
       router.push('/');
     },
     onError: (error: Error) => {
-      setErrorMessage(error.message || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.');
+      setErrorMessage(error.message || t('AUTH.LOGIN_FAILED', 'Đã có lỗi xảy ra. Vui lòng thử lại sau.'));
     },
   });
 

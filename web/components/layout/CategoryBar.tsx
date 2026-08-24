@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useRef, useState, useMemo, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ChevronLeft,
   ChevronRight,
@@ -60,6 +61,8 @@ export const CategoryBar = ({
   onSelectCategory,
   className = '',
 }: CategoryBarProps) => {
+  const { t } = useTranslation();
+
   // 1. Local state & refs
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const activeTabRef = useRef<HTMLButtonElement | null>(null);
@@ -143,7 +146,7 @@ export const CategoryBar = ({
           <button
             type="button"
             onClick={() => _handleScroll('left')}
-            aria-label="Cuộn trái"
+            aria-label={t('CART.SCROLL_LEFT', 'Cuộn trái')}
             className="absolute left-2 z-10 w-8 h-8 rounded-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 shadow-md flex items-center justify-center text-gray-700 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-all cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -184,7 +187,7 @@ export const CategoryBar = ({
           <button
             type="button"
             onClick={() => _handleScroll('right')}
-            aria-label="Cuộn phải"
+            aria-label={t('CART.SCROLL_RIGHT', 'Cuộn phải')}
             className="absolute right-2 z-10 w-8 h-8 rounded-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 shadow-md flex items-center justify-center text-gray-700 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-all cursor-pointer"
           >
             <ChevronRight className="w-4 h-4" />

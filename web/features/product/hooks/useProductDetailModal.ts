@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ProductDetailResponseDto, ProductVariantResponseDto } from '@/services/apis/main/generated/data-contracts';
 import { CartItem, useStore } from '@/stores';
 import {
@@ -118,13 +119,14 @@ export const useProductDetailModal = (
   }, [activeVariant]);
 
   // Generate subtitle specs like "30 cm, đế truyền thống"
+  const { t } = useTranslation();
   const productSpecsText = useMemo(() => {
     const parts: string[] = [];
     if (activeVariant?.size) parts.push(activeVariant.size);
-    if (activeVariant?.type) parts.push(`Đế ${activeVariant.type}`);
+    if (activeVariant?.type) parts.push(`${t('PRODUCT.CRUST_PREFIX', 'Đế')} ${activeVariant.type}`);
     if (!parts.length && activeVariant?.name) parts.push(activeVariant.name);
     return parts.join(', ');
-  }, [activeVariant]);
+  }, [activeVariant, t]);
 
   const handleToggleIngredient = useCallback((id: number | string) => {
     const numId = Number(id);

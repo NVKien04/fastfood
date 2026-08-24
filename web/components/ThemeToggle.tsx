@@ -1,6 +1,7 @@
 'use client';
 
-import * as React from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Sun, Moon, Laptop, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/stores';
@@ -11,14 +12,15 @@ type ThemeToggleProps = {
   variant?: 'dropdown' | 'toggle';
 };
 
-export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', variant = 'dropdown' }) => {
+export const ThemeToggle = ({ className = '', variant = 'dropdown' }: ThemeToggleProps) => {
+  const { t } = useTranslation();
   const theme = useStore((s) => s.theme);
   const updateTheme = useStore((s) => s.updateTheme);
-  const [isOpen, setIsOpen] = React.useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Close dropdown on outside click
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsOpen(false);
@@ -47,12 +49,12 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', varian
         type="button"
         variant="ghost"
         onClick={handleQuickToggle}
-        aria-label="Chuyển đổi giao diện Sáng / Tối"
+        aria-label={t('THEME.TOGGLE_LABEL', 'Chuyển đổi giao diện Sáng / Tối')}
         className={`relative w-9 h-9 p-0 rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 shadow-xs transition-all ${className}`}
       >
         <Sun className="w-4 h-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
         <Moon className="absolute w-4 h-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
-        <span className="sr-only">Chuyển theme</span>
+        <span className="sr-only">{t('THEME.SWITCH_THEME', 'Chuyển theme')}</span>
       </Button>
     );
   }
@@ -63,7 +65,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', varian
         type="button"
         variant="ghost"
         onClick={() => setIsOpen((prev) => !prev)}
-        aria-label="Tùy chọn giao diện"
+        aria-label={t('THEME.OPTIONS_LABEL', 'Tùy chọn giao diện')}
         className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 h-9 rounded-xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-xs font-bold text-gray-700 dark:text-zinc-200 shadow-xs transition-all"
       >
         <div className="relative w-4 h-4 flex items-center justify-center">
@@ -76,14 +78,18 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', varian
           )}
         </div>
         <span className="hidden sm:inline capitalize text-[11px] font-bold">
-          {theme === ThemeEnum.DARK ? 'Tối' : theme === ThemeEnum.LIGHT ? 'Sáng' : 'Hệ thống'}
+          {theme === ThemeEnum.DARK
+            ? t('THEME.DARK', 'Tối')
+            : theme === ThemeEnum.LIGHT
+              ? t('THEME.LIGHT', 'Sáng')
+              : t('THEME.SYSTEM', 'Hệ thống')}
         </span>
       </Button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-36 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/50 dark:shadow-black/50 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
           <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-zinc-500 border-b border-gray-50 dark:border-zinc-800/80 mb-1">
-            Giao diện
+            {t('THEME.TITLE', 'Giao diện')}
           </div>
 
           <button
@@ -97,7 +103,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', varian
           >
             <div className="flex items-center gap-2">
               <Sun className="w-3.5 h-3.5 text-amber-500" />
-              <span>Sáng</span>
+              <span>{t('THEME.LIGHT', 'Sáng')}</span>
             </div>
             {theme === ThemeEnum.LIGHT && <Check className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />}
           </button>
@@ -113,7 +119,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', varian
           >
             <div className="flex items-center gap-2">
               <Moon className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Tối</span>
+              <span>{t('THEME.DARK', 'Tối')}</span>
             </div>
             {theme === ThemeEnum.DARK && <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
           </button>
@@ -129,7 +135,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', varian
           >
             <div className="flex items-center gap-2">
               <Laptop className="w-3.5 h-3.5 text-gray-500 dark:text-zinc-400" />
-              <span>Hệ thống</span>
+              <span>{t('THEME.SYSTEM', 'Hệ thống')}</span>
             </div>
             {theme === ThemeEnum.SYSTEM && <Check className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />}
           </button>

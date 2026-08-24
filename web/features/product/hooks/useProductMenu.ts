@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef, MouseEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCategoryList } from '@/services/react-query/queries/category';
 import { useProductList, useProductDetail } from '@/services/react-query/queries/product';
 import { useStore } from '@/stores';
@@ -8,6 +9,7 @@ import { categoryToSlug, isCustomizableProduct } from '@/helpers/product.helper'
 import { CategoryGroup, ProductDetailResponseDto } from '../types';
 
 export const useProductMenu = () => {
+  const { t } = useTranslation();
   const [activeCategorySlug, setActiveCategorySlug] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
@@ -36,7 +38,33 @@ export const useProductMenu = () => {
   );
 
   const categories = useMemo(() => categoriesData ?? [], [categoriesData]);
-  const products = useMemo(() => (productsData?.kind === 'OK' ? (productsData.data ?? []) : []), [productsData]);
+  const products = useMemo(() => {
+    if (productsData?.kind !== 'OK' || !productsData.data) return [];
+    const list = productsData.data;
+
+    // Mock originalPrice for sample products on first row and other rows
+    return list.map((p, idx) => {
+      if (idx === 0) {
+        return {
+          ...p,
+          originalPrice: Math.round(Number(p.basePrice) * 1.3),
+        };
+      }
+      if (idx === 1) {
+        return {
+          ...p,
+          originalPrice: Math.round(Number(p.basePrice) * 1.25),
+        };
+      }
+      if (idx === 4 || idx === 5) {
+        return {
+          ...p,
+          originalPrice: Math.round(Number(p.basePrice) * 1.2),
+        };
+      }
+      return p;
+    });
+  }, [productsData]);
 
   const activeModalProduct = useMemo(
     () => productDetail || selectedProductFallback,
@@ -72,7 +100,7 @@ export const useProductMenu = () => {
     const groups: { [key: string]: CategoryGroup } = {};
     filtered.forEach((p) => {
       const catId = p.categoryId || 'uncategorized';
-      const catName = 'Danh mục';
+      const catName = t('PRODUCT.CATEGORY_FALLBACK', 'Danh mục');
       const slug = categoryToSlug(catName);
 
       if (!groups[catId]) {

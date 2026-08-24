@@ -1,6 +1,7 @@
 'use client';
 
-import { FC, BaseSyntheticEvent } from 'react';
+import { BaseSyntheticEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import { CheckoutFormValues } from '../types';
 import { PaymentMethodEnum } from '@/constants';
@@ -17,13 +18,14 @@ type CheckoutFormProps = {
   total: number;
 };
 
-export const CheckoutForm: FC<CheckoutFormProps> = ({
+export const CheckoutForm = ({
   form,
   onSubmit,
   isLoading,
   isCartEmpty,
   total,
-}) => {
+}: CheckoutFormProps) => {
+  const { t } = useTranslation();
   const {
     register,
     watch,
@@ -39,19 +41,19 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
       <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 space-y-4 transition-colors">
         <h2 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-zinc-800">
           <User className="w-5 h-5 text-[#ff6900]" />
-          <span>Thông tin người nhận</span>
+          <span>{t('CHECKOUT.RECIPIENT_INFO', 'Thông tin người nhận')}</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-              Họ và tên <span className="text-[#ff6900]">*</span>
+              {t('CHECKOUT.RECIPIENT_NAME', 'Họ và tên')} <span className="text-[#ff6900]">*</span>
             </label>
             <div className="relative">
               <Input
                 type="text"
                 {...register('guestName')}
-                placeholder="Nhập họ và tên người nhận"
+                placeholder={t('CHECKOUT.NAME_PLACEHOLDER', 'Nhập họ và tên người nhận')}
                 className={`rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
                   errors.guestName ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]'
                 }`}
@@ -64,13 +66,13 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
 
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-              Số điện thoại <span className="text-[#ff6900]">*</span>
+              {t('CHECKOUT.PHONE', 'Số điện thoại')} <span className="text-[#ff6900]">*</span>
             </label>
             <div className="relative">
               <Input
                 type="tel"
                 {...register('guestPhone')}
-                placeholder="Nhập số điện thoại nhận hàng"
+                placeholder={t('CHECKOUT.PHONE_PLACEHOLDER', 'Nhập số điện thoại nhận hàng')}
                 className={`rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
                   errors.guestPhone ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]'
                 }`}
@@ -84,13 +86,13 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-            Địa chỉ giao hàng chi tiết <span className="text-[#ff6900]">*</span>
+            {t('CHECKOUT.ADDRESS', 'Địa chỉ giao hàng chi tiết')} <span className="text-[#ff6900]">*</span>
           </label>
           <div className="relative">
             <Input
               type="text"
               {...register('guestAddress')}
-              placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
+              placeholder={t('CHECKOUT.ADDRESS_PLACEHOLDER', 'Số nhà, tên đường, phường/xã, quận/huyện...')}
               className={`rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
                 errors.guestAddress ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]'
               }`}
@@ -102,11 +104,13 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">Ghi chú cho shipper</label>
+          <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
+            {t('CHECKOUT.NOTES', 'Ghi chú cho shipper')}
+          </label>
           <Input
             type="text"
             {...register('notes')}
-            placeholder="Ví dụ: Giao trước cửa, gọi điện khi tới nơi..."
+            placeholder={t('CHECKOUT.NOTES_PLACEHOLDER', 'Ví dụ: Giao trước cửa, gọi điện khi tới nơi...')}
             className="rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]"
           />
         </div>
@@ -116,7 +120,7 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
       <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 space-y-4 transition-colors">
         <h2 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-zinc-800">
           <CreditCard className="w-5 h-5 text-[#ff6900]" />
-          <span>Phương thức thanh toán</span>
+          <span>{t('CHECKOUT.PAYMENT_METHOD', 'Phương thức thanh toán')}</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -142,8 +146,12 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
                 )}
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">Thanh toán khi nhận hàng (COD)</span>
-                <span className="text-[10px] text-gray-400 dark:text-zinc-500">Tiền mặt hoặc chuyển khoản</span>
+                <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">
+                  {t('CHECKOUT.COD', 'Thanh toán khi nhận hàng (COD)')}
+                </span>
+                <span className="text-[10px] text-gray-400 dark:text-zinc-500">
+                  {t('CHECKOUT.COD_DESC', 'Tiền mặt hoặc chuyển khoản')}
+                </span>
               </div>
             </div>
             <Truck className="w-4 h-4 text-gray-400 dark:text-zinc-500" />
@@ -171,8 +179,12 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
                 )}
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">Cổng VNPay</span>
-                <span className="text-[10px] text-gray-400 dark:text-zinc-500">Thẻ ATM / QR Pay / Visa</span>
+                <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">
+                  {t('CHECKOUT.VNPAY', 'Cổng VNPay')}
+                </span>
+                <span className="text-[10px] text-gray-400 dark:text-zinc-500">
+                  {t('CHECKOUT.VNPAY_DESC', 'Thẻ ATM / QR Pay / Visa')}
+                </span>
               </div>
             </div>
             <CreditCard className="w-4 h-4 text-gray-400 dark:text-zinc-500" />
@@ -189,10 +201,15 @@ export const CheckoutForm: FC<CheckoutFormProps> = ({
         {isLoading ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Đang xử lý đơn hàng...</span>
+            <span>{t('CHECKOUT.PROCESSING_ORDER', 'Đang xử lý đơn hàng...')}</span>
           </>
         ) : (
-          <span>Đặt hàng ngay • {formatVND(total)}</span>
+          <span>
+            {t('CHECKOUT.PLACE_ORDER_NOW', {
+              price: formatVND(total),
+              defaultValue: `Đặt hàng ngay • ${formatVND(total)}`,
+            })}
+          </span>
         )}
       </Button>
     </form>

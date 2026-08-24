@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useStore } from '@/stores';
@@ -10,6 +11,7 @@ import { profileSchema } from '../utils/profile.schema';
 import { ProfileFormValues } from '../types';
 
 export const useProfile = () => {
+  const { t } = useTranslation();
   const user = useStore((s) => s.user);
   const setUser = useStore((s) => s.setUser);
 
@@ -64,7 +66,7 @@ export const useProfile = () => {
             if (data) {
               setStatusMessage({
                 type: 'success',
-                text: 'Cập nhật thông tin tài khoản thành công!',
+                text: t('PROFILE.PROFILE_UPDATED', 'Cập nhật thông tin tài khoản thành công!'),
               });
               // Update local state
               const currentUser = useStore.getState().user;
@@ -77,20 +79,20 @@ export const useProfile = () => {
             } else {
               setStatusMessage({
                 type: 'error',
-                text: 'Cập nhật thông tin thất bại. Vui lòng thử lại.',
+                text: t('PROFILE.PROFILE_UPDATE_FAILED', 'Cập nhật thông tin thất bại. Vui lòng thử lại.'),
               });
             }
           },
           onError: (error: Error) => {
             setStatusMessage({
               type: 'error',
-              text: error.message || 'Cập nhật thông tin thất bại.',
+              text: error.message || t('PROFILE.PROFILE_UPDATE_FAILED', 'Cập nhật thông tin thất bại.'),
             });
           },
         },
       );
     },
-    [updateProfileMutation, setUser],
+    [updateProfileMutation, setUser, t],
   );
 
   const _handleSubmit = form.handleSubmit(_handleSaveProfile);

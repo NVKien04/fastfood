@@ -1,11 +1,12 @@
 'use client';
 
+import { ReactNode } from 'react';
 import QueryProvider from './QueryProvider';
 import { AuthProvider } from './AuthProvider';
 import { I18nProvider } from './I18nProvider';
 import { ThemeProvider } from './ThemeProvider';
 
-export default function Provider({ children }: { children: React.ReactNode }) {
+export default function Provider({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       <I18nProvider>

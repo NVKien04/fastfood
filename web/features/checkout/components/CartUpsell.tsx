@@ -1,6 +1,7 @@
 'use client';
 
-import { FC, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useProductList } from '@/services/react-query/queries/product';
 import { useCategoryList } from '@/services/react-query/queries/category';
 import { useStore } from '@/stores';
@@ -8,7 +9,8 @@ import { formatVND } from '@/utils';
 import { Plus, Utensils, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ProductDetailResponseDto } from '@/services/apis/main/generated/data-contracts';
 
-export const CartUpsell: FC = () => {
+export const CartUpsell = () => {
+  const { t } = useTranslation();
   const addItem = useStore((s) => s.addItem);
   const { data: categoriesData } = useCategoryList();
   const { data: productsData } = useProductList({ page: 1, limit: 100 });
@@ -77,10 +79,15 @@ export const CartUpsell: FC = () => {
     if (keywordDrinkProducts.length > 0) return keywordDrinkProducts;
 
     // Second fallback: Show appetizers/snacks instead of pizzas
-    return list.filter((p) => {
+    const nonPizzaProducts = list.filter((p) => {
       const name = p.name.toLowerCase();
       return !name.includes('pizza') && !name.includes('combo');
     });
+
+    if (nonPizzaProducts.length > 0) return nonPizzaProducts;
+
+    // Third fallback: Return products from list
+    return list;
   }, [productsData, drinkCategoryIds]);
 
   const handleQuickAdd = (product: ProductDetailResponseDto) => {
@@ -108,7 +115,9 @@ export const CartUpsell: FC = () => {
   return (
     <div className="mt-8 pt-6 border-t border-gray-100 dark:border-zinc-800">
       <div className="mb-4">
-        <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white tracking-tight">Bạn sẽ thích</h3>
+        <h3 className="text-base sm:text-lg font-black text-gray-900 dark:text-white tracking-tight">
+          {t('CART.YOU_MIGHT_LIKE', 'Bạn sẽ thích')}
+        </h3>
       </div>
 
       {/* Relative Wrapper for Slider & Navigation Buttons */}
@@ -119,7 +128,7 @@ export const CartUpsell: FC = () => {
             type="button"
             onClick={() => handleScroll('left')}
             className="absolute -left-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-300 flex items-center justify-center cursor-pointer shadow-md hover:bg-gray-50 dark:hover:bg-zinc-800 active:scale-95 transition-all opacity-0 group-hover/slider:opacity-100"
-            title="Cuộn sang trái"
+            title={t('CART.SCROLL_LEFT', 'Cuộn sang trái')}
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -150,7 +159,7 @@ export const CartUpsell: FC = () => {
                 <div className="min-w-0">
                   <h4 className="text-base font-black text-gray-900 dark:text-white truncate">{product.name}</h4>
                   <p className="text-xs text-gray-400 dark:text-zinc-500 truncate mt-1 max-w-[200px] line-clamp-2">
-                    {product.description || 'Món ăn kèm thơm ngon'}
+                    {product.description || t('CART.SIDE_DISH', 'Món ăn kèm thơm ngon')}
                   </p>
                   <div className="text-base font-black text-[#ff6900] mt-2">{formatVND(product.basePrice || 0)}</div>
                 </div>
@@ -160,7 +169,7 @@ export const CartUpsell: FC = () => {
                 type="button"
                 onClick={() => handleQuickAdd(product)}
                 className="w-11 h-11 rounded-full bg-[#ff6900] hover:bg-[#e05d00] text-white flex items-center justify-center shadow-md shadow-orange-500/20 active:scale-95 transition-transform cursor-pointer shrink-0 ml-3 animate-in fade-in duration-100"
-                title="Thêm vào giỏ"
+                title={t('CART.ADD_TO_CART_QUICK', 'Thêm vào giỏ')}
               >
                 <Plus className="w-6 h-6" />
               </button>
@@ -174,7 +183,7 @@ export const CartUpsell: FC = () => {
             type="button"
             onClick={() => handleScroll('right')}
             className="absolute -right-6 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-300 flex items-center justify-center cursor-pointer shadow-md hover:bg-gray-50 dark:hover:bg-zinc-800 active:scale-95 transition-all opacity-0 group-hover/slider:opacity-100"
-            title="Cuộn sang phải"
+            title={t('CART.SCROLL_RIGHT', 'Cuộn sang phải')}
           >
             <ChevronRight className="w-6 h-6" />
           </button>

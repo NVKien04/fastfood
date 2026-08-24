@@ -1,13 +1,14 @@
 'use client';
 
-import { FC } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { AuthHeader } from './components/AuthHeader';
 import { RegisterForm } from './components/RegisterForm';
 
-export const RegisterModule: FC = () => {
+export const RegisterModule = () => {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#fafaf9] dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 font-sans selection:bg-red-500 selection:text-white transition-colors">
@@ -21,11 +22,11 @@ export const RegisterModule: FC = () => {
           className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors p-1.5 -ml-2 rounded-lg hover:bg-gray-100/60 dark:hover:bg-zinc-900 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Trở lại</span>
+          <span>{t('COMMON.BACK', 'Trở lại')}</span>
         </button>
 
         <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight text-center flex-1 pr-6">
-          Tạo tài khoản
+          {t('AUTH.REGISTER_TITLE', 'Tạo tài khoản')}
         </h1>
       </div>
 

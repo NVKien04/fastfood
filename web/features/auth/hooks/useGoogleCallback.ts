@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { useStore } from '@/stores';
 
 export const useGoogleCallback = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useTranslation();
   const setAccessToken = useStore((s) => s.setAccessToken);
   const setUser = useStore((s) => s.setUser);
 
@@ -19,7 +21,7 @@ export const useGoogleCallback = () => {
     const error = searchParams.get('error');
 
     if (error) {
-      setGoogleError('Đăng nhập với Google thất bại. Vui lòng thử lại.');
+      setGoogleError(t('AUTH.GOOGLE_LOGIN_FAILED', 'Đăng nhập với Google thất bại. Vui lòng thử lại.'));
       return;
     }
 
@@ -52,7 +54,7 @@ export const useGoogleCallback = () => {
         }
       } catch {
         if (isMounted) {
-          setGoogleError('Không thể lấy thông tin tài khoản. Vui lòng thử lại.');
+          setGoogleError(t('AUTH.USER_INFO_FAILED', 'Không thể lấy thông tin tài khoản. Vui lòng thử lại.'));
         }
       } finally {
         if (isMounted) {
@@ -66,7 +68,7 @@ export const useGoogleCallback = () => {
     return () => {
       isMounted = false;
     };
-  }, [searchParams, setAccessToken, setUser, router]);
+  }, [searchParams, setAccessToken, setUser, router, t]);
 
   const handleGoogleLogin = () => {
     const googleAuthUrl =

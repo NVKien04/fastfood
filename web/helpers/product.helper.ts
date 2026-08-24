@@ -29,7 +29,11 @@ export const calculateProductUnitPrice = (
   selectedIngredients: ProductIngredientResponseDto[] = [],
 ): number => {
   if (!product) return 0;
-  const basePrice = product.basePrice || 0;
+  const rawProduct = product as ProductDetailResponseDto & {
+    discountPrice?: number;
+    salePrice?: number;
+  };
+  const basePrice = Number(rawProduct.discountPrice || rawProduct.salePrice || product.basePrice || 0);
   const variantPrice = selectedVariant?.modifiedPrice || 0;
   const ingredientsPrice = selectedIngredients.reduce((sum, ing) => sum + (ing.price || 0), 0);
   return basePrice + variantPrice + ingredientsPrice;

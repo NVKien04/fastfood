@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateOrder } from '@/services/react-query/mutations/order';
@@ -11,6 +12,7 @@ import { checkoutSchema } from '../utils/checkout.schema';
 import { CheckoutFormValues, OrderResponseDto } from '../types';
 
 export const useCheckout = () => {
+  const { t } = useTranslation();
   const user = useStore((s) => s.user);
   const items = useStore((s) => s.items);
   const updateQuantity = useStore((s) => s.updateQuantity);
@@ -47,7 +49,7 @@ export const useCheckout = () => {
   const _handleFormSubmit = useCallback(
     async (values: CheckoutFormValues) => {
       if (items.length === 0) {
-        setErrorMessage('Giỏ hàng của bạn đang trống!');
+        setErrorMessage(t('CHECKOUT.CART_EMPTY_ERROR', 'Giỏ hàng của bạn đang trống!'));
         return;
       }
 
@@ -68,15 +70,15 @@ export const useCheckout = () => {
             setCreatedOrder(data);
             clearCart();
           } else {
-            setErrorMessage('Đặt hàng thất bại. Vui lòng thử lại sau.');
+            setErrorMessage(t('CHECKOUT.ORDER_FAILED', 'Đặt hàng thất bại. Vui lòng thử lại sau.'));
           }
         },
         onError: (err: Error) => {
-          setErrorMessage(err.message || 'Đặt hàng thất bại. Vui lòng thử lại sau.');
+          setErrorMessage(err.message || t('CHECKOUT.ORDER_FAILED', 'Đặt hàng thất bại. Vui lòng thử lại sau.'));
         },
       });
     },
-    [items, createOrderMutation, clearCart],
+    [items, createOrderMutation, clearCart, t],
   );
 
   const _handleSubmit = form.handleSubmit(_handleFormSubmit);

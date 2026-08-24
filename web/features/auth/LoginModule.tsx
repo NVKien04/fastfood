@@ -1,10 +1,13 @@
 'use client';
 
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthHeader } from './components/AuthHeader';
 import { LoginForm } from './components/LoginForm';
 
-export const LoginModule: FC = () => {
+export const LoginModule = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen flex flex-col bg-[#fafaf9] dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 font-sans selection:bg-red-500 selection:text-white transition-colors">
       <AuthHeader />
@@ -13,7 +16,7 @@ export const LoginModule: FC = () => {
           <Suspense
             fallback={
               <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-100 dark:border-zinc-800 p-8 text-center text-sm text-gray-400 dark:text-zinc-500 animate-pulse">
-                Đang tải...
+                {t('COMMON.LOADING', 'Đang tải...')}
               </div>
             }
           >

@@ -1,4 +1,5 @@
 'use client';
+
 import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -29,9 +30,11 @@ export const LoginForm = () => {
   return (
     <Card variant="default" className="w-full">
       <CardHeader className="p-0 mb-6">
-        <CardTitle className="text-2xl font-extrabold tracking-tight">Đăng nhập</CardTitle>
+        <CardTitle className="text-2xl font-extrabold tracking-tight">
+          {t('AUTH.LOGIN_TITLE', 'Đăng nhập')}
+        </CardTitle>
         <CardDescription className="text-xs sm:text-sm mt-1">
-          Chào mừng bạn quay trở lại! Vui lòng nhập thông tin để tiếp tục.
+          {t('AUTH.LOGIN_SUBTITLE', 'Chào mừng bạn quay trở lại! Vui lòng nhập thông tin để tiếp tục.')}
         </CardDescription>
       </CardHeader>
 
@@ -49,14 +52,14 @@ export const LoginForm = () => {
           {/* Email / Phone Field */}
           <div className="space-y-1.5">
             <label htmlFor="email" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-              Số điện thoại hoặc email
+              {t('AUTH.EMAIL_OR_PHONE', 'Số điện thoại hoặc email')}
             </label>
             <div className="relative">
               <Input
                 id="email"
                 type="text"
                 {...register('email')}
-                placeholder="Nhập số điện thoại hoặc email của bạn"
+                placeholder={t('AUTH.EMAIL_OR_PHONE_PLACEHOLDER', 'Nhập số điện thoại hoặc email của bạn')}
                 aria-invalid={!!errors.email}
               />
             </div>
@@ -66,14 +69,14 @@ export const LoginForm = () => {
           {/* Password Field */}
           <div className="space-y-1.5">
             <label htmlFor="password" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-              Mật khẩu
+              {t('AUTH.PASSWORD', 'Mật khẩu')}
             </label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
-                placeholder="Vui lòng nhập mật khẩu của bạn"
+                placeholder={t('AUTH.PASSWORD_PLACEHOLDER', 'Vui lòng nhập mật khẩu của bạn')}
                 aria-invalid={!!errors.password}
                 className="pr-12"
               />
@@ -83,7 +86,9 @@ export const LoginForm = () => {
                 size="icon-sm"
                 onClick={handleTogglePassword}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors focus:outline-none"
-                aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                aria-label={
+                  showPassword ? t('AUTH.HIDE_PASSWORD', 'Ẩn mật khẩu') : t('AUTH.SHOW_PASSWORD', 'Hiện mật khẩu')
+                }
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </Button>
@@ -97,7 +102,7 @@ export const LoginForm = () => {
               href="#"
               className="text-xs font-semibold text-primary hover:text-brand-primary-active hover:underline transition-colors"
             >
-              Quên mật khẩu?
+              {t('AUTH.FORGOT_PASSWORD', 'Quên mật khẩu?')}
             </Link>
           </div>
 
@@ -136,7 +141,7 @@ export const LoginForm = () => {
           {isProcessingGoogle ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin text-gray-600 dark:text-zinc-400" />
-              <span>Đang xử lý đăng nhập Google...</span>
+              <span>{t('AUTH.LOGGING_IN_GOOGLE', 'Đang xử lý đăng nhập Google...')}</span>
             </>
           ) : (
             <>
@@ -165,12 +170,12 @@ export const LoginForm = () => {
 
         {/* Bottom Sign Up Link */}
         <div className="mt-6 text-center text-xs text-gray-600 dark:text-zinc-400 font-medium">
-          Bạn chưa có tài khoản?{' '}
+          {t('AUTH.NO_ACCOUNT', 'Bạn chưa có tài khoản?')}{' '}
           <Link
             href="/register"
             className="font-bold text-primary hover:text-brand-primary-active hover:underline ml-1"
           >
-            Tạo tài khoản
+            {t('AUTH.CREATE_ACCOUNT', 'Tạo tài khoản')}
           </Link>
         </div>
       </CardContent>

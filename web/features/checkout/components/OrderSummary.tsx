@@ -1,7 +1,7 @@
 'use client';
 
-import { FC } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { formatVND } from '@/utils';
 import { CartItem } from '@/stores';
 import { ShoppingBag, Trash2, Plus, Minus, Utensils } from 'lucide-react';
@@ -16,21 +16,22 @@ type OrderSummaryProps = {
   clearCart: () => void;
 };
 
-export const OrderSummary: FC<OrderSummaryProps> = ({
+export const OrderSummary = ({
   items,
   subTotal,
   deliveryFee,
   total,
   updateQuantity,
-  removeItem: _removeItem,
   clearCart,
-}) => {
+}: OrderSummaryProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 sticky top-24 transition-colors">
       <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-zinc-800 mb-6">
         <h2 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
           <ShoppingBag className="w-5 h-5 text-[#ff6900]" />
-          <span>Tóm tắt đơn hàng</span>
+          <span>{t('CART.ORDER_SUMMARY_TITLE', 'Tóm tắt đơn hàng')}</span>
         </h2>
         {items.length > 0 && (
           <button
@@ -39,7 +40,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
             className="text-xs font-bold text-gray-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1 cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span>Xóa hết</span>
+            <span>{t('CART.CLEAR_ALL', 'Xóa hết')}</span>
           </button>
         )}
       </div>
@@ -48,9 +49,9 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
       {items.length === 0 ? (
         <div className="py-8 text-center text-gray-400 dark:text-zinc-500">
           <Utensils className="w-10 h-10 mx-auto mb-2 opacity-30" />
-          <p className="text-xs">Giỏ hàng của bạn đang trống</p>
+          <p className="text-xs">{t('CART.EMPTY_TITLE', 'Giỏ hàng của bạn đang trống')}</p>
           <Link href="/" className="inline-block mt-3 text-xs font-bold text-[#ff6900] hover:underline">
-            ← Khám phá thực đơn
+            ← {t('CART.VIEW_MENU', 'Khám phá thực đơn')}
           </Link>
         </div>
       ) : (
@@ -76,13 +77,14 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 
                 {item.variant && (
                   <div className="text-[11px] text-gray-500 dark:text-zinc-400 font-medium mt-0.5">
-                    Phân loại: <span className="text-gray-700 dark:text-zinc-300">{item.variant.name}</span>
+                    {t('CART.SIZE_LABEL', 'Phân loại:')}{' '}
+                    <span className="text-gray-700 dark:text-zinc-300">{item.variant.name}</span>
                   </div>
                 )}
 
                 {item.selectedIngredients && item.selectedIngredients.length > 0 && (
                   <div className="text-[11px] text-gray-400 dark:text-zinc-500 truncate mt-0.5">
-                    Topping: {item.selectedIngredients.map((ing) => ing.name).join(', ')}
+                    {t('CART.TOPPING_LABEL', 'Topping:')} {item.selectedIngredients.map((ing) => ing.name).join(', ')}
                   </div>
                 )}
 
@@ -94,6 +96,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
                 <button
                   type="button"
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  aria-label={t('PRODUCT.DECREASE_QTY', 'Giảm số lượng')}
                   className="w-6 h-6 rounded-lg bg-white dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 shadow-xs transition-colors cursor-pointer"
                 >
                   {item.quantity <= 1 ? <Trash2 className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
@@ -104,6 +107,7 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
                 <button
                   type="button"
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  aria-label={t('PRODUCT.INCREASE_QTY', 'Tăng số lượng')}
                   className="w-6 h-6 rounded-lg bg-white dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-zinc-300 hover:text-[#ff6900] dark:hover:text-[#ff6900] shadow-xs transition-colors cursor-pointer"
                 >
                   <Plus className="w-3 h-3" />
@@ -117,19 +121,19 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
       {/* Pricing Summary */}
       <div className="mt-6 pt-4 border-t border-gray-100 dark:border-zinc-800 space-y-2.5 text-xs">
         <div className="flex justify-between text-gray-500 dark:text-zinc-400 font-medium">
-          <span>Tiền món ăn:</span>
+          <span>{t('CART.FOOD_TOTAL', 'Tiền món ăn:')}</span>
           <span className="text-gray-900 dark:text-white font-bold">{formatVND(subTotal)}</span>
         </div>
 
         <div className="flex justify-between text-gray-500 dark:text-zinc-400 font-medium">
-          <span>Phí giao hàng:</span>
+          <span>{t('CART.DELIVERY_FEE', 'Phí giao hàng:')}</span>
           <span className="text-gray-900 dark:text-white font-bold">
             {items.length > 0 ? formatVND(deliveryFee) : '0đ'}
           </span>
         </div>
 
         <div className="flex justify-between text-sm font-black text-gray-900 dark:text-white pt-3 border-t border-gray-100 dark:border-zinc-800">
-          <span>Tổng thanh toán:</span>
+          <span>{t('CART.TOTAL_PAYMENT', 'Tổng thanh toán:')}</span>
           <span className="text-lg font-black text-[#ff6900]">{items.length > 0 ? formatVND(total) : '0đ'}</span>
         </div>
       </div>
