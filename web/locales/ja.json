@@ -288,5 +288,19 @@
     "SAFE_SHOPPING": "100% 安全なショッピング",
     "SAFE_SHOPPING_DESC": "完全暗号化で安全",
     "PAYMENT": "お支払い:"
+  },
+  "NOT_FOUND_PAGE": {
+    "CODE": "404",
+    "TITLE": "お探しのページが見つかりません",
+    "SUBTITLE": "お探しのページは削除されたか、名前が変更されたか、一時的に利用できない可能性があります。",
+    "BACK_HOME": "ホームに戻る",
+    "EXPLORE_MENU": "メニューを見る",
+    "HELPFUL_LINKS": "おすすめのリンク:",
+    "ORDERS_LINK": "注文履歴",
+    "ORDERS_DESC": "注文・配達ステータスを確認",
+    "VOUCHERS_LINK": "クーポン一覧",
+    "VOUCHERS_DESC": "お得なクーポンをチェック",
+    "PROFILE_LINK": "プロフィール",
+    "PROFILE_DESC": "アカウント情報を確認・変更"
   }
 }

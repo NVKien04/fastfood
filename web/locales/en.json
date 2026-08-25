@@ -289,5 +289,19 @@
     "SAFE_SHOPPING": "100% Safe Shopping",
     "SAFE_SHOPPING_DESC": "Fully encrypted and secured information",
     "PAYMENT": "PAYMENT:"
+  },
+  "NOT_FOUND_PAGE": {
+    "CODE": "404",
+    "TITLE": "Oops! Page Not Found",
+    "SUBTITLE": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
+    "BACK_HOME": "Back to Home",
+    "EXPLORE_MENU": "Explore Menu",
+    "HELPFUL_LINKS": "You might be looking for:",
+    "ORDERS_LINK": "My Orders",
+    "ORDERS_DESC": "Track your delivery status",
+    "VOUCHERS_LINK": "Voucher Wallet",
+    "VOUCHERS_DESC": "Find hot deals & free shipping",
+    "PROFILE_LINK": "Profile",
+    "PROFILE_DESC": "Manage account information"
   }
 }

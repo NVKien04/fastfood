@@ -289,5 +289,19 @@
     "SAFE_SHOPPING": "Mua sắm an toàn 100%",
     "SAFE_SHOPPING_DESC": "Thông tin bảo mật và mã hóa hoàn toàn",
     "PAYMENT": "THANH TOÁN:"
+  },
+  "NOT_FOUND_PAGE": {
+    "CODE": "404",
+    "TITLE": "Oops! Trang bạn tìm kiếm không tồn tại",
+    "SUBTITLE": "Trang bạn đang tìm kiếm có thể đã bị đổi tên, tạm thời không khả dụng hoặc đã bị đưa ra khỏi thực đơn.",
+    "BACK_HOME": "Về trang chủ",
+    "EXPLORE_MENU": "Khám phá thực đơn",
+    "HELPFUL_LINKS": "Có thể bạn đang tìm kiếm:",
+    "ORDERS_LINK": "Đơn hàng của tôi",
+    "ORDERS_DESC": "Theo dõi trạng thái giao hàng",
+    "VOUCHERS_LINK": "Ví voucher ưu đãi",
+    "VOUCHERS_DESC": "Săn khuyến mãi & mã freeship",
+    "PROFILE_LINK": "Hồ sơ cá nhân",
+    "PROFILE_DESC": "Quản lý thông tin tài khoản"
   }
 }
