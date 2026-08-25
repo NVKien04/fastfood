@@ -81,3 +81,39 @@ export const categoryToSlug = (name: string): string => {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 };
+
+/**
+ * Lấy translation key tương ứng cho tên hoặc slug của danh mục
+ */
+export const getCategoryTranslationKey = (nameOrSlug: string): string => {
+  const norm = (nameOrSlug || '').toLowerCase().trim();
+  if (norm.includes('roman')) return 'CATEGORY.ROMAN_PIZZA';
+  if (norm.includes('pizza')) return 'CATEGORY.PIZZA';
+  if (norm.includes('combo')) return 'CATEGORY.COMBO';
+  if (norm.includes('khai vị') || norm.includes('khai-vi') || norm.includes('starter') || norm.includes('appetizer'))
+    return 'CATEGORY.APPETIZERS';
+  if (norm.includes('uống') || norm.includes('uong') || norm.includes('drink') || norm.includes('beverage'))
+    return 'CATEGORY.DRINKS';
+  if (norm.includes('cà phê') || norm.includes('ca-phe') || norm.includes('coffee') || norm.includes('tea'))
+    return 'CATEGORY.COFFEE';
+  if (norm.includes('mỳ') || norm.includes('my-y') || norm.includes('pasta') || norm.includes('spaghetti'))
+    return 'CATEGORY.PASTA';
+  if (norm.includes('snack') || norm.includes('ăn vặt') || norm.includes('an-vat')) return 'CATEGORY.SNACKS';
+  if (norm.includes('gà') || norm.includes('chicken')) return 'CATEGORY.CHICKEN';
+  if (norm.includes('trẻ em') || norm.includes('kid')) return 'CATEGORY.KIDS';
+  if (norm.includes('tráng miệng') || norm.includes('dessert')) return 'CATEGORY.DESSERT';
+  if (norm.includes('chay') || norm.includes('vegan') || norm.includes('vegetarian')) return 'CATEGORY.VEGETARIAN';
+  return '';
+};
+
+/**
+ * Format tên danh mục chuẩn chữ hoa đầu từ nếu không có i18n
+ */
+export const formatCategoryName = (name: string): string => {
+  if (!name) return '';
+  if (name === name.toUpperCase() && name.length > 2) {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+  return name;
+};
+

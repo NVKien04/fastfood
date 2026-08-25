@@ -3,21 +3,13 @@
 import { useTranslation } from 'react-i18next';
 import { useVouchers, VoucherFilterTab } from './hooks/useVouchers';
 import { VoucherCard } from './components/VoucherCard';
-import { Ticket, Sparkles, Search, RefreshCw, Loader2, Gift } from 'lucide-react';
+import { Sparkles, Search, RefreshCw, Loader2, Gift } from 'lucide-react';
 import Link from 'next/link';
 
 export const VoucherWallet = () => {
   const { t } = useTranslation();
-  const {
-    vouchers,
-    isLoading,
-    activeTab,
-    setActiveTab,
-    searchQuery,
-    setSearchQuery,
-    countByTab,
-    refetch,
-  } = useVouchers();
+  const { vouchers, isLoading, activeTab, setActiveTab, searchQuery, setSearchQuery, countByTab, refetch } =
+    useVouchers();
 
   const tabs: { key: VoucherFilterTab; label: string }[] = [
     { key: 'ALL', label: t('VOUCHER.TAB_ALL') },
@@ -29,7 +21,7 @@ export const VoucherWallet = () => {
   return (
     <div className="w-full max-w-300 mx-auto px-4 py-6 sm:py-10 transition-colors">
       {/* 1. Header Banner & Title */}
-      <div className="relative rounded-3xl bg-gradient-to-r from-orange-500 via-[#ff6900] to-amber-500 p-6 sm:p-8 text-white shadow-xl shadow-orange-500/20 mb-8 overflow-hidden">
+      <div className="relative rounded-3xl bg-linear-to-r from-orange-500 via-[#ff6900] to-amber-500 p-6 sm:p-8 text-white shadow-xl shadow-orange-500/20 mb-8 overflow-hidden">
         {/* Subtle decorative elements */}
         <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none" />
         <div className="absolute left-1/2 bottom-0 w-48 h-48 rounded-full bg-amber-300/20 blur-xl pointer-events-none" />
@@ -40,14 +32,9 @@ export const VoucherWallet = () => {
               <Sparkles className="w-3.5 h-3.5" />
               <span>{t('VOUCHER.WALLET_BADGE')}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-              {t('VOUCHER.WALLET_TITLE')}
-            </h1>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">{t('VOUCHER.WALLET_TITLE')}</h1>
             <p className="text-xs sm:text-sm text-white/90 mt-1 max-w-xl">
-              {t(
-                'VOUCHER.WALLET_SUBTITLE',
-                'Quản lý tất cả mã giảm giá độc quyền dành riêng cho bạn và ưu đãi toàn hệ thống.',
-              )}
+              {t('VOUCHER.WALLET_SUBTITLE')}
             </p>
           </div>
 
@@ -112,9 +99,7 @@ export const VoucherWallet = () => {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-[#ff6900] mb-3" />
-          <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
-            {t('VOUCHER.LOADING_VOUCHERS')}
-          </p>
+          <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">{t('VOUCHER.LOADING_VOUCHERS')}</p>
         </div>
       ) : vouchers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -127,20 +112,15 @@ export const VoucherWallet = () => {
           <div className="w-16 h-16 rounded-full bg-orange-50 dark:bg-orange-950/40 text-orange-500 dark:text-orange-400 flex items-center justify-center mb-4">
             <Gift className="w-8 h-8" />
           </div>
-          <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1">
-            {t('VOUCHER.EMPTY_TITLE')}
-          </h3>
+          <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1">{t('VOUCHER.EMPTY_TITLE')}</h3>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 max-w-sm mb-6">
-            {t(
-              'VOUCHER.EMPTY_DESC',
-              'Hiện không có mã giảm giá nào trong danh mục này hoặc thử thay đổi từ khóa tìm kiếm.',
-            )}
+            {t('VOUCHER.EMPTY_DESC')}
           </p>
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#ff6900] hover:bg-[#e05d00] text-white text-xs sm:text-sm font-black shadow-lg shadow-orange-500/25 active:scale-95 transition-all"
           >
-            <span>{t('ORDER.EXPLORE_MENU')}</span>
+            <span>{t('VOUCHER.EXPLORE_MENU')}</span>
             <span>→</span>
           </Link>
         </div>

@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from '@/stores';
 import { ApiMain } from '@/services/apis/main/api.main';
 
-interface AuthProviderProps {
+type AuthProviderProps = {
   children: ReactNode;
-}
+};
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const { t } = useTranslation();

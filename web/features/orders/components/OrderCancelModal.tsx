@@ -1,24 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { AlertTriangle, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface OrderCancelModalProps {
+type OrderCancelModalProps = {
   isOpen: boolean;
   orderNumber: string;
   isLoading: boolean;
   onClose: () => void;
   onConfirm: (reason: string) => void;
-}
+};
 
-const COMMON_REASONS = [
-  'Tôi muốn đổi món / đổi địa chỉ',
-  'Tôi đặt nhầm món ăn',
-  'Thời gian giao hàng quá lâu',
-  'Tôi tìm được ưu đãi tốt hơn',
-  'Lý do khác',
+const CANCEL_REASONS: { key: string; txKey: string }[] = [
+  { key: 'CHANGE_MIND', txKey: 'ORDER.REASON_CHANGE_MIND' },
+  { key: 'WRONG_ITEM', txKey: 'ORDER.REASON_WRONG_ITEM' },
+  { key: 'LONG_WAIT', txKey: 'ORDER.REASON_LONG_WAIT' },
+  { key: 'FOUND_BETTER', txKey: 'ORDER.REASON_FOUND_BETTER' },
+  { key: 'OTHER', txKey: 'ORDER.REASON_OTHER' },
 ];
 
 export const OrderCancelModal = ({
@@ -29,13 +31,17 @@ export const OrderCancelModal = ({
   onConfirm,
 }: OrderCancelModalProps) => {
   const { t } = useTranslation();
-  const [selectedReason, setSelectedReason] = useState<string>(COMMON_REASONS[0]);
+  const [selectedReasonKey, setSelectedReasonKey] = useState<string>(CANCEL_REASONS[0].key);
   const [customReason, setCustomReason] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const finalReason = selectedReason === 'Lý do khác' ? customReason.trim() : selectedReason;
-    onConfirm(finalReason || 'Khách hàng yêu cầu hủy đơn');
+    if (selectedReasonKey === 'OTHER') {
+      onConfirm(customReason.trim() || t('ORDER.DEFAULT_CANCEL_REASON'));
+      return;
+    }
+    const matched = CANCEL_REASONS.find((r) => r.key === selectedReasonKey);
+    onConfirm(matched ? t(matched.txKey) : t('ORDER.DEFAULT_CANCEL_REASON'));
   };
 
   return (
@@ -61,30 +67,34 @@ export const OrderCancelModal = ({
               {t('ORDER.SELECT_CANCEL_REASON')}
             </label>
             <div className="space-y-2">
-              {COMMON_REASONS.map((reason) => (
-                <label
-                  key={reason}
-                  className={`flex items-center gap-3 p-3 rounded-2xl border text-xs font-medium cursor-pointer transition-all ${
-                    selectedReason === reason
-                      ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-950/20 text-orange-900 dark:text-orange-200'
-                      : 'border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-zinc-300'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="cancelReason"
-                    value={reason}
-                    checked={selectedReason === reason}
-                    onChange={(e) => setSelectedReason(e.target.value)}
-                    className="accent-orange-500 w-4 h-4"
-                  />
-                  <span>{reason}</span>
-                </label>
-              ))}
+              {CANCEL_REASONS.map((item) => {
+                const isSelected = selectedReasonKey === item.key;
+                return (
+                  <label
+                    key={item.key}
+                    className={cn(
+                      'flex items-center gap-3 p-3 rounded-2xl border text-xs font-medium cursor-pointer transition-all',
+                      isSelected
+                        ? 'border-orange-500 bg-orange-50/50 dark:bg-orange-950/20 text-orange-900 dark:text-orange-200'
+                        : 'border-gray-200 dark:border-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-800/50 text-gray-700 dark:text-zinc-300',
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="cancelReason"
+                      value={item.key}
+                      checked={isSelected}
+                      onChange={() => setSelectedReasonKey(item.key)}
+                      className="accent-orange-500 w-4 h-4 cursor-pointer"
+                    />
+                    <span>{t(item.txKey)}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
-          {selectedReason === 'Lý do khác' && (
+          {selectedReasonKey === 'OTHER' && (
             <div>
               <textarea
                 value={customReason}
@@ -98,25 +108,30 @@ export const OrderCancelModal = ({
           )}
 
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-zinc-800">
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               disabled={isLoading}
               onClick={onClose}
-              className="px-4 py-2.5 rounded-full text-xs font-bold text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="rounded-full text-xs font-bold cursor-pointer"
             >
               {t('COMMON.CLOSE')}
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
+              variant="destructive"
+              size="sm"
               disabled={isLoading}
-              className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-red-600 hover:bg-red-700 active:scale-95 transition-all shadow-md shadow-red-600/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="rounded-full text-xs font-bold gap-2 cursor-pointer shadow-md shadow-red-600/20"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>{t('ORDER.CONFIRM_CANCEL_BTN')}</span>
-            </button>
+            </Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
   );
 };
+

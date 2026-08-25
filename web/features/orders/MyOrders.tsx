@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useMyOrders, OrderFilterTab } from './hooks/useMyOrders';
 import { OrderCard } from './components/OrderCard';
 import { OrderCancelModal } from './components/OrderCancelModal';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Package, Search, ShoppingBag, Loader2, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 
@@ -46,14 +48,16 @@ export const MyOrders = () => {
           </p>
         </div>
 
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="sm"
           onClick={() => refetch()}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+          className="rounded-full gap-2 text-xs font-bold cursor-pointer"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={cn('w-3.5 h-3.5', isLoading && 'animate-spin')} />
           <span>{t('COMMON.REFRESH')}</span>
-        </button>
+        </Button>
       </div>
 
       {/* 2. Search & Filter Bar */}
@@ -64,27 +68,31 @@ export const MyOrders = () => {
             const count = countByTab[tab.key];
             const isActive = activeTab === tab.key;
             return (
-              <button
+              <Button
                 key={tab.key}
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                className={cn(
+                  'flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer h-auto',
                   isActive
-                    ? 'bg-white dark:bg-zinc-900 text-[#ff6900] shadow-xs'
-                    : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                    ? 'bg-white dark:bg-zinc-900 text-[#ff6900] shadow-xs hover:bg-white dark:hover:bg-zinc-900'
+                    : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white',
+                )}
               >
                 <span>{tab.label}</span>
                 <span
-                  className={`px-1.5 py-0.5 rounded-full text-[10px] font-extrabold ${
+                  className={cn(
+                    'px-1.5 py-0.5 rounded-full text-[10px] font-extrabold',
                     isActive
                       ? 'bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400'
-                      : 'bg-gray-200/60 dark:bg-zinc-700/60 text-gray-500 dark:text-zinc-400'
-                  }`}
+                      : 'bg-gray-200/60 dark:bg-zinc-700/60 text-gray-500 dark:text-zinc-400',
+                  )}
                 >
                   {count}
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>

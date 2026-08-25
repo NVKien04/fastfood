@@ -5,9 +5,9 @@ import { CheckCircle2, Clock, ChefHat, Truck, Check, XCircle } from 'lucide-reac
 
 type StepStatus = 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'READY_FOR_SHIPMENT' | 'DELIVERED' | 'CANCELLED';
 
-interface OrderProgressStepperProps {
+type OrderProgressStepperProps = {
   status: string;
-}
+};
 
 export const OrderProgressStepper = ({ status }: OrderProgressStepperProps) => {
   const { t } = useTranslation();

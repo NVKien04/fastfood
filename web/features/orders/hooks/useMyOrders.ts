@@ -3,9 +3,10 @@
 import { useState, useMemo } from 'react';
 import { useMyOrders as useMyOrdersQuery } from '@/services/react-query/queries/order';
 import { useCancelOrder } from '@/services/react-query/mutations/order';
-import { OrderResponseDto } from '@/services/apis/main/module/Order.api';
+import { OrderFilterTab, OrderResponseDto } from '../types';
+import { filterOrdersByTabAndQuery, calculateOrderCountsByTab } from '../utils/order.utils';
 
-export type OrderFilterTab = 'ALL' | 'PROCESSING' | 'DELIVERED' | 'CANCELLED';
+export type { OrderFilterTab };
 
 export const useMyOrders = () => {
   const [activeTab, setActiveTab] = useState<OrderFilterTab>('ALL');
@@ -21,42 +22,11 @@ export const useMyOrders = () => {
   }, [ordersData]);
 
   const filteredOrders = useMemo(() => {
-    let list = [...orders];
-
-    // Filter by tab
-    if (activeTab === 'PROCESSING') {
-      list = list.filter(
-        (o) => o.status === 'PENDING' || o.status === 'CONFIRMED' || o.status === 'PREPARING' || o.status === 'READY_FOR_SHIPMENT',
-      );
-    } else if (activeTab === 'DELIVERED') {
-      list = list.filter((o) => o.status === 'DELIVERED');
-    } else if (activeTab === 'CANCELLED') {
-      list = list.filter((o) => o.status === 'CANCELLED');
-    }
-
-    // Filter by search query (order number or phone)
-    if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
-      list = list.filter(
-        (o) =>
-          o.orderNumber.toLowerCase().includes(q) ||
-          (o.guestPhone && o.guestPhone.includes(q)) ||
-          (o.guestName && o.guestName.toLowerCase().includes(q)),
-      );
-    }
-
-    return list;
+    return filterOrdersByTabAndQuery(orders, activeTab, searchQuery);
   }, [orders, activeTab, searchQuery]);
 
   const countByTab = useMemo(() => {
-    return {
-      ALL: orders.length,
-      PROCESSING: orders.filter(
-        (o) => o.status === 'PENDING' || o.status === 'CONFIRMED' || o.status === 'PREPARING' || o.status === 'READY_FOR_SHIPMENT',
-      ).length,
-      DELIVERED: orders.filter((o) => o.status === 'DELIVERED').length,
-      CANCELLED: orders.filter((o) => o.status === 'CANCELLED').length,
-    };
+    return calculateOrderCountsByTab(orders);
   }, [orders]);
 
   const handleOpenCancelModal = (order: OrderResponseDto) => {

@@ -35,6 +35,10 @@ features/
 - Tách biệt rõ ràng giữa Presentation Component (UI) và Logic Hook.
 - Tất cả các form trong ứng dụng đều bắt buộc sử dụng **React Hook Form + Zod**.
 
+### 5. Quy tắc về Xử lý & Chuyển đổi dữ liệu (Data Transformation & Helpers)
+- **Tất cả các hàm xử lý dữ liệu từ Backend / Raw Data sang dữ liệu hiển thị trên UI (hoặc payload gửi đi)** đều **bắt buộc phải được tách riêng thành helper functions** đặt trong thư mục `features/<feature-name>/utils/` (hoặc `helpers/` nếu là hàm dùng chung toàn cục giữa nhiều modules).
+- **Không viết trực tiếp logic tính toán, transform, lọc (filter), gom nhóm (group), đếm (count), hoặc định dạng phức tạp** bên trong JSX components hoặc thân custom hooks. Hooks chỉ gọi các pure helper functions này để đảm bảo tính tái sử dụng, dễ đọc và dễ viết unit test.
+
 ## Backend & NestJS Architecture Rules (`main-service/`)
 
 ### 1. Quy tắc về Enum & Swagger DTO

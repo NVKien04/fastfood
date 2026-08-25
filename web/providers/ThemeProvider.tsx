@@ -1,12 +1,16 @@
 'use client';
 
-import * as React from 'react';
+import { useEffect, ReactNode } from 'react';
 import { useStore } from '@/stores';
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+type ThemeProviderProps = {
+  children: ReactNode;
+};
+
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const theme = useStore((s) => s.theme);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const root = document.documentElement;
@@ -21,7 +25,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [theme]);
 
   // Listen to system preference changes if system theme is selected
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');

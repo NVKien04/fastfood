@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { OrderResponseDto } from '@/services/apis/main/module/Order.api';
 import { OrderProgressStepper } from './OrderProgressStepper';
 import { formatVND } from '@/utils';
+import { Button } from '@/components/ui/button';
 import {
   Package,
   MapPin,
@@ -20,18 +21,19 @@ import {
   Utensils,
   CheckCircle,
 } from 'lucide-react';
+import { canCancelOrder } from '../utils/order.utils';
 import Link from 'next/link';
 
-interface OrderCardProps {
+type OrderCardProps = {
   order: OrderResponseDto;
   onCancelClick: (order: OrderResponseDto) => void;
-}
+};
 
 export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
-  const canCancel = order.status === 'PENDING' || order.status === 'CONFIRMED';
+  const canCancel = canCancelOrder(order.status);
   const isDelivered = order.status === 'DELIVERED';
   const isCancelled = order.status === 'CANCELLED';
 
@@ -135,14 +137,16 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
               {formatVND(order.total)}
             </div>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon-xs"
             onClick={() => setIsExpanded((prev) => !prev)}
-            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-500 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700 cursor-pointer"
             aria-label="Toggle details"
           >
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -189,7 +193,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                           <p className="text-[11px] text-gray-500 dark:text-zinc-400">
                             {item.productVariant.name}
                             {item.productVariant.size ? ` (${item.productVariant.size})` : ''}
-                            {item.productVariant.type ? ` - Đế ${item.productVariant.type}` : ''}
+                            {item.productVariant.type ? ` - ${t('ORDER.CRUST_LABEL', { type: item.productVariant.type })}` : ''}
                           </p>
                         )}
                         {item.ingredients && item.ingredients.length > 0 && (
@@ -282,7 +286,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                   <span className="text-base font-black text-[#ff6900]">{formatVND(order.total)}</span>
                 </div>
                 <div className="pt-1 flex items-center justify-between text-[11px] text-gray-500 dark:text-zinc-400">
-                  <span>{order.paymentMethod === 'ONLINE' ? 'Chuyển khoản Online' : 'Thanh toán tiền mặt (COD)'}</span>
+                  <span>{order.paymentMethod === 'ONLINE' ? t('ORDER.PAYMENT_ONLINE') : t('ORDER.PAYMENT_COD')}</span>
                   <span
                     className={`font-bold ${
                       order.paymentStatus === 'PAID'
@@ -290,7 +294,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                         : 'text-amber-600 dark:text-amber-400'
                     }`}
                   >
-                    {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                    {order.paymentStatus === 'PAID' ? t('ORDER.PAYMENT_PAID') : t('ORDER.PAYMENT_UNPAID')}
                   </span>
                 </div>
               </div>
@@ -313,13 +317,15 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
 
             <div className="flex items-center gap-2">
               {canCancel && (
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => onCancelClick(order)}
-                  className="px-4 py-2 rounded-full text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 border border-red-200 dark:border-red-900/50 transition-colors cursor-pointer"
+                  className="rounded-full text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 border-red-200 dark:border-red-900/50 cursor-pointer"
                 >
                   {t('ORDER.CANCEL_ORDER_BTN')}
-                </button>
+                </Button>
               )}
 
               <Link

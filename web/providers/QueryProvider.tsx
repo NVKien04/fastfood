@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
@@ -10,9 +10,9 @@ import {
   QUERY_CACHE_BUSTER,
 } from '@/services/react-query/query-client';
 
-interface QueryProviderProps {
-  children: React.ReactNode;
-}
+type QueryProviderProps = {
+  children: ReactNode;
+};
 
 export default function QueryProvider({ children }: QueryProviderProps) {
   const [queryClient] = useState(() => getQueryClient());

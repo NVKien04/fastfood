@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback, useEffect, useRef, MouseEvent } from 'r
 import { useRouter } from 'next/navigation';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { useStore } from '@/stores';
-import { NotificationItemData, NotificationFilterTab } from '../types';
+import { NotificationItemData, NotificationFilterTab, NotificationType } from '../types';
 import { INITIAL_MOCK_NOTIFICATIONS } from '../utils/mock-notifications';
 
 const STORAGE_KEY = 'keipizza_notifications_v1';
@@ -54,10 +54,11 @@ export const useNotifications = () => {
             id: String(item.id),
             title: item.title,
             message: item.message,
-            type: item.type || 'SYSTEM',
+            type: ((item.type || 'SYSTEM').toUpperCase() as NotificationType),
             isRead: Boolean(item.isRead),
             createdAt: item.createdAt || new Date().toISOString(),
             linkUrl: item.linkUrl,
+            img: (item as unknown as { img?: string; thumbnail?: string }).img || (item as unknown as { thumbnail?: string }).thumbnail,
           }));
           setNotifications(mapped);
         }

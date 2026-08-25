@@ -2,6 +2,8 @@
 
 import { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { CheckCheck, X } from 'lucide-react';
 import { NotificationItemData, NotificationFilterTab } from '../types';
 import { NotificationItem } from './NotificationItem';
@@ -44,7 +46,7 @@ export const NotificationDropdown = ({
   ];
 
   return (
-    <div className="absolute right-0 mt-2.5 w-[340px] sm:w-[400px] max-w-[calc(100vw-24px)] rounded-3xl bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 shadow-2xl shadow-black/15 dark:shadow-black/60 z-50 overflow-hidden flex flex-col max-h-[560px] animate-in fade-in zoom-in-95 duration-150">
+    <div className="absolute right-0 mt-2.5 w-[350px] sm:w-[420px] max-w-[calc(100vw-24px)] rounded-3xl bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-zinc-800 shadow-2xl shadow-black/15 dark:shadow-black/60 z-50 overflow-hidden flex flex-col max-h-[560px] animate-in fade-in zoom-in-95 duration-150">
       {/* Header Bar */}
       <div className="p-4 sm:p-5 pb-3 border-b border-gray-100 dark:border-zinc-800/80">
         <div className="flex items-center justify-between gap-2 mb-3">
@@ -62,27 +64,29 @@ export const NotificationDropdown = ({
 
           <div className="flex items-center gap-1.5">
             {unreadCount > 0 && (
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={onMarkAllAsRead}
-                className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-[#ff6900] dark:text-zinc-400 dark:hover:text-[#ff6900] transition-colors p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer"
+                className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-[#ff6900] dark:text-zinc-400 dark:hover:text-[#ff6900] h-auto py-1 px-2 rounded-lg cursor-pointer"
                 title={t('NOTIFICATION.MARK_ALL_READ')}
               >
-                <CheckCheck className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">
-                  {t('NOTIFICATION.MARK_ALL_READ')}
-                </span>
-              </button>
+                <CheckCheck className="size-3.5" />
+                <span className="hidden sm:inline">{t('NOTIFICATION.MARK_ALL_READ')}</span>
+              </Button>
             )}
 
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-xs"
               onClick={onClose}
-              className="p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="size-7 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white cursor-pointer"
               aria-label={t('COMMON.CLOSE')}
             >
-              <X className="w-4 h-4" />
-            </button>
+              <X className="size-4" />
+            </Button>
           </div>
         </div>
 
@@ -91,18 +95,21 @@ export const NotificationDropdown = ({
           {tabs.map((tab) => {
             const isSelected = activeTab === tab.id;
             return (
-              <button
+              <Button
                 key={tab.id}
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => onTabChange(tab.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                className={cn(
+                  'h-auto px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0',
                   isSelected
-                    ? 'bg-gray-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs'
-                    : 'bg-gray-100/80 text-gray-600 dark:bg-zinc-800 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700'
-                }`}
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs hover:bg-gray-800 dark:hover:bg-zinc-100'
+                    : 'bg-gray-100/80 text-gray-600 dark:bg-zinc-800 dark:text-zinc-400 hover:bg-gray-200 dark:hover:bg-zinc-700',
+                )}
               >
                 {tab.label}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -114,12 +121,7 @@ export const NotificationDropdown = ({
           <NotificationEmpty />
         ) : (
           filteredNotifications.map((item) => (
-            <NotificationItem
-              key={item.id}
-              notification={item}
-              onClick={onNotificationClick}
-              onDelete={onDelete}
-            />
+            <NotificationItem key={item.id} notification={item} onClick={onNotificationClick} onDelete={onDelete} />
           ))
         )}
       </div>

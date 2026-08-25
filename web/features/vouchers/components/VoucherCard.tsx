@@ -1,52 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CouponItemDto } from '@/services/apis/main/module/Coupon.api';
 import { formatVND } from '@/utils';
-import {
-  Ticket,
-  Copy,
-  Check,
-  Sparkles,
-  Truck,
-  Percent,
-  Clock,
-  Crown,
-  ArrowRight,
-} from 'lucide-react';
+import { isFreeshipVoucher, isExclusiveVoucher, formatVoucherDate } from '../utils/voucher.utils';
+import { Copy, Check, Sparkles, Truck, Percent, Clock, Crown, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-interface VoucherCardProps {
+type VoucherCardProps = {
   voucher: CouponItemDto;
-}
+};
 
 export const VoucherCard = ({ voucher }: VoucherCardProps) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState<boolean>(false);
 
-  const isFreeship = voucher.code.includes('FREESHIP') || voucher.name.toLowerCase().includes('freeship');
-  const isExclusive = voucher.isExclusive || voucher.code.includes('VIP') || voucher.code.includes('BIRTHDAY');
+  const isFreeship = isFreeshipVoucher(voucher);
+  const isExclusive = isExclusiveVoucher(voucher);
   const isUsed = voucher.isUsed;
 
-  const handleCopyCode = (e: React.MouseEvent) => {
+  const handleCopyCode = (e: MouseEvent) => {
     e.stopPropagation();
     navigator.clipboard.writeText(voucher.code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const formatDate = (dateStr: string) => {
-    try {
-      const d = new Date(dateStr);
-      return d.toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      });
-    } catch {
-      return dateStr;
-    }
   };
 
   return (
@@ -55,7 +33,7 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
         isUsed
           ? 'bg-gray-100/70 dark:bg-zinc-900/50 border-gray-200 dark:border-zinc-800 opacity-60'
           : isExclusive
-            ? 'bg-gradient-to-br from-amber-500/5 via-white to-orange-500/10 dark:from-amber-950/20 dark:via-zinc-900 dark:to-orange-950/20 border-amber-200/80 dark:border-amber-800/60 hover:shadow-xl hover:border-amber-400 dark:hover:border-amber-600'
+            ? 'bg-linear-to-br from-amber-500/5 via-white to-orange-500/10 dark:from-amber-950/20 dark:via-zinc-900 dark:to-orange-950/20 border-amber-200/80 dark:border-amber-800/60 hover:shadow-xl hover:border-amber-400 dark:hover:border-amber-600'
             : 'bg-white dark:bg-zinc-900 border-gray-100 dark:border-zinc-800 hover:shadow-xl hover:border-orange-300 dark:hover:border-zinc-700'
       }`}
     >
@@ -65,10 +43,10 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
           isUsed
             ? 'bg-gray-200 dark:bg-zinc-800 text-gray-500'
             : isExclusive
-              ? 'bg-gradient-to-b from-amber-500 to-orange-500 text-white'
+              ? 'bg-linear-to-b from-amber-500 to-orange-500 text-white'
               : isFreeship
-                ? 'bg-gradient-to-b from-emerald-500 to-teal-600 text-white'
-                : 'bg-gradient-to-b from-orange-500 to-red-500 text-white'
+                ? 'bg-linear-to-b from-emerald-500 to-teal-600 text-white'
+                : 'bg-linear-to-b from-orange-500 to-red-500 text-white'
         }`}
       >
         {/* Subtle pattern or icon */}
@@ -83,17 +61,15 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
         </div>
 
         <span className="text-[10px] uppercase font-bold tracking-wider opacity-90">
-          {isFreeship ? 'FREESHIP' : 'GIẢM GIÁ'}
+          {isFreeship ? t('VOUCHER.TYPE_FREESHIP') : t('VOUCHER.TYPE_DISCOUNT')}
         </span>
-        <div className="text-xl sm:text-2xl font-black tracking-tight mt-0.5">
-          {formatVND(voucher.value)}
-        </div>
+        <div className="text-xl sm:text-2xl font-black tracking-tight mt-0.5">{formatVND(voucher.value)}</div>
 
         {/* Exclusive pill */}
         {isExclusive && (
           <span className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white text-amber-700 font-extrabold text-[9px] shadow-xs">
             <Sparkles className="w-2.5 h-2.5" />
-            <span>VIP ONLY</span>
+            <span>{t('VOUCHER.VIP_ONLY')}</span>
           </span>
         )}
       </div>
@@ -115,7 +91,7 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
 
             <div className="flex items-center gap-1 text-[11px] text-gray-500 dark:text-zinc-400">
               <Clock className="w-3.5 h-3.5" />
-              <span>HSD: {formatDate(voucher.endDate)}</span>
+              <span>{t('VOUCHER.EXPIRY_LABEL', { date: formatVoucherDate(voucher.endDate) })}</span>
             </div>
           </div>
 
@@ -130,9 +106,7 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
           <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-zinc-300">
             <span className="text-gray-400 font-normal">{t('VOUCHER.MIN_ORDER_LABEL')}:</span>
             <span className="font-bold text-gray-900 dark:text-white">
-              {voucher.minOrderAmount === 0
-                ? t('VOUCHER.NO_MIN')
-                : formatVND(voucher.minOrderAmount)}
+              {voucher.minOrderAmount === 0 ? t('VOUCHER.NO_MIN') : formatVND(voucher.minOrderAmount)}
             </span>
           </div>
         </div>

@@ -2,16 +2,16 @@
 
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CategoryBar, CategoryItem, getCategoryIcon } from '@/components/layout/CategoryBar';
+import { CategoryBar, CategoryItem } from '@/components/layout/CategoryBar';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
-import { categoryToSlug } from '@/helpers';
+import { categoryToSlug, getCategoryTranslationKey, formatCategoryName } from '@/helpers';
 import { Button } from '@/components/ui/button';
 import { Utensils, Loader2 } from 'lucide-react';
 import { useProductMenu } from './hooks/useProductMenu';
 
 export const ProductList = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const {
     categories,
@@ -35,7 +35,6 @@ export const ProductList = () => {
       return {
         id: slug,
         name: cat.name,
-        icon: getCategoryIcon(cat.name),
         slug,
       };
     });
@@ -103,26 +102,32 @@ export const ProductList = () => {
         {/* Product Groups */}
         {!isLoading &&
           !productError &&
-          categoryGroups.map((group) => (
-            <section key={group.category.id} id={group.category.slug} className="mb-14 scroll-mt-48">
-              <div className="flex items-center gap-3 mb-6 sm:mb-8 pb-2 ">
-                <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-                  {group.category.name}
-                </h2>
-              </div>
+          categoryGroups.map((group) => {
+            const categoryKey = getCategoryTranslationKey(group.category.name);
+            const categoryHeading =
+              categoryKey && i18n.exists(categoryKey) ? t(categoryKey) : formatCategoryName(group.category.name);
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
-                {group.products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onOpenDetail={handleOpenDetailModal}
-                    onQuickAdd={handleQuickAdd}
-                  />
-                ))}
-              </div>
-            </section>
-          ))}
+            return (
+              <section key={group.category.id} id={group.category.slug} className="mb-14 scroll-mt-48">
+                <div className="flex items-center gap-3 mb-6 sm:mb-8 pb-2 ">
+                  <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                    {categoryHeading}
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 sm:gap-8 lg:gap-10">
+                  {group.products.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onOpenDetail={handleOpenDetailModal}
+                      onQuickAdd={handleQuickAdd}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
       </main>
 
       {/* Product Detail Customization Modal */}

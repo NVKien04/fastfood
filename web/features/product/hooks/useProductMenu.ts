@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useCategoryList } from '@/services/react-query/queries/category';
 import { useProductList, useProductDetail } from '@/services/react-query/queries/product';
 import { useStore } from '@/stores';
-import { categoryToSlug, isCustomizableProduct } from '@/helpers/product.helper';
+import { isCustomizableProduct } from '@/helpers/product.helper';
+import { groupProductsByCategory } from '../utils/product.utils';
 import { CategoryGroup, ProductDetailResponseDto } from '../types';
 
 export const useProductMenu = () => {
@@ -48,49 +49,10 @@ export const useProductMenu = () => {
     [productDetail, selectedProductFallback],
   );
 
-  // Group products by category
+  // Group products by category using helper
   const categoryGroups = useMemo<CategoryGroup[]>(() => {
-    if (!products.length) return [];
-
-    const query = searchQuery.trim().toLowerCase();
-    const filtered = query
-      ? products.filter((p) => p.name?.toLowerCase().includes(query) || p.description?.toLowerCase().includes(query))
-      : products;
-
-    if (categories.length > 0) {
-      return categories
-        .map((cat) => {
-          const groupProducts = filtered.filter((p) => p.categoryId === cat.id);
-          return {
-            category: {
-              id: cat.id,
-              name: cat.name,
-              slug: categoryToSlug(cat.name),
-            },
-            products: groupProducts,
-          };
-        })
-        .filter((g) => g.products.length > 0);
-    }
-
-    // Fallback if categories are not available
-    const groups: { [key: string]: CategoryGroup } = {};
-    filtered.forEach((p) => {
-      const catId = p.categoryId || 'uncategorized';
-      const catName = t('PRODUCT.CATEGORY_FALLBACK');
-      const slug = categoryToSlug(catName);
-
-      if (!groups[catId]) {
-        groups[catId] = {
-          category: { id: catId, name: catName, slug },
-          products: [],
-        };
-      }
-      groups[catId].products.push(p);
-    });
-
-    return Object.values(groups);
-  }, [products, categories, searchQuery]);
+    return groupProductsByCategory(products, categories, searchQuery, t('PRODUCT.CATEGORY_FALLBACK'));
+  }, [products, categories, searchQuery, t]);
 
   // Set default active category and scroll to hash on load
   useEffect(() => {
