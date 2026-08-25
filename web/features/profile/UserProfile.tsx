@@ -23,8 +23,8 @@ export const UserProfile = () => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10 transition-colors">
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-10 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 transition-colors">
+    <div className="w-full max-w-300 mx-auto px-4 py-6 sm:py-10 transition-colors">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-10 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 transition-colors">
         {/* Header Title */}
         <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-zinc-800 mb-8">
           <div>

@@ -27,7 +27,7 @@ export const VoucherWallet = () => {
   ];
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 transition-colors">
+    <div className="w-full max-w-300 mx-auto px-4 py-6 sm:py-10 transition-colors">
       {/* 1. Header Banner & Title */}
       <div className="relative rounded-3xl bg-gradient-to-r from-orange-500 via-[#ff6900] to-amber-500 p-6 sm:p-8 text-white shadow-xl shadow-orange-500/20 mb-8 overflow-hidden">
         {/* Subtle decorative elements */}
