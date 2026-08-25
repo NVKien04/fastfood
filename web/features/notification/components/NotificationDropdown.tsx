@@ -37,10 +37,10 @@ export const NotificationDropdown = ({
   if (!isOpen) return null;
 
   const tabs: { id: NotificationFilterTab; label: string }[] = [
-    { id: 'ALL', label: t('NOTIFICATION.TAB_ALL', 'Tất cả') },
-    { id: 'UNREAD', label: t('NOTIFICATION.TAB_UNREAD', 'Chưa đọc') },
-    { id: 'ORDER', label: t('NOTIFICATION.TAB_ORDER', 'Đơn hàng') },
-    { id: 'PROMO', label: t('NOTIFICATION.TAB_PROMO', 'Khuyến mãi') },
+    { id: 'ALL', label: t('NOTIFICATION.TAB_ALL') },
+    { id: 'UNREAD', label: t('NOTIFICATION.TAB_UNREAD') },
+    { id: 'ORDER', label: t('NOTIFICATION.TAB_ORDER') },
+    { id: 'PROMO', label: t('NOTIFICATION.TAB_PROMO') },
   ];
 
   return (
@@ -50,7 +50,7 @@ export const NotificationDropdown = ({
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
             <h3 className="text-base font-black text-gray-900 dark:text-white tracking-tight">
-              {t('NOTIFICATION.TITLE', 'Thông báo')}
+              {t('NOTIFICATION.TITLE')}
             </h3>
 
             {unreadCount > 0 && (
@@ -66,11 +66,11 @@ export const NotificationDropdown = ({
                 type="button"
                 onClick={onMarkAllAsRead}
                 className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-[#ff6900] dark:text-zinc-400 dark:hover:text-[#ff6900] transition-colors p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer"
-                title={t('NOTIFICATION.MARK_ALL_READ', 'Đánh dấu đã đọc tất cả')}
+                title={t('NOTIFICATION.MARK_ALL_READ')}
               >
                 <CheckCheck className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">
-                  {t('NOTIFICATION.MARK_ALL_READ', 'Đã đọc tất cả')}
+                  {t('NOTIFICATION.MARK_ALL_READ')}
                 </span>
               </button>
             )}
@@ -79,7 +79,7 @@ export const NotificationDropdown = ({
               type="button"
               onClick={onClose}
               className="p-1 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-              aria-label={t('COMMON.CLOSE', 'Đóng')}
+              aria-label={t('COMMON.CLOSE')}
             >
               <X className="w-4 h-4" />
             </button>

@@ -1,3 +1,4 @@
 export * from '@/modules/order/presentation/dto/cancel-order.dto';
 export * from '@/modules/order/presentation/dto/create-order.dto';
 export * from '@/modules/order/presentation/dto/order-filter.dto';
+export * from '@/modules/order/presentation/dto/update-order-status.dto';

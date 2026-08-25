@@ -40,6 +40,7 @@ export const REDIS_KEYS = {
     PREFIX: 'cache:order:',
     USER_ORDERS: 'cache:order:user:',
     DETAIL: 'cache:order:detail:',
+    SEQUENCE: 'order:sequence',
     PATTERN: 'cache:order:*',
   },
   SEARCH: {

@@ -36,11 +36,11 @@ export const useLogin = () => {
       });
 
       if (response.kind === 'ERROR') {
-        throw new Error(response.error || t('AUTH.LOGIN_FAILED', 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.'));
+        throw new Error(response.error || t('AUTH.LOGIN_FAILED'));
       }
 
       if (!response.data?.accessToken) {
-        throw new Error(t('AUTH.LOGIN_FAILED', 'Đăng nhập thất bại.'));
+        throw new Error(t('AUTH.LOGIN_FAILED'));
       }
 
       return response.data;
@@ -70,7 +70,7 @@ export const useLogin = () => {
       router.push('/');
     },
     onError: (error: Error) => {
-      setErrorMessage(error.message || t('AUTH.LOGIN_FAILED', 'Đã có lỗi xảy ra. Vui lòng thử lại sau.'));
+      setErrorMessage(error.message || t('AUTH.LOGIN_FAILED'));
     },
   });
 

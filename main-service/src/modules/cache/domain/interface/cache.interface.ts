@@ -48,4 +48,10 @@ export interface ICacheService {
    * Xóa 1 hoặc nhiều trường trong Hash
    */
   hdel(key: string, field: string | string[]): Promise<number>;
+
+  /**
+   * Tăng giá trị số nguyên của key lên 1 (atomic increment).
+   * Nếu key chưa tồn tại, tự động tạo với giá trị 0 trước khi tăng.
+   */
+  incr(key: string): Promise<number>;
 }

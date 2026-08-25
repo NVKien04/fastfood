@@ -4,6 +4,7 @@ import { CouponsEntity, OrdersEntity, UserCouponsEntity } from '@/entities';
 import { CouponController } from '@/modules/coupon/presentation/controllers/coupon.controller';
 import { CouponService } from '@/modules/coupon/application/services/coupon.service';
 import { CouponTypeOrmRepository } from '@/modules/coupon/infrastructure/persistence/typeorm/coupon.typeorm.repository';
+import { UserCouponTypeOrmRepository } from '@/modules/coupon/infrastructure/persistence/typeorm/user-coupon.typeorm.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CouponsEntity, OrdersEntity, UserCouponsEntity])],
@@ -13,6 +14,10 @@ import { CouponTypeOrmRepository } from '@/modules/coupon/infrastructure/persist
     {
       provide: 'ICouponRepository',
       useClass: CouponTypeOrmRepository,
+    },
+    {
+      provide: 'IUserCouponRepository',
+      useClass: UserCouponTypeOrmRepository,
     },
   ],
   exports: [CouponService],

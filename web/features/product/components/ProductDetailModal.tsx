@@ -78,7 +78,7 @@ export const ProductDetailModal = ({
           {/* Featured Badge */}
           {product.isFeatured === 1 && (
             <Badge className="absolute top-4 left-4 bg-orange-500 hover:bg-orange-600 text-white font-black text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md backdrop-blur-xs">
-              {t('PRODUCT.FEATURED', 'Nổi bật')}
+              {t('PRODUCT.FEATURED')}
             </Badge>
           )}
         </div>
@@ -96,7 +96,7 @@ export const ProductDetailModal = ({
                 </DialogTitle>
                 <button
                   type="button"
-                  aria-label={t('PRODUCT.INFO', 'Thông tin')}
+                  aria-label={t('PRODUCT.INFO')}
                   className="text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors"
                 >
                   <Info className="w-4 h-4" />
@@ -105,7 +105,7 @@ export const ProductDetailModal = ({
 
               {/* Subtitle / Specs (Size & Crust) */}
               <p className="text-xs text-gray-500 dark:text-zinc-400 font-medium mt-1">
-                {productSpecsText || (product.description ? product.description.slice(0, 60) : t('PRODUCT.DEFAULT_DESC', 'Pizza thơm ngon'))}
+                {productSpecsText || (product.description ? product.description.slice(0, 60) : t('PRODUCT.DEFAULT_DESC'))}
               </p>
 
               {/* Description */}
@@ -120,7 +120,7 @@ export const ProductDetailModal = ({
             <button
               type="button"
               onClick={onClose}
-              aria-label={t('COMMON.CLOSE', 'Đóng')}
+              aria-label={t('COMMON.CLOSE')}
               className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer shrink-0"
             >
               <X className="w-4 h-4" />
@@ -133,7 +133,7 @@ export const ProductDetailModal = ({
             {isLoading && (
               <div className="flex items-center justify-center py-4 text-xs text-gray-500 dark:text-zinc-400 gap-2">
                 <Loader2 className="w-4 h-4 animate-spin text-[#ff5c00]" />
-                <span>{t('PRODUCT.LOADING_OPTIONS', 'Đang tải thông tin tùy chọn...')}</span>
+                <span>{t('PRODUCT.LOADING_OPTIONS')}</span>
               </div>
             )}
 
@@ -141,7 +141,7 @@ export const ProductDetailModal = ({
             {!isLoading && sortedVariants.length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400">
-                  {t('PRODUCT.SELECT_SIZE', 'Kích cỡ & Loại đế')}
+                  {t('PRODUCT.SELECT_SIZE')}
                 </h4>
 
                 <div className="bg-gray-100/90 dark:bg-[#27272a]/80 p-1.5 rounded-2xl flex items-center gap-1.5 border border-gray-200/80 dark:border-zinc-800/80">
@@ -180,7 +180,7 @@ export const ProductDetailModal = ({
             {!isLoading && sortedIngredients.length > 0 && (
               <div className="space-y-3">
                 <h4 className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">
-                  {t('PRODUCT.ADD_TO_TASTE', 'Thêm vị (Topping)')}
+                  {t('PRODUCT.ADD_TO_TASTE')}
                 </h4>
 
                 <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
@@ -226,7 +226,7 @@ export const ProductDetailModal = ({
 
                         {/* Price */}
                         <span className="text-[11px] font-extrabold text-gray-600 dark:text-zinc-400 mt-0.5">
-                          {price > 0 ? formatVND(price) : t('PRODUCT.FREE', 'Miễn phí')}
+                          {price > 0 ? formatVND(price) : t('PRODUCT.FREE')}
                         </span>
                       </button>
                     );
@@ -244,7 +244,7 @@ export const ProductDetailModal = ({
                 type="button"
                 onClick={handleDecreaseQuantity}
                 disabled={quantity <= 1}
-                aria-label={t('PRODUCT.DECREASE_QTY', 'Giảm số lượng')}
+                aria-label={t('PRODUCT.DECREASE_QTY')}
                 className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-200 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-700 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
               >
                 <Minus className="w-3.5 h-3.5" />
@@ -253,7 +253,7 @@ export const ProductDetailModal = ({
               <button
                 type="button"
                 onClick={handleIncreaseQuantity}
-                aria-label={t('PRODUCT.INCREASE_QTY', 'Tăng số lượng')}
+                aria-label={t('PRODUCT.INCREASE_QTY')}
                 className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-200 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-700 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -268,7 +268,7 @@ export const ProductDetailModal = ({
             >
               <span>
                 {isEditMode
-                  ? `${t('COMMON.SAVE', 'Lưu thay đổi')} • ${formatVND(totalPrice)}`
+                  ? `${t('COMMON.SAVE')} • ${formatVND(totalPrice)}`
                   : t('PRODUCT.ADD_TO_CART_PRICE', {
                       price: formatVND(totalPrice),
                       defaultValue: `Thêm vào giỏ với ${formatVND(totalPrice)}`,

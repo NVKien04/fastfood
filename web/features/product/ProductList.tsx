@@ -59,7 +59,7 @@ export const ProductList = () => {
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-red-600 mb-3" />
             <p className="text-sm font-medium text-gray-500 dark:text-zinc-400">
-              {t('COMMON.LOADING', 'Đang tải thực đơn...')}
+              {t('COMMON.LOADING')}
             </p>
           </div>
         )}
@@ -71,16 +71,16 @@ export const ProductList = () => {
               <Utensils className="w-6 h-6" />
             </div>
             <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">
-              {t('PRODUCT.CANT_LOAD_MENU', 'Không thể tải danh sách món ăn')}
+              {t('PRODUCT.CANT_LOAD_MENU')}
             </h3>
             <p className="text-xs text-gray-500 dark:text-zinc-400 max-w-sm mb-4">
-              {t('PRODUCT.CHECK_CONNECTION', 'Vui lòng kiểm tra kết nối mạng hoặc thử lại sau.')}
+              {t('PRODUCT.CHECK_CONNECTION')}
             </p>
             <Button
               onClick={() => refetchProducts()}
               className="bg-[#ff6900] hover:bg-[#e05d00] text-white rounded-xl text-xs font-bold px-4 py-2 cursor-pointer"
             >
-              {t('COMMON.RETRY', 'Thử lại')}
+              {t('COMMON.RETRY')}
             </Button>
           </div>
         )}
@@ -92,10 +92,10 @@ export const ProductList = () => {
               <Utensils className="w-8 h-8" />
             </div>
             <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1">
-              {t('PRODUCT.EMPTY_PRODUCTS', 'Không tìm thấy món ăn nào')}
+              {t('PRODUCT.EMPTY_PRODUCTS')}
             </h3>
             <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 max-w-md">
-              {t('PRODUCT.EMPTY_PRODUCTS_DESC', 'Vui lòng thử chọn danh mục khác hoặc thay đổi từ khóa tìm kiếm.')}
+              {t('PRODUCT.EMPTY_PRODUCTS_DESC')}
             </p>
           </div>
         )}

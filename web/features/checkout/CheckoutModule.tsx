@@ -44,7 +44,7 @@ export const CheckoutModule = () => {
               <Link
                 href="/"
                 className="p-2 -ml-2 text-gray-800 dark:text-zinc-200 hover:text-[#ff6900] dark:hover:text-[#ff6900] transition-colors cursor-pointer flex items-center justify-center"
-                title={t('CART.BACK_TO_MENU', 'Quay lại thực đơn')}
+                title={t('CART.BACK_TO_MENU')}
               >
                 <ArrowLeft className="w-6 h-6" />
               </Link>
@@ -53,7 +53,7 @@ export const CheckoutModule = () => {
                 type="button"
                 onClick={() => setStep(1)}
                 className="p-2 -ml-2 text-gray-800 dark:text-zinc-200 hover:text-[#ff6900] dark:hover:text-[#ff6900] transition-colors cursor-pointer flex items-center justify-center"
-                title={t('CART.BACK_TO_CART', 'Quay lại giỏ hàng')}
+                title={t('CART.BACK_TO_CART')}
               >
                 <ArrowLeft className="w-6 h-6" />
               </button>
@@ -63,8 +63,8 @@ export const CheckoutModule = () => {
           {/* 2. Center: Large Title */}
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 dark:text-white tracking-tight text-center">
             {step === 1
-              ? t('CART.MY_CART', 'Giỏ hàng của tôi')
-              : t('CHECKOUT.DELIVERY_AND_PAYMENT', 'Thông tin giao hàng & Thanh toán')}
+              ? t('CART.MY_CART')
+              : t('CHECKOUT.DELIVERY_AND_PAYMENT')}
           </h1>
         </div>
       </div>
@@ -114,7 +114,7 @@ export const CheckoutModule = () => {
                   onClick={() => setStep(1)}
                   className="text-xs font-bold text-[#ff6900] hover:underline cursor-pointer"
                 >
-                  {t('CART.CHANGE_CART', 'Thay đổi giỏ hàng')}
+                  {t('CART.CHANGE_CART')}
                 </button>
               </div>
               <OrderSummary

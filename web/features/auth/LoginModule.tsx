@@ -16,7 +16,7 @@ export const LoginModule = () => {
           <Suspense
             fallback={
               <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-gray-100 dark:border-zinc-800 p-8 text-center text-sm text-gray-400 dark:text-zinc-500 animate-pulse">
-                {t('COMMON.LOADING', 'Đang tải...')}
+                {t('COMMON.LOADING')}
               </div>
             }
           >

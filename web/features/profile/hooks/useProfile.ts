@@ -66,7 +66,7 @@ export const useProfile = () => {
             if (data) {
               setStatusMessage({
                 type: 'success',
-                text: t('PROFILE.PROFILE_UPDATED', 'Cập nhật thông tin tài khoản thành công!'),
+                text: t('PROFILE.PROFILE_UPDATED'),
               });
               // Update local state
               const currentUser = useStore.getState().user;
@@ -79,14 +79,14 @@ export const useProfile = () => {
             } else {
               setStatusMessage({
                 type: 'error',
-                text: t('PROFILE.PROFILE_UPDATE_FAILED', 'Cập nhật thông tin thất bại. Vui lòng thử lại.'),
+                text: t('PROFILE.PROFILE_UPDATE_FAILED'),
               });
             }
           },
           onError: (error: Error) => {
             setStatusMessage({
               type: 'error',
-              text: error.message || t('PROFILE.PROFILE_UPDATE_FAILED', 'Cập nhật thông tin thất bại.'),
+              text: error.message || t('PROFILE.PROFILE_UPDATE_FAILED'),
             });
           },
         },

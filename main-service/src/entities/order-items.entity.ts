@@ -57,7 +57,7 @@ export class OrderItemsEntity {
   price?: number | null;
 
   @Column({ type: 'json', nullable: true })
-  options?: Record<string, any> | null;
+  options?: Record<string, unknown> | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;

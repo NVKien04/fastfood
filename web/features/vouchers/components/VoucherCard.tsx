@@ -108,7 +108,7 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
               </span>
               {isUsed && (
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 dark:bg-zinc-700 text-gray-600 dark:text-zinc-300">
-                  {t('VOUCHER.USED', 'Đã sử dụng')}
+                  {t('VOUCHER.USED')}
                 </span>
               )}
             </div>
@@ -124,14 +124,14 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
           </h3>
 
           <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
-            {voucher.description || t('VOUCHER.DEFAULT_DESC', 'Áp dụng cho mọi đơn hàng thỏa mãn điều kiện')}
+            {voucher.description || t('VOUCHER.DEFAULT_DESC')}
           </p>
 
           <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-zinc-300">
-            <span className="text-gray-400 font-normal">{t('VOUCHER.MIN_ORDER_LABEL', 'Đơn tối thiểu')}:</span>
+            <span className="text-gray-400 font-normal">{t('VOUCHER.MIN_ORDER_LABEL')}:</span>
             <span className="font-bold text-gray-900 dark:text-white">
               {voucher.minOrderAmount === 0
-                ? t('VOUCHER.NO_MIN', 'Không giới hạn')
+                ? t('VOUCHER.NO_MIN')
                 : formatVND(voucher.minOrderAmount)}
             </span>
           </div>
@@ -150,7 +150,7 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
             }`}
           >
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? t('VOUCHER.COPIED', 'Đã chép mã') : t('VOUCHER.COPY_CODE', 'Sao chép mã')}</span>
+            <span>{copied ? t('VOUCHER.COPIED') : t('VOUCHER.COPY_CODE')}</span>
           </button>
 
           {/* Use Now Link */}
@@ -159,7 +159,7 @@ export const VoucherCard = ({ voucher }: VoucherCardProps) => {
               href="/"
               className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full text-xs font-black text-white bg-[#ff6900] hover:bg-[#e05d00] active:scale-95 transition-all shadow-sm cursor-pointer"
             >
-              <span>{t('VOUCHER.USE_NOW', 'Dùng ngay')}</span>
+              <span>{t('VOUCHER.USE_NOW')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           )}

@@ -91,13 +91,13 @@ export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSe
     setErrorMsg('');
     const trimmed = inputCode.trim().toUpperCase();
     if (!trimmed) {
-      setErrorMsg(t('VOUCHER.ERR_ENTER_CODE', 'Vui lòng nhập mã giảm giá của bạn'));
+      setErrorMsg(t('VOUCHER.ERR_ENTER_CODE'));
       return;
     }
 
     const found = MOCK_VOUCHERS.find((v) => v.code.toUpperCase() === trimmed);
     if (!found) {
-      setErrorMsg(t('VOUCHER.ERR_NOT_FOUND', 'Mã giảm giá không tồn tại hoặc đã hết hạn.'));
+      setErrorMsg(t('VOUCHER.ERR_NOT_FOUND'));
       return;
     }
 
@@ -141,12 +141,12 @@ export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSe
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4">
           <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white tracking-wide uppercase">
-            {t('VOUCHER.TITLE', 'MÃ KHUYẾN MÃI')}
+            {t('VOUCHER.TITLE')}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label={t('COMMON.CLOSE', 'Đóng')}
+            aria-label={t('COMMON.CLOSE')}
             className="w-8 h-8 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -164,7 +164,7 @@ export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSe
                   setInputCode(e.target.value);
                   if (errorMsg) setErrorMsg('');
                 }}
-                placeholder={t('VOUCHER.ENTER_CODE_PLACEHOLDER', 'Nhập mã giảm giá của bạn')}
+                placeholder={t('VOUCHER.ENTER_CODE_PLACEHOLDER')}
                 className="w-full h-11 px-4 pr-9 rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-[#ff6900]/20 focus:border-[#ff6900]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleApplyInputCode();
@@ -174,7 +174,7 @@ export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSe
                 <button
                   type="button"
                   onClick={() => setInputCode('')}
-                  aria-label={t('COMMON.DELETE', 'Xóa')}
+                  aria-label={t('COMMON.DELETE')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-zinc-200 cursor-pointer"
                 >
                   <XCircle className="w-4 h-4" />
@@ -188,7 +188,7 @@ export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSe
               disabled={!inputCode.trim()}
               className="h-11 px-5 rounded-xl font-bold text-sm transition-all cursor-pointer disabled:bg-gray-100 dark:disabled:bg-zinc-800 disabled:text-gray-400 dark:disabled:text-zinc-600 disabled:cursor-not-allowed bg-[#ff6900] hover:bg-[#e05d00] text-white active:scale-95 shadow-xs"
             >
-              {t('COMMON.APPLY', 'Áp dụng')}
+              {t('COMMON.APPLY')}
             </button>
           </div>
 
@@ -203,16 +203,16 @@ export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSe
         {/* Section Label & Filter Tabs */}
         <div className="px-6 pt-2 pb-2">
           <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-zinc-400 mb-2.5">
-            {t('VOUCHER.OR_SELECT_VOUCHER', 'Hoặc chọn mã giảm giá của bạn')}
+            {t('VOUCHER.OR_SELECT_VOUCHER')}
           </p>
 
           {/* Type Filter Chips */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
             {[
-              { id: 'ALL', label: t('VOUCHER.TAB_ALL', 'Tất cả') },
-              { id: 'DISCOUNT', label: t('VOUCHER.TAB_DISCOUNT', 'Giảm giá đơn') },
-              { id: 'FREESHIP', label: t('VOUCHER.TAB_FREESHIP', 'Freeship') },
-              { id: 'FOOD', label: t('VOUCHER.TAB_FOOD', 'Món tặng') },
+              { id: 'ALL', label: t('VOUCHER.TAB_ALL') },
+              { id: 'DISCOUNT', label: t('VOUCHER.TAB_DISCOUNT') },
+              { id: 'FREESHIP', label: t('VOUCHER.TAB_FREESHIP') },
+              { id: 'FOOD', label: t('VOUCHER.TAB_FOOD') },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -310,7 +310,7 @@ export const VoucherModal = ({ isOpen, onClose, subTotal, appliedCode = '', onSe
             onClick={handleConfirm}
             className="w-full h-12 rounded-2xl bg-[#ff6900] hover:bg-[#e05d00] active:scale-[0.99] text-white font-bold text-base shadow-lg shadow-orange-500/25 transition-all flex items-center justify-center cursor-pointer"
           >
-            {t('COMMON.DONE', 'Xong')}
+            {t('COMMON.DONE')}
           </button>
         </div>
       </div>

@@ -64,7 +64,7 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
           {!notification.isRead && (
             <span
               className="w-2 h-2 rounded-full bg-[#ff6900] shrink-0 animate-pulse"
-              title={t('NOTIFICATION.UNREAD', 'chưa đọc')}
+              title={t('NOTIFICATION.UNREAD')}
             />
           )}
         </div>
@@ -82,7 +82,7 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
 
           {notification.linkUrl && (
             <span className="text-[11px] font-bold text-[#ff6900] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
-              <span>{t('NOTIFICATION.VIEW_DETAILS', 'Xem chi tiết')}</span>
+              <span>{t('NOTIFICATION.VIEW_DETAILS')}</span>
               <ChevronRight className="w-3 h-3" />
             </span>
           )}
@@ -93,7 +93,7 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
       <button
         type="button"
         onClick={(e) => onDelete(notification.id, e)}
-        aria-label={t('NOTIFICATION.DELETE', 'Xóa thông báo')}
+        aria-label={t('NOTIFICATION.DELETE')}
         className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all cursor-pointer shrink-0 absolute top-3 right-3"
       >
         <Trash2 className="w-3.5 h-3.5" />

@@ -33,7 +33,7 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
       if (!file.type.startsWith('image/')) {
         setMessage({
           type: 'error',
-          text: t('PROFILE.ERR_IMAGE_TYPE', 'Chỉ chấp nhận file hình ảnh (JPG, PNG, WEBP, GIF)'),
+          text: t('PROFILE.ERR_IMAGE_TYPE'),
         });
         return;
       }
@@ -41,7 +41,7 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
       if (file.size > 10 * 1024 * 1024) {
         setMessage({
           type: 'error',
-          text: t('PROFILE.ERR_IMAGE_SIZE', 'Kích thước file không được vượt quá 10MB'),
+          text: t('PROFILE.ERR_IMAGE_SIZE'),
         });
         return;
       }
@@ -67,7 +67,7 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
           if (!uploadData?.url) {
             setMessage({
               type: 'error',
-              text: t('PROFILE.ERR_SAVE_AVATAR', 'Không thể lấy URL ảnh sau khi tải lên.'),
+              text: t('PROFILE.ERR_SAVE_AVATAR'),
             });
             return;
           }
@@ -81,7 +81,7 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
                 if (profileData) {
                   setMessage({
                     type: 'success',
-                    text: t('PROFILE.AVATAR_SAVED', 'Ảnh đại diện đã được cập nhật thành công!'),
+                    text: t('PROFILE.AVATAR_SAVED'),
                   });
                   setSelectedFile(null);
                   setPreviewUrl(null);
@@ -97,14 +97,14 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
                 } else {
                   setMessage({
                     type: 'error',
-                    text: t('PROFILE.ERR_SAVE_AVATAR', 'Không thể lưu ảnh đại diện vào hồ sơ.'),
+                    text: t('PROFILE.ERR_SAVE_AVATAR'),
                   });
                 }
               },
               onError: (err: Error) => {
                 setMessage({
                   type: 'error',
-                  text: err.message || t('PROFILE.ERR_SAVE_AVATAR', 'Lỗi khi cập nhật ảnh vào hồ sơ người dùng.'),
+                  text: err.message || t('PROFILE.ERR_SAVE_AVATAR'),
                 });
               },
             },
@@ -113,7 +113,7 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
         onError: (err: Error) => {
           setMessage({
             type: 'error',
-            text: err.message || t('PROFILE.ERR_UPLOAD_FAILED', 'Tải ảnh lên thất bại. Vui lòng thử lại.'),
+            text: err.message || t('PROFILE.ERR_UPLOAD_FAILED'),
           });
         },
       },
@@ -138,7 +138,7 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
         onSuccess: () => {
           setMessage({
             type: 'success',
-            text: t('PROFILE.AVATAR_REMOVED', 'Đã xóa ảnh đại diện.'),
+            text: t('PROFILE.AVATAR_REMOVED'),
           });
           setSelectedFile(null);
           setPreviewUrl(null);
@@ -155,7 +155,7 @@ export const useAvatarUpload = (currentAvatar?: string, onAvatarChange?: (newUrl
         onError: (err: Error) => {
           setMessage({
             type: 'error',
-            text: err.message || t('PROFILE.ERR_REMOVE_FAILED', 'Xóa ảnh thất bại.'),
+            text: err.message || t('PROFILE.ERR_REMOVE_FAILED'),
           });
         },
       },

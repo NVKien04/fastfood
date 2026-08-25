@@ -49,7 +49,7 @@ export const useRegister = () => {
       });
 
       if (response.kind === 'ERROR') {
-        throw new Error(response.error || t('AUTH.REGISTER_FAILED', 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.'));
+        throw new Error(response.error || t('AUTH.REGISTER_FAILED'));
       }
 
       // Tự động đăng nhập sau khi tạo tài khoản
@@ -84,7 +84,7 @@ export const useRegister = () => {
       setIsSuccess(true);
     },
     onError: (error: Error) => {
-      setErrorMessage(error.message || t('AUTH.REGISTER_FAILED', 'Đã có lỗi xảy ra khi tạo tài khoản.'));
+      setErrorMessage(error.message || t('AUTH.REGISTER_FAILED'));
     },
   });
 

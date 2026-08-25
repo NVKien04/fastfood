@@ -77,7 +77,7 @@ export const useProductMenu = () => {
     const groups: { [key: string]: CategoryGroup } = {};
     filtered.forEach((p) => {
       const catId = p.categoryId || 'uncategorized';
-      const catName = t('PRODUCT.CATEGORY_FALLBACK', 'Danh mục');
+      const catName = t('PRODUCT.CATEGORY_FALLBACK');
       const slug = categoryToSlug(catName);
 
       if (!groups[catId]) {

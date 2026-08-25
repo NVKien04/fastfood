@@ -41,19 +41,19 @@ export const CheckoutForm = ({
       <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 space-y-4 transition-colors">
         <h2 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-zinc-800">
           <User className="w-5 h-5 text-[#ff6900]" />
-          <span>{t('CHECKOUT.RECIPIENT_INFO', 'Thông tin người nhận')}</span>
+          <span>{t('CHECKOUT.RECIPIENT_INFO')}</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-              {t('CHECKOUT.RECIPIENT_NAME', 'Họ và tên')} <span className="text-[#ff6900]">*</span>
+              {t('CHECKOUT.RECIPIENT_NAME')} <span className="text-[#ff6900]">*</span>
             </label>
             <div className="relative">
               <Input
                 type="text"
                 {...register('guestName')}
-                placeholder={t('CHECKOUT.NAME_PLACEHOLDER', 'Nhập họ và tên người nhận')}
+                placeholder={t('CHECKOUT.NAME_PLACEHOLDER')}
                 className={`rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
                   errors.guestName ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]'
                 }`}
@@ -66,13 +66,13 @@ export const CheckoutForm = ({
 
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-              {t('CHECKOUT.PHONE', 'Số điện thoại')} <span className="text-[#ff6900]">*</span>
+              {t('CHECKOUT.PHONE')} <span className="text-[#ff6900]">*</span>
             </label>
             <div className="relative">
               <Input
                 type="tel"
                 {...register('guestPhone')}
-                placeholder={t('CHECKOUT.PHONE_PLACEHOLDER', 'Nhập số điện thoại nhận hàng')}
+                placeholder={t('CHECKOUT.PHONE_PLACEHOLDER')}
                 className={`rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
                   errors.guestPhone ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]'
                 }`}
@@ -86,13 +86,13 @@ export const CheckoutForm = ({
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-            {t('CHECKOUT.ADDRESS', 'Địa chỉ giao hàng chi tiết')} <span className="text-[#ff6900]">*</span>
+            {t('CHECKOUT.ADDRESS')} <span className="text-[#ff6900]">*</span>
           </label>
           <div className="relative">
             <Input
               type="text"
               {...register('guestAddress')}
-              placeholder={t('CHECKOUT.ADDRESS_PLACEHOLDER', 'Số nhà, tên đường, phường/xã, quận/huyện...')}
+              placeholder={t('CHECKOUT.ADDRESS_PLACEHOLDER')}
               className={`rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
                 errors.guestAddress ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]'
               }`}
@@ -105,12 +105,12 @@ export const CheckoutForm = ({
 
         <div className="space-y-1.5">
           <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-            {t('CHECKOUT.NOTES', 'Ghi chú cho shipper')}
+            {t('CHECKOUT.NOTES')}
           </label>
           <Input
             type="text"
             {...register('notes')}
-            placeholder={t('CHECKOUT.NOTES_PLACEHOLDER', 'Ví dụ: Giao trước cửa, gọi điện khi tới nơi...')}
+            placeholder={t('CHECKOUT.NOTES_PLACEHOLDER')}
             className="rounded-2xl h-12 bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 border-gray-200 dark:border-zinc-800 focus:border-[#ff6900]"
           />
         </div>
@@ -120,7 +120,7 @@ export const CheckoutForm = ({
       <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/40 dark:shadow-black/40 space-y-4 transition-colors">
         <h2 className="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2 pb-2 border-b border-gray-100 dark:border-zinc-800">
           <CreditCard className="w-5 h-5 text-[#ff6900]" />
-          <span>{t('CHECKOUT.PAYMENT_METHOD', 'Phương thức thanh toán')}</span>
+          <span>{t('CHECKOUT.PAYMENT_METHOD')}</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -147,10 +147,10 @@ export const CheckoutForm = ({
               </div>
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">
-                  {t('CHECKOUT.COD', 'Thanh toán khi nhận hàng (COD)')}
+                  {t('CHECKOUT.COD')}
                 </span>
                 <span className="text-[10px] text-gray-400 dark:text-zinc-500">
-                  {t('CHECKOUT.COD_DESC', 'Tiền mặt hoặc chuyển khoản')}
+                  {t('CHECKOUT.COD_DESC')}
                 </span>
               </div>
             </div>
@@ -180,10 +180,10 @@ export const CheckoutForm = ({
               </div>
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-gray-800 dark:text-zinc-200">
-                  {t('CHECKOUT.VNPAY', 'Cổng VNPay')}
+                  {t('CHECKOUT.VNPAY')}
                 </span>
                 <span className="text-[10px] text-gray-400 dark:text-zinc-500">
-                  {t('CHECKOUT.VNPAY_DESC', 'Thẻ ATM / QR Pay / Visa')}
+                  {t('CHECKOUT.VNPAY_DESC')}
                 </span>
               </div>
             </div>
@@ -201,7 +201,7 @@ export const CheckoutForm = ({
         {isLoading ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>{t('CHECKOUT.PROCESSING_ORDER', 'Đang xử lý đơn hàng...')}</span>
+            <span>{t('CHECKOUT.PROCESSING_ORDER')}</span>
           </>
         ) : (
           <span>

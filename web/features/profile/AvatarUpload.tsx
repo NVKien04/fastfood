@@ -52,7 +52,7 @@ export const AvatarUpload = ({ currentAvatar, userName = 'User', onAvatarChange 
           disabled={loading}
           onClick={() => fileInputRef.current?.click()}
           className="absolute bottom-0 right-0 p-2 rounded-full bg-[#ff6900] hover:bg-[#e05d00] text-white shadow-md transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
-          title={t('PROFILE.CHOOSE_NEW_AVATAR', 'Chọn ảnh đại diện mới')}
+          title={t('PROFILE.CHOOSE_NEW_AVATAR')}
         >
           <Camera className="w-4 h-4" />
         </button>
@@ -81,7 +81,7 @@ export const AvatarUpload = ({ currentAvatar, userName = 'User', onAvatarChange 
               className="h-8 px-3 rounded-xl bg-[#ff6900] hover:bg-[#e05d00] text-white text-xs font-bold shadow-sm cursor-pointer"
             >
               {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <Check className="w-3.5 h-3.5 mr-1" />}
-              {t('PROFILE.SAVE_AVATAR', 'Lưu ảnh')}
+              {t('PROFILE.SAVE_AVATAR')}
             </Button>
             <Button
               size="sm"
@@ -90,7 +90,7 @@ export const AvatarUpload = ({ currentAvatar, userName = 'User', onAvatarChange 
               onClick={handleCancel}
               className="h-8 px-3 rounded-xl text-xs font-semibold text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 dark:border-zinc-700 cursor-pointer"
             >
-              {t('COMMON.CANCEL', 'Hủy')}
+              {t('COMMON.CANCEL')}
             </Button>
           </div>
         </div>
@@ -105,7 +105,7 @@ export const AvatarUpload = ({ currentAvatar, userName = 'User', onAvatarChange 
           className="text-xs text-gray-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1 font-medium disabled:opacity-50 cursor-pointer"
         >
           <Trash2 className="w-3 h-3" />
-          <span>{t('PROFILE.REMOVE_AVATAR', 'Gỡ ảnh đại diện')}</span>
+          <span>{t('PROFILE.REMOVE_AVATAR')}</span>
         </button>
       )}
 

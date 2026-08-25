@@ -68,7 +68,7 @@ export const Header = ({
 
   const userDisplayName = useMemo(() => {
     if (!user) return '';
-    return user.fullName || user.email || t('NAV.PROFILE', 'Tài khoản');
+    return user.fullName || user.email || t('NAV.PROFILE');
   }, [user, t]);
 
   const currentLanguage = (i18n.language || 'vi').toLowerCase();
@@ -82,12 +82,12 @@ export const Header = ({
   const currentThemeLabel = useMemo(() => {
     switch (theme) {
       case 'light':
-        return t('THEME.LIGHT', 'Sáng');
+        return t('THEME.LIGHT');
       case 'dark':
-        return t('THEME.DARK', 'Tối');
+        return t('THEME.DARK');
       case 'system':
       default:
-        return t('THEME.SYSTEM', 'Hệ thống');
+        return t('THEME.SYSTEM');
     }
   }, [theme, t]);
 
@@ -175,7 +175,7 @@ export const Header = ({
                 KeiPizza
               </span>
               <span className="text-[11px] text-gray-500 dark:text-zinc-400 font-medium">
-                {t('NAV.STORES_COUNT', '1510 cửa hàng tại 27 quốc gia')}
+                {t('NAV.STORES_COUNT')}
               </span>
             </div>
           </Link>
@@ -188,13 +188,13 @@ export const Header = ({
             tabIndex={0}
           >
             <div className="flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-gray-900 dark:text-white">
-              <span className="shrink-0">{t('NAV.DELIVERY_TO', 'Giao pizza tới:')}</span>
+              <span className="shrink-0">{t('NAV.DELIVERY_TO')}</span>
               <span className="text-[#ff6900] group-hover:underline truncate">{deliveryAddress}</span>
               <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 group-hover:text-[#ff6900] transition-colors shrink-0" />
             </div>
             <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-zinc-400 mt-1">
               <span className="font-bold text-gray-800 dark:text-zinc-300">
-                {t('NAV.DELIVERY_TIME', '34 phút')}
+                {t('NAV.DELIVERY_TIME')}
               </span>
               <span>•</span>
               <span className="flex items-center gap-0.5 text-amber-500 font-bold">4.8 ★</span>
@@ -217,7 +217,7 @@ export const Header = ({
               type="button"
               onClick={_handleToggleLanguage}
               className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-800 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
-              aria-label={t('NAV.SELECT_LANGUAGE', 'Chọn ngôn ngữ')}
+              aria-label={t('NAV.SELECT_LANGUAGE')}
             >
               <Globe className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
               <span className="tracking-wide font-extrabold">{currentLangLabel}</span>
@@ -273,7 +273,7 @@ export const Header = ({
                 ? formatVND(cartTotalPrice)
                 : cartTotalCount > 0
                   ? t('CART.ITEMS_COUNT', { count: cartTotalCount, defaultValue: `${cartTotalCount} món` })
-                  : t('NAV.CART', 'Giỏ hàng')}
+                  : t('NAV.CART')}
             </span>
 
             {/* Badge on Top-Right Corner of the Button */}
@@ -330,7 +330,7 @@ export const Header = ({
                         className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                       >
                         <LogIn className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                        <span>{t('NAV.LOGIN', 'Đăng nhập')}</span>
+                        <span>{t('NAV.LOGIN')}</span>
                       </button>
                       <button
                         type="button"
@@ -338,7 +338,7 @@ export const Header = ({
                         className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                       >
                         <UserPlus className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                        <span>{t('NAV.REGISTER', 'Đăng ký')}</span>
+                        <span>{t('NAV.REGISTER')}</span>
                       </button>
                     </>
                   )}
@@ -350,7 +350,7 @@ export const Header = ({
                     className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     <PackageSearch className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                    <span>{t('NAV.TRACK_ORDER', 'Đơn hàng của tôi')}</span>
+                    <span>{t('NAV.TRACK_ORDER')}</span>
                   </button>
 
                   {/* 3. Ví Voucher / Mã giảm giá */}
@@ -360,7 +360,7 @@ export const Header = ({
                     className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     <Ticket className="w-4 h-4 text-[#ff6900]" />
-                    <span className="flex-1 text-left">{t('NAV.VOUCHERS', 'Ví Voucher')}</span>
+                    <span className="flex-1 text-left">{t('NAV.VOUCHERS')}</span>
                     <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400">
                       HOT
                     </span>
@@ -372,7 +372,7 @@ export const Header = ({
                     className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     <Headphones className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                    <span>{t('NAV.CUSTOMER_SUPPORT', 'Hỗ trợ khách hàng')}</span>
+                    <span>{t('NAV.CUSTOMER_SUPPORT')}</span>
                   </a>
 
                   {/* 4. Giao diện (Menu Cấp 2) */}
@@ -388,7 +388,7 @@ export const Header = ({
                     >
                       <span className="flex items-center gap-3">
                         <Palette className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                        <span>{t('THEME.TITLE', 'Giao diện')}</span>
+                        <span>{t('THEME.TITLE')}</span>
                       </span>
                       <span className="flex items-center gap-1 text-[11px] text-gray-500 dark:text-zinc-400">
                         <span>{currentThemeLabel}</span>
@@ -415,7 +415,7 @@ export const Header = ({
                         >
                           <span className="flex items-center gap-3">
                             <Sun className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                            <span>{t('THEME.LIGHT', 'Sáng')}</span>
+                            <span>{t('THEME.LIGHT')}</span>
                           </span>
                           {theme === 'light' && (
                             <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
@@ -434,7 +434,7 @@ export const Header = ({
                         >
                           <span className="flex items-center gap-3">
                             <Moon className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                            <span>{t('THEME.DARK', 'Tối')}</span>
+                            <span>{t('THEME.DARK')}</span>
                           </span>
                           {theme === 'dark' && (
                             <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
@@ -453,7 +453,7 @@ export const Header = ({
                         >
                           <span className="flex items-center gap-3">
                             <Laptop className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                            <span>{t('THEME.SYSTEM', 'Hệ thống')}</span>
+                            <span>{t('THEME.SYSTEM')}</span>
                           </span>
                           {theme === 'system' && (
                             <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
@@ -472,7 +472,7 @@ export const Header = ({
                         className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors cursor-pointer"
                       >
                         <LogOut className="w-4 h-4 text-red-600 dark:text-red-400" />
-                        <span>{t('NAV.LOGOUT', 'Đăng xuất')}</span>
+                        <span>{t('NAV.LOGOUT')}</span>
                       </button>
                     </div>
                   )}

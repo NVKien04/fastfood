@@ -26,10 +26,10 @@ export const MyOrders = () => {
   } = useMyOrders();
 
   const tabs: { key: OrderFilterTab; label: string }[] = [
-    { key: 'ALL', label: t('ORDER.TAB_ALL', 'Tất cả') },
-    { key: 'PROCESSING', label: t('ORDER.TAB_PROCESSING', 'Đang xử lý') },
-    { key: 'DELIVERED', label: t('ORDER.TAB_DELIVERED', 'Đã giao') },
-    { key: 'CANCELLED', label: t('ORDER.TAB_CANCELLED', 'Đã hủy') },
+    { key: 'ALL', label: t('ORDER.TAB_ALL') },
+    { key: 'PROCESSING', label: t('ORDER.TAB_PROCESSING') },
+    { key: 'DELIVERED', label: t('ORDER.TAB_DELIVERED') },
+    { key: 'CANCELLED', label: t('ORDER.TAB_CANCELLED') },
   ];
 
   return (
@@ -39,10 +39,10 @@ export const MyOrders = () => {
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
             <Package className="w-7 h-7 text-[#ff6900]" />
-            <span>{t('ORDER.PAGE_TITLE', 'Đơn hàng của tôi')}</span>
+            <span>{t('ORDER.PAGE_TITLE')}</span>
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 mt-1">
-            {t('ORDER.PAGE_SUBTITLE', 'Theo dõi tiến trình các món ăn đang giao và lịch sử đặt hàng của bạn')}
+            {t('ORDER.PAGE_SUBTITLE')}
           </p>
         </div>
 
@@ -52,7 +52,7 @@ export const MyOrders = () => {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-          <span>{t('COMMON.REFRESH', 'Làm mới')}</span>
+          <span>{t('COMMON.REFRESH')}</span>
         </button>
       </div>
 
@@ -96,7 +96,7 @@ export const MyOrders = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('ORDER.SEARCH_PLACEHOLDER', 'Tìm mã đơn (#FF...)...')}
+            placeholder={t('ORDER.SEARCH_PLACEHOLDER')}
             className="w-full text-xs pl-9 pr-4 py-2 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 shadow-xs"
           />
         </div>
@@ -107,7 +107,7 @@ export const MyOrders = () => {
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-[#ff6900] mb-3" />
           <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
-            {t('ORDER.LOADING_ORDERS', 'Đang tải danh sách đơn hàng...')}
+            {t('ORDER.LOADING_ORDERS')}
           </p>
         </div>
       ) : orders.length > 0 ? (
@@ -122,16 +122,16 @@ export const MyOrders = () => {
             <ShoppingBag className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1">
-            {t('ORDER.EMPTY_TITLE', 'Chưa có đơn hàng nào')}
+            {t('ORDER.EMPTY_TITLE')}
           </h3>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 max-w-sm mb-6">
-            {t('ORDER.EMPTY_DESC', 'Bạn chưa có đơn hàng nào trong danh mục này. Hãy khám phá thực đơn thơm ngon ngay!')}
+            {t('ORDER.EMPTY_DESC')}
           </p>
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#ff6900] hover:bg-[#e05d00] text-white text-xs sm:text-sm font-black shadow-lg shadow-orange-500/25 active:scale-95 transition-all"
           >
-            <span>{t('ORDER.EXPLORE_MENU', 'Khám phá thực đơn ngay')}</span>
+            <span>{t('ORDER.EXPLORE_MENU')}</span>
             <span>→</span>
           </Link>
         </div>

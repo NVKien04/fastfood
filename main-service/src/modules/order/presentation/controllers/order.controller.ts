@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth, GetUser } from '@/common/decorators';
 import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
-import { OrderStatus, RoleEnum } from '@/enums';
-import { CancelOrderDto, CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
+import { RoleEnum } from '@/enums';
+import { CancelOrderDto, CreateOrderDto, OrderFilterDto, UpdateOrderStatusDto } from '@/modules/order/presentation/dto';
 import { OrderService } from '@/modules/order/application/services/order.service';
 
 @ApiTags('Order')
@@ -75,8 +75,8 @@ export class OrderController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Cập nhật trạng thái đơn hàng (Admin / Shipper) - áp dụng State Machine' })
   @ApiResponse({ status: 200, description: 'Cập nhật trạng thái thành công' })
-  async updateStatus(@Param('id') id: string, @Body('status') status: OrderStatus) {
-    const order = await this.orderService.updateOrderStatus(id, status);
+  async updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
+    const order = await this.orderService.updateOrderStatus(id, dto.status);
     return {
       data: order,
       message: 'Cập nhật trạng thái đơn hàng thành công',

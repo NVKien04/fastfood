@@ -20,10 +20,10 @@ export const VoucherWallet = () => {
   } = useVouchers();
 
   const tabs: { key: VoucherFilterTab; label: string }[] = [
-    { key: 'ALL', label: t('VOUCHER.TAB_ALL', 'Tất cả') },
-    { key: 'EXCLUSIVE', label: t('VOUCHER.TAB_EXCLUSIVE', 'Ưu đãi của tôi') },
-    { key: 'DISCOUNT', label: t('VOUCHER.TAB_DISCOUNT', 'Mã giảm giá') },
-    { key: 'FREESHIP', label: t('VOUCHER.TAB_FREESHIP', 'Freeship') },
+    { key: 'ALL', label: t('VOUCHER.TAB_ALL') },
+    { key: 'EXCLUSIVE', label: t('VOUCHER.TAB_EXCLUSIVE') },
+    { key: 'DISCOUNT', label: t('VOUCHER.TAB_DISCOUNT') },
+    { key: 'FREESHIP', label: t('VOUCHER.TAB_FREESHIP') },
   ];
 
   return (
@@ -38,10 +38,10 @@ export const VoucherWallet = () => {
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-black uppercase tracking-wider mb-2">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>{t('VOUCHER.WALLET_BADGE', 'Kho ưu đãi thành viên')}</span>
+              <span>{t('VOUCHER.WALLET_BADGE')}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-              {t('VOUCHER.WALLET_TITLE', 'Ví Voucher & Mã giảm giá')}
+              {t('VOUCHER.WALLET_TITLE')}
             </h1>
             <p className="text-xs sm:text-sm text-white/90 mt-1 max-w-xl">
               {t(
@@ -57,7 +57,7 @@ export const VoucherWallet = () => {
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-xs text-xs font-bold transition-all cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>{t('COMMON.REFRESH', 'Làm mới')}</span>
+            <span>{t('COMMON.REFRESH')}</span>
           </button>
         </div>
       </div>
@@ -102,7 +102,7 @@ export const VoucherWallet = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('VOUCHER.SEARCH_PLACEHOLDER', 'Tìm tên hoặc mã voucher...')}
+            placeholder={t('VOUCHER.SEARCH_PLACEHOLDER')}
             className="w-full text-xs pl-9 pr-4 py-2 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 shadow-xs"
           />
         </div>
@@ -113,7 +113,7 @@ export const VoucherWallet = () => {
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-[#ff6900] mb-3" />
           <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
-            {t('VOUCHER.LOADING_VOUCHERS', 'Đang tải danh sách voucher...')}
+            {t('VOUCHER.LOADING_VOUCHERS')}
           </p>
         </div>
       ) : vouchers.length > 0 ? (
@@ -128,7 +128,7 @@ export const VoucherWallet = () => {
             <Gift className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-black text-gray-900 dark:text-white mb-1">
-            {t('VOUCHER.EMPTY_TITLE', 'Không tìm thấy voucher phù hợp')}
+            {t('VOUCHER.EMPTY_TITLE')}
           </h3>
           <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 max-w-sm mb-6">
             {t(
@@ -140,7 +140,7 @@ export const VoucherWallet = () => {
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#ff6900] hover:bg-[#e05d00] text-white text-xs sm:text-sm font-black shadow-lg shadow-orange-500/25 active:scale-95 transition-all"
           >
-            <span>{t('ORDER.EXPLORE_MENU', 'Khám phá thực đơn ngay')}</span>
+            <span>{t('ORDER.EXPLORE_MENU')}</span>
             <span>→</span>
           </Link>
         </div>

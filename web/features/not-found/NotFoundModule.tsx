@@ -10,22 +10,22 @@ export const NotFoundModule = () => {
 
   const quickLinks = [
     {
-      title: t('NOT_FOUND_PAGE.ORDERS_LINK', 'Đơn hàng của tôi'),
-      desc: t('NOT_FOUND_PAGE.ORDERS_DESC', 'Theo dõi trạng thái giao hàng'),
+      title: t('NOT_FOUND_PAGE.ORDERS_LINK'),
+      desc: t('NOT_FOUND_PAGE.ORDERS_DESC'),
       href: '/orders',
       icon: Package,
       badge: 'Order',
     },
     {
-      title: t('NOT_FOUND_PAGE.VOUCHERS_LINK', 'Ví voucher ưu đãi'),
-      desc: t('NOT_FOUND_PAGE.VOUCHERS_DESC', 'Săn khuyến mãi & mã freeship'),
+      title: t('NOT_FOUND_PAGE.VOUCHERS_LINK'),
+      desc: t('NOT_FOUND_PAGE.VOUCHERS_DESC'),
       href: '/vouchers',
       icon: Ticket,
       badge: 'Deals',
     },
     {
-      title: t('NOT_FOUND_PAGE.PROFILE_LINK', 'Hồ sơ cá nhân'),
-      desc: t('NOT_FOUND_PAGE.PROFILE_DESC', 'Quản lý thông tin tài khoản'),
+      title: t('NOT_FOUND_PAGE.PROFILE_LINK'),
+      desc: t('NOT_FOUND_PAGE.PROFILE_DESC'),
       href: '/profile',
       icon: User,
       badge: 'Account',
@@ -59,7 +59,7 @@ export const NotFoundModule = () => {
       {/* 2. Text Content */}
       <div className="max-w-xl mx-auto mb-8 sm:mb-10">
         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-3">
-          {t('NOT_FOUND_PAGE.TITLE', 'Oops! Trang bạn tìm kiếm không tồn tại')}
+          {t('NOT_FOUND_PAGE.TITLE')}
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">
           {t(
@@ -74,7 +74,7 @@ export const NotFoundModule = () => {
         <Link href="/">
           <Button className="h-12 px-6 sm:px-8 rounded-full bg-[#ff6900] hover:bg-[#e05d00] active:bg-[#cc5200] text-white font-black text-xs sm:text-sm shadow-lg shadow-orange-500/25 cursor-pointer flex items-center gap-2 transition-all">
             <Home className="w-4 h-4" />
-            <span>{t('NOT_FOUND_PAGE.BACK_HOME', 'Về trang chủ')}</span>
+            <span>{t('NOT_FOUND_PAGE.BACK_HOME')}</span>
           </Button>
         </Link>
 
@@ -84,7 +84,7 @@ export const NotFoundModule = () => {
             className="h-12 px-6 sm:px-8 rounded-full border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-800 dark:text-zinc-200 font-bold text-xs sm:text-sm cursor-pointer flex items-center gap-2 shadow-xs transition-all"
           >
             <Utensils className="w-4 h-4 text-[#ff6900]" />
-            <span>{t('NOT_FOUND_PAGE.EXPLORE_MENU', 'Khám phá thực đơn')}</span>
+            <span>{t('NOT_FOUND_PAGE.EXPLORE_MENU')}</span>
           </Button>
         </Link>
       </div>

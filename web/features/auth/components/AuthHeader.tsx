@@ -17,7 +17,7 @@ export const AuthHeader = () => {
         className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors p-2 -ml-2 rounded-lg hover:bg-gray-50 dark:hover:bg-zinc-900 cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span className="hidden sm:inline">{t('NAV.HOME', 'Trang chủ')}</span>
+        <span className="hidden sm:inline">{t('NAV.HOME')}</span>
       </Link>
 
       {/* Center Logo */}

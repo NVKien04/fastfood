@@ -49,7 +49,7 @@ export const useCheckout = () => {
   const _handleFormSubmit = useCallback(
     async (values: CheckoutFormValues) => {
       if (items.length === 0) {
-        setErrorMessage(t('CHECKOUT.CART_EMPTY_ERROR', 'Giỏ hàng của bạn đang trống!'));
+        setErrorMessage(t('CHECKOUT.CART_EMPTY_ERROR'));
         return;
       }
 
@@ -70,11 +70,11 @@ export const useCheckout = () => {
             setCreatedOrder(data);
             clearCart();
           } else {
-            setErrorMessage(t('CHECKOUT.ORDER_FAILED', 'Đặt hàng thất bại. Vui lòng thử lại sau.'));
+            setErrorMessage(t('CHECKOUT.ORDER_FAILED'));
           }
         },
         onError: (err: Error) => {
-          setErrorMessage(err.message || t('CHECKOUT.ORDER_FAILED', 'Đặt hàng thất bại. Vui lòng thử lại sau.'));
+          setErrorMessage(err.message || t('CHECKOUT.ORDER_FAILED'));
         },
       });
     },

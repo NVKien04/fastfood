@@ -16,7 +16,7 @@ export const UserProfile = () => {
       <div className="flex flex-col items-center justify-center py-24">
         <Loader2 className="w-8 h-8 animate-spin text-red-600 mb-3" />
         <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
-          {t('PROFILE.LOADING_PROFILE', 'Đang tải thông tin cá nhân...')}
+          {t('PROFILE.LOADING_PROFILE')}
         </p>
       </div>
     );
@@ -29,17 +29,17 @@ export const UserProfile = () => {
         <div className="flex items-center justify-between pb-6 border-b border-gray-100 dark:border-zinc-800 mb-8">
           <div>
             <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
-              <span>{t('PROFILE.TITLE', 'Hồ sơ cá nhân')}</span>
+              <span>{t('PROFILE.TITLE')}</span>
               <Sparkles className="w-5 h-5 text-amber-500" />
             </h1>
             <p className="text-xs text-gray-500 dark:text-zinc-400 mt-1">
-              {t('PROFILE.SUBTITLE', 'Quản lý và cập nhật thông tin tài khoản KeiPizza của bạn')}
+              {t('PROFILE.SUBTITLE')}
             </p>
           </div>
 
           <Badge className="bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border-red-100 dark:border-red-900 text-xs font-bold px-3 py-1 flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span className="capitalize">{user?.roles?.[0] || t('PROFILE.MEMBER_ROLE', 'Thành viên')}</span>
+            <span className="capitalize">{user?.roles?.[0] || t('PROFILE.MEMBER_ROLE')}</span>
           </Badge>
         </div>
 
@@ -47,7 +47,7 @@ export const UserProfile = () => {
         <div className="mb-8">
           <AvatarUpload
             currentAvatar={profileData?.avatar || user?.avatar}
-            userName={profileData?.name || user?.fullName || t('PROFILE.DEFAULT_USER', 'Người dùng')}
+            userName={profileData?.name || user?.fullName || t('PROFILE.DEFAULT_USER')}
           />
         </div>
 

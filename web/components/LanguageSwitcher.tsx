@@ -61,7 +61,7 @@ export const LanguageSwitcher = ({ variant = 'compact', className = '' }: Langua
       {isOpen && (
         <div className="absolute right-0 mt-2 w-44 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/50 dark:shadow-black/60 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
           <div className="px-2 py-1 text-[10px] font-black uppercase tracking-wider text-gray-400 dark:text-zinc-500 border-b border-gray-50 dark:border-zinc-800 mb-1">
-            {t('NAV.SELECT_LANGUAGE', 'Chọn ngôn ngữ')}
+            {t('NAV.SELECT_LANGUAGE')}
           </div>
           {LANGUAGES.map((lang) => {
             const isSelected = (i18n.language?.split('-')[0] || 'vi') === lang.code;

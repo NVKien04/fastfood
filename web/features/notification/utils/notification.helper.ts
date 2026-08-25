@@ -8,7 +8,7 @@ export const formatNotificationTime = (dateString: string, t: TFunction): string
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 60) {
-      return t('NOTIFICATION.TIME_JUST_NOW', 'Vừa xong');
+      return t('NOTIFICATION.TIME_JUST_NOW');
     }
 
     const diffInMinutes = Math.floor(diffInSeconds / 60);

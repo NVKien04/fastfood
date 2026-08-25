@@ -91,7 +91,7 @@ export const ProductCard = ({ product, onOpenDetail, onQuickAdd }: ProductCardPr
         >
           <span>
             {hasOptions
-              ? `${t('PRODUCT.PRICE_FROM', 'từ')} ${formatVND(currentPrice)}`
+              ? `${t('PRODUCT.PRICE_FROM')} ${formatVND(currentPrice)}`
               : formatVND(currentPrice)}
           </span>
         </button>

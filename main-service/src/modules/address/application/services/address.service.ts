@@ -80,7 +80,13 @@ export class AddressService {
     }
 
     if (updateData.isDefault === 1 && address.isDefault !== 1) {
-      // Set all other addresses of the user to isDefault = 0
+      // Bỏ mặc định tất cả địa chỉ khác của user trước khi set mặc định mới
+      const otherAddresses = await this.findAll({ userId: address.userId });
+      for (const other of otherAddresses) {
+        if (other.id !== addressId && other.isDefault === 1) {
+          await this.updateRaw(other.id, { isDefault: 0 });
+        }
+      }
     }
     return this.updateRaw(addressId, updateData);
   }

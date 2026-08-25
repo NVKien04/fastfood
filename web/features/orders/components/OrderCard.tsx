@@ -41,42 +41,42 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-            {t('ORDER.STATUS_PENDING', 'Chờ xác nhận')}
+            {t('ORDER.STATUS_PENDING')}
           </span>
         );
       case 'CONFIRMED':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-            {t('ORDER.STATUS_CONFIRMED', 'Đã xác nhận')}
+            {t('ORDER.STATUS_CONFIRMED')}
           </span>
         );
       case 'PREPARING':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-orange-50 text-orange-600 dark:bg-orange-950/50 dark:text-orange-400 border border-orange-200 dark:border-orange-800">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-            {t('ORDER.STATUS_PREPARING', 'Đang làm món')}
+            {t('ORDER.STATUS_PREPARING')}
           </span>
         );
       case 'READY_FOR_SHIPMENT':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-purple-50 text-purple-600 dark:bg-purple-950/50 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
             <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-bounce" />
-            {t('ORDER.STATUS_SHIPPING', 'Đang giao hàng')}
+            {t('ORDER.STATUS_SHIPPING')}
           </span>
         );
       case 'DELIVERED':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
             <CheckCircle className="w-3.5 h-3.5" />
-            {t('ORDER.STATUS_DELIVERED', 'Đã nhận món')}
+            {t('ORDER.STATUS_DELIVERED')}
           </span>
         );
       case 'CANCELLED':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-800">
             <Ban className="w-3.5 h-3.5" />
-            {t('ORDER.STATUS_CANCELLED', 'Đã hủy')}
+            {t('ORDER.STATUS_CANCELLED')}
           </span>
         );
       default:
@@ -129,7 +129,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
         <div className="flex items-center gap-4">
           <div className="text-right">
             <div className="text-xs text-gray-500 dark:text-zinc-400">
-              {t('ORDER.TOTAL_AMOUNT', 'Tổng thanh toán')}
+              {t('ORDER.TOTAL_AMOUNT')}
             </div>
             <div className="text-base sm:text-lg font-black text-[#ff6900]">
               {formatVND(order.total)}
@@ -158,7 +158,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-3 flex items-center gap-1.5">
               <Utensils className="w-3.5 h-3.5" />
-              <span>{t('ORDER.ITEMS_LIST', 'Danh sách món ăn')}</span>
+              <span>{t('ORDER.ITEMS_LIST')}</span>
               {order.orderItems && <span>({order.orderItems.length})</span>}
             </h4>
 
@@ -183,7 +183,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                       )}
                       <div>
                         <h5 className="text-xs sm:text-sm font-black text-gray-900 dark:text-white">
-                          {item.product?.name || t('ORDER.ITEM_UNKNOWN', 'Món ăn')}
+                          {item.product?.name || t('ORDER.ITEM_UNKNOWN')}
                         </h5>
                         {item.productVariant && (
                           <p className="text-[11px] text-gray-500 dark:text-zinc-400">
@@ -212,7 +212,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                 ))
               ) : (
                 <div className="text-xs text-gray-500 italic">
-                  {t('ORDER.ITEMS_DETAIL_SUMMARY', 'Thông tin món ăn đã được ghi nhận')}
+                  {t('ORDER.ITEMS_DETAIL_SUMMARY')}
                 </div>
               )}
             </div>
@@ -224,7 +224,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
             <div className="p-4 rounded-2xl bg-gray-50/60 dark:bg-zinc-800/40 border border-gray-100 dark:border-zinc-800 space-y-2">
               <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-orange-500" />
-                <span>{t('ORDER.DELIVERY_INFO', 'Thông tin nhận hàng')}</span>
+                <span>{t('ORDER.DELIVERY_INFO')}</span>
               </h5>
               <div className="text-xs space-y-1 text-gray-700 dark:text-zinc-300">
                 {order.guestName && (
@@ -258,27 +258,27 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
             <div className="p-4 rounded-2xl bg-gray-50/60 dark:bg-zinc-800/40 border border-gray-100 dark:border-zinc-800 space-y-2">
               <h5 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 flex items-center gap-1.5">
                 <CreditCard className="w-3.5 h-3.5 text-orange-500" />
-                <span>{t('ORDER.PAYMENT_INFO', 'Thanh toán')}</span>
+                <span>{t('ORDER.PAYMENT_INFO')}</span>
               </h5>
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between text-gray-600 dark:text-zinc-400">
-                  <span>{t('ORDER.SUBTOTAL', 'Tạm tính')}</span>
+                  <span>{t('ORDER.SUBTOTAL')}</span>
                   <span className="font-medium text-gray-900 dark:text-white">{formatVND(order.subTotal)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-zinc-400">
-                  <span>{t('ORDER.DELIVERY_FEE', 'Phí vận chuyển')}</span>
+                  <span>{t('ORDER.DELIVERY_FEE')}</span>
                   <span className="font-medium text-gray-900 dark:text-white">
-                    {order.deliveryFee === 0 ? t('ORDER.FREE', 'Miễn phí') : formatVND(order.deliveryFee)}
+                    {order.deliveryFee === 0 ? t('ORDER.FREE') : formatVND(order.deliveryFee)}
                   </span>
                 </div>
                 {order.discount > 0 && (
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <span>{t('ORDER.DISCOUNT', 'Voucher giảm giá')}</span>
+                    <span>{t('ORDER.DISCOUNT')}</span>
                     <span>-{formatVND(order.discount)}</span>
                   </div>
                 )}
                 <div className="pt-2 border-t border-gray-200 dark:border-zinc-700 flex justify-between items-baseline">
-                  <span className="font-black text-gray-900 dark:text-white">{t('ORDER.TOTAL', 'Tổng cộng')}</span>
+                  <span className="font-black text-gray-900 dark:text-white">{t('ORDER.TOTAL')}</span>
                   <span className="text-base font-black text-[#ff6900]">{formatVND(order.total)}</span>
                 </div>
                 <div className="pt-1 flex items-center justify-between text-[11px] text-gray-500 dark:text-zinc-400">
@@ -300,7 +300,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
           {/* Cancellation Info if Cancelled */}
           {isCancelled && order.cancelReason && (
             <div className="p-3 rounded-2xl bg-red-50/50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 text-xs text-red-600 dark:text-red-400">
-              <span className="font-bold">{t('ORDER.CANCEL_REASON_LABEL', 'Lý do hủy')}: </span>
+              <span className="font-bold">{t('ORDER.CANCEL_REASON_LABEL')}: </span>
               <span>{order.cancelReason}</span>
             </div>
           )}
@@ -308,7 +308,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
           {/* Card Actions Footer */}
           <div className="pt-3 border-t border-gray-100 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3">
             <div className="text-[11px] text-gray-400">
-              {t('ORDER.SUPPORT_HOTLINE', 'Hỗ trợ đơn hàng:')} <a href="tel:19001822" className="font-bold text-[#ff6900] hover:underline">1900 1822</a>
+              {t('ORDER.SUPPORT_HOTLINE')} <a href="tel:19001822" className="font-bold text-[#ff6900] hover:underline">1900 1822</a>
             </div>
 
             <div className="flex items-center gap-2">
@@ -318,7 +318,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                   onClick={() => onCancelClick(order)}
                   className="px-4 py-2 rounded-full text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 border border-red-200 dark:border-red-900/50 transition-colors cursor-pointer"
                 >
-                  {t('ORDER.CANCEL_ORDER_BTN', 'Hủy đơn hàng')}
+                  {t('ORDER.CANCEL_ORDER_BTN')}
                 </button>
               )}
 
@@ -327,7 +327,7 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>{t('ORDER.REORDER_BTN', 'Đặt món mới')}</span>
+                <span>{t('ORDER.REORDER_BTN')}</span>
               </Link>
             </div>
           </div>

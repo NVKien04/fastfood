@@ -47,10 +47,10 @@ export const OrderCancelModal = ({
           </div>
           <div>
             <DialogTitle className="text-base sm:text-lg font-black text-gray-900 dark:text-white">
-              {t('ORDER.CANCEL_CONFIRM_TITLE', 'Hủy đơn hàng')}
+              {t('ORDER.CANCEL_CONFIRM_TITLE')}
             </DialogTitle>
             <DialogDescription className="text-xs text-gray-500 dark:text-zinc-400">
-              {t('ORDER.CANCEL_CONFIRM_DESC', 'Mã đơn:')} <span className="font-bold text-gray-900 dark:text-white">#{orderNumber}</span>
+              {t('ORDER.CANCEL_CONFIRM_DESC')} <span className="font-bold text-gray-900 dark:text-white">#{orderNumber}</span>
             </DialogDescription>
           </div>
         </div>
@@ -58,7 +58,7 @@ export const OrderCancelModal = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-gray-700 dark:text-zinc-300 mb-2">
-              {t('ORDER.SELECT_CANCEL_REASON', 'Vui lòng chọn lý do hủy đơn:')}
+              {t('ORDER.SELECT_CANCEL_REASON')}
             </label>
             <div className="space-y-2">
               {COMMON_REASONS.map((reason) => (
@@ -89,7 +89,7 @@ export const OrderCancelModal = ({
               <textarea
                 value={customReason}
                 onChange={(e) => setCustomReason(e.target.value)}
-                placeholder={t('ORDER.CUSTOM_REASON_PLACEHOLDER', 'Nhập lý do cụ thể của bạn...')}
+                placeholder={t('ORDER.CUSTOM_REASON_PLACEHOLDER')}
                 rows={3}
                 required
                 className="w-full text-xs p-3 rounded-2xl border border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500"
@@ -104,7 +104,7 @@ export const OrderCancelModal = ({
               onClick={onClose}
               className="px-4 py-2.5 rounded-full text-xs font-bold text-gray-600 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
             >
-              {t('COMMON.CLOSE', 'Đóng')}
+              {t('COMMON.CLOSE')}
             </button>
             <button
               type="submit"
@@ -112,7 +112,7 @@ export const OrderCancelModal = ({
               className="px-5 py-2.5 rounded-full text-xs font-bold text-white bg-red-600 hover:bg-red-700 active:scale-95 transition-all shadow-md shadow-red-600/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{t('ORDER.CONFIRM_CANCEL_BTN', 'Xác nhận hủy')}</span>
+              <span>{t('ORDER.CONFIRM_CANCEL_BTN')}</span>
             </button>
           </div>
         </form>

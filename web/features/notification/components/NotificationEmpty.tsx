@@ -12,7 +12,7 @@ export const NotificationEmpty = () => {
         <BellOff className="w-7 h-7" />
       </div>
       <h4 className="text-sm font-bold text-gray-800 dark:text-zinc-200 mb-1">
-        {t('NOTIFICATION.EMPTY_TITLE', 'Không có thông báo nào')}
+        {t('NOTIFICATION.EMPTY_TITLE')}
       </h4>
       <p className="text-xs text-gray-400 dark:text-zinc-500 max-w-[260px] leading-relaxed">
         {t(

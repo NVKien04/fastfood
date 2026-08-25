@@ -21,7 +21,7 @@ export const useGoogleCallback = () => {
     const error = searchParams.get('error');
 
     if (error) {
-      setGoogleError(t('AUTH.GOOGLE_LOGIN_FAILED', 'Đăng nhập với Google thất bại. Vui lòng thử lại.'));
+      setGoogleError(t('AUTH.GOOGLE_LOGIN_FAILED'));
       return;
     }
 
@@ -54,7 +54,7 @@ export const useGoogleCallback = () => {
         }
       } catch {
         if (isMounted) {
-          setGoogleError(t('AUTH.USER_INFO_FAILED', 'Không thể lấy thông tin tài khoản. Vui lòng thử lại.'));
+          setGoogleError(t('AUTH.USER_INFO_FAILED'));
         }
       } finally {
         if (isMounted) {

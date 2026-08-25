@@ -17,27 +17,27 @@ export const OrderProgressStepper = ({ status }: OrderProgressStepperProps) => {
   const steps = [
     {
       key: 'PENDING',
-      label: t('ORDER.STATUS_PENDING', 'Chờ xác nhận'),
+      label: t('ORDER.STATUS_PENDING'),
       icon: Clock,
     },
     {
       key: 'CONFIRMED',
-      label: t('ORDER.STATUS_CONFIRMED', 'Đã xác nhận'),
+      label: t('ORDER.STATUS_CONFIRMED'),
       icon: CheckCircle2,
     },
     {
       key: 'PREPARING',
-      label: t('ORDER.STATUS_PREPARING', 'Đang làm món'),
+      label: t('ORDER.STATUS_PREPARING'),
       icon: ChefHat,
     },
     {
       key: 'READY_FOR_SHIPMENT',
-      label: t('ORDER.STATUS_SHIPPING', 'Đang giao hàng'),
+      label: t('ORDER.STATUS_SHIPPING'),
       icon: Truck,
     },
     {
       key: 'DELIVERED',
-      label: t('ORDER.STATUS_DELIVERED', 'Đã nhận món'),
+      label: t('ORDER.STATUS_DELIVERED'),
       icon: Check,
     },
   ];
@@ -50,10 +50,10 @@ export const OrderProgressStepper = ({ status }: OrderProgressStepperProps) => {
         </div>
         <div>
           <h4 className="text-xs font-bold text-red-700 dark:text-red-400">
-            {t('ORDER.CANCELLED_TITLE', 'Đơn hàng đã bị hủy')}
+            {t('ORDER.CANCELLED_TITLE')}
           </h4>
           <p className="text-[11px] text-red-600/80 dark:text-red-400/80">
-            {t('ORDER.CANCELLED_DESC', 'Đơn hàng này không còn được xử lý.')}
+            {t('ORDER.CANCELLED_DESC')}
           </p>
         </div>
       </div>

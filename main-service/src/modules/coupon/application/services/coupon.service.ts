@@ -1,21 +1,19 @@
 import { PaginationResponse, buildPaginationResponse } from '@/common/core';
 import { CouponFilterDto, CreateCouponDto, UpdateCouponDto } from '@/modules/coupon/presentation/dto';
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserCouponsEntity } from '@/entities';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
 import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
 import { type ICouponRepository } from '@/modules/coupon/domain/repositories/coupon.repository.interface';
+import { type IUserCouponRepository } from '@/modules/coupon/domain/repositories/user-coupon.repository.interface';
 
 @Injectable()
 export class CouponService {
   constructor(
     @Inject('ICouponRepository')
     private readonly couponRepository: ICouponRepository,
-    @InjectRepository(UserCouponsEntity)
-    private readonly userCouponRepo: Repository<UserCouponsEntity>,
+    @Inject('IUserCouponRepository')
+    private readonly userCouponRepository: IUserCouponRepository,
   ) {}
 
   // ==========================================
@@ -96,16 +94,12 @@ export class CouponService {
   async getUserCoupons(userId: string) {
     const now = new Date();
     // 1. Lấy mã độc quyền được gán riêng
-    const userCoupons = await this.userCouponRepo.find({
-      where: { userId },
-      relations: ['coupons_obj'],
-      order: { createdAt: 'DESC' },
-    });
+    const userCoupons = await this.userCouponRepository.findByUserId(userId);
 
     const exclusiveVouchers = userCoupons
-      .filter((uc) => uc.coupons_obj && uc.coupons_obj.isActive === 1)
+      .filter((uc) => uc.coupon && uc.coupon.isActive === 1)
       .map((uc) => {
-        const c = uc.coupons_obj;
+        const c = uc.coupon;
         const start = new Date(c.startDate);
         const end = new Date(c.endDate);
         const isValidTime = now >= start && now <= end;

@@ -123,7 +123,7 @@ export const useProductDetailModal = (
   const productSpecsText = useMemo(() => {
     const parts: string[] = [];
     if (activeVariant?.size) parts.push(activeVariant.size);
-    if (activeVariant?.type) parts.push(`${t('PRODUCT.CRUST_PREFIX', 'Đế')} ${activeVariant.type}`);
+    if (activeVariant?.type) parts.push(`${t('PRODUCT.CRUST_PREFIX')} ${activeVariant.type}`);
     if (!parts.length && activeVariant?.name) parts.push(activeVariant.name);
     return parts.join(', ');
   }, [activeVariant, t]);

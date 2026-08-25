@@ -31,10 +31,10 @@ export const LoginForm = () => {
     <Card variant="default" className="w-full">
       <CardHeader className="p-0 mb-6">
         <CardTitle className="text-2xl font-extrabold tracking-tight">
-          {t('AUTH.LOGIN_TITLE', 'Đăng nhập')}
+          {t('AUTH.LOGIN_TITLE')}
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm mt-1">
-          {t('AUTH.LOGIN_SUBTITLE', 'Chào mừng bạn quay trở lại! Vui lòng nhập thông tin để tiếp tục.')}
+          {t('AUTH.LOGIN_SUBTITLE')}
         </CardDescription>
       </CardHeader>
 
@@ -52,14 +52,14 @@ export const LoginForm = () => {
           {/* Email / Phone Field */}
           <div className="space-y-1.5">
             <label htmlFor="email" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-              {t('AUTH.EMAIL_OR_PHONE', 'Số điện thoại hoặc email')}
+              {t('AUTH.EMAIL_OR_PHONE')}
             </label>
             <div className="relative">
               <Input
                 id="email"
                 type="text"
                 {...register('email')}
-                placeholder={t('AUTH.EMAIL_OR_PHONE_PLACEHOLDER', 'Nhập số điện thoại hoặc email của bạn')}
+                placeholder={t('AUTH.EMAIL_OR_PHONE_PLACEHOLDER')}
                 aria-invalid={!!errors.email}
               />
             </div>
@@ -69,14 +69,14 @@ export const LoginForm = () => {
           {/* Password Field */}
           <div className="space-y-1.5">
             <label htmlFor="password" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-              {t('AUTH.PASSWORD', 'Mật khẩu')}
+              {t('AUTH.PASSWORD')}
             </label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
-                placeholder={t('AUTH.PASSWORD_PLACEHOLDER', 'Vui lòng nhập mật khẩu của bạn')}
+                placeholder={t('AUTH.PASSWORD_PLACEHOLDER')}
                 aria-invalid={!!errors.password}
                 className="pr-12"
               />
@@ -87,7 +87,7 @@ export const LoginForm = () => {
                 onClick={handleTogglePassword}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors focus:outline-none"
                 aria-label={
-                  showPassword ? t('AUTH.HIDE_PASSWORD', 'Ẩn mật khẩu') : t('AUTH.SHOW_PASSWORD', 'Hiện mật khẩu')
+                  showPassword ? t('AUTH.HIDE_PASSWORD') : t('AUTH.SHOW_PASSWORD')
                 }
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -102,7 +102,7 @@ export const LoginForm = () => {
               href="#"
               className="text-xs font-semibold text-primary hover:text-brand-primary-active hover:underline transition-colors"
             >
-              {t('AUTH.FORGOT_PASSWORD', 'Quên mật khẩu?')}
+              {t('AUTH.FORGOT_PASSWORD')}
             </Link>
           </div>
 
@@ -112,10 +112,10 @@ export const LoginForm = () => {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>{t('AUTH.LOGGING_IN', 'Đang đăng nhập...')}</span>
+                  <span>{t('AUTH.LOGGING_IN')}</span>
                 </>
               ) : (
-                <span>{t('AUTH.LOGIN_BUTTON', 'Đăng Nhập')}</span>
+                <span>{t('AUTH.LOGIN_BUTTON')}</span>
               )}
             </Button>
           </div>
@@ -125,7 +125,7 @@ export const LoginForm = () => {
         <div className="my-5 flex items-center gap-3">
           <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-800" />
           <span className="text-xs text-gray-400 dark:text-zinc-500 font-medium uppercase tracking-wider">
-            {t('AUTH.OR', 'Hoặc')}
+            {t('AUTH.OR')}
           </span>
           <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-800" />
         </div>
@@ -141,7 +141,7 @@ export const LoginForm = () => {
           {isProcessingGoogle ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin text-gray-600 dark:text-zinc-400" />
-              <span>{t('AUTH.LOGGING_IN_GOOGLE', 'Đang xử lý đăng nhập Google...')}</span>
+              <span>{t('AUTH.LOGGING_IN_GOOGLE')}</span>
             </>
           ) : (
             <>
@@ -163,19 +163,19 @@ export const LoginForm = () => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <span>{t('AUTH.LOGIN_WITH_GOOGLE', 'Đăng nhập với Google')}</span>
+              <span>{t('AUTH.LOGIN_WITH_GOOGLE')}</span>
             </>
           )}
         </Button>
 
         {/* Bottom Sign Up Link */}
         <div className="mt-6 text-center text-xs text-gray-600 dark:text-zinc-400 font-medium">
-          {t('AUTH.NO_ACCOUNT', 'Bạn chưa có tài khoản?')}{' '}
+          {t('AUTH.NO_ACCOUNT')}{' '}
           <Link
             href="/register"
             className="font-bold text-primary hover:text-brand-primary-active hover:underline ml-1"
           >
-            {t('AUTH.CREATE_ACCOUNT', 'Tạo tài khoản')}
+            {t('AUTH.CREATE_ACCOUNT')}
           </Link>
         </div>
       </CardContent>

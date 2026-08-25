@@ -175,4 +175,14 @@ export class RedisCacheService implements ICacheService, OnModuleDestroy {
       return 0;
     }
   }
+
+  async incr(key: string): Promise<number> {
+    try {
+      return await this.redisClient.incr(key);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Redis INCR error [${key}]: ${message}`);
+      return 0;
+    }
+  }
 }

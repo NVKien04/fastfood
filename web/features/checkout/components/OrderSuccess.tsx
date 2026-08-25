@@ -23,14 +23,14 @@ export const OrderSuccess = ({ order }: OrderSuccessProps) => {
         </div>
 
         <Badge className="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-xs font-black uppercase tracking-wider px-3 py-1 mb-3">
-          {t('CHECKOUT.ORDER_SUCCESS_TITLE', 'Đặt hàng thành công! 🎉')}
+          {t('CHECKOUT.ORDER_SUCCESS_TITLE')}
         </Badge>
 
         <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-          {t('CHECKOUT.ORDER_THANK_YOU', 'Cảm ơn bạn đã đặt hàng')}
+          {t('CHECKOUT.ORDER_THANK_YOU')}
         </h1>
         <p className="text-sm text-gray-500 dark:text-zinc-400 mt-2">
-          {t('CHECKOUT.ORDER_NUMBER_LABEL', 'Mã đơn hàng của bạn là:')}{' '}
+          {t('CHECKOUT.ORDER_NUMBER_LABEL')}{' '}
           <strong className="text-[#ff6900] font-mono text-base">#{order.orderNumber}</strong>
         </p>
 
@@ -38,27 +38,27 @@ export const OrderSuccess = ({ order }: OrderSuccessProps) => {
         <div className="w-full bg-gray-50 dark:bg-zinc-950 rounded-2xl p-6 mt-8 border border-gray-100 dark:border-zinc-800 text-left space-y-4">
           <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-zinc-800">
             <span className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase">
-              {t('CHECKOUT.ORDER_STATUS', 'Trạng thái đơn')}
+              {t('CHECKOUT.ORDER_STATUS')}
             </span>
             <Badge className="bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800 text-xs font-bold capitalize">
-              {order.status || t('CHECKOUT.PREPARING', 'Đang chuẩn bị')}
+              {order.status || t('CHECKOUT.PREPARING')}
             </Badge>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
               <span className="text-gray-400 dark:text-zinc-500 block mb-1">
-                {t('CHECKOUT.RECIPIENT', 'Người nhận:')}
+                {t('CHECKOUT.RECIPIENT')}
               </span>
               <strong className="text-gray-800 dark:text-zinc-100 text-sm">
-                {order.guestName || t('PROFILE.DEFAULT_USER', 'Khách hàng')}
+                {order.guestName || t('PROFILE.DEFAULT_USER')}
               </strong>
               <div className="text-gray-600 dark:text-zinc-400 mt-0.5">{order.guestPhone}</div>
             </div>
 
             <div>
               <span className="text-gray-400 dark:text-zinc-500 block mb-1">
-                {t('CHECKOUT.DELIVERY_ADDRESS_LABEL', 'Địa chỉ giao hàng:')}
+                {t('CHECKOUT.DELIVERY_ADDRESS_LABEL')}
               </span>
               <div className="text-gray-800 dark:text-zinc-200 font-medium">{order.guestAddress}</div>
             </div>
@@ -67,11 +67,11 @@ export const OrderSuccess = ({ order }: OrderSuccessProps) => {
           <div className="pt-4 border-t border-gray-200 dark:border-zinc-800 flex justify-between items-center">
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-zinc-400">
               <Truck className="w-4 h-4 text-gray-400 dark:text-zinc-500" />
-              <span>{t('CHECKOUT.STANDARD_DELIVERY', 'Giao hàng tiêu chuẩn (30 phút)')}</span>
+              <span>{t('CHECKOUT.STANDARD_DELIVERY')}</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-400 dark:text-zinc-500">
-                {t('CHECKOUT.TOTAL_PRICE_LABEL', 'Tổng tiền:')}
+                {t('CHECKOUT.TOTAL_PRICE_LABEL')}
               </span>
               <strong className="text-lg font-black text-[#ff6900]">{formatVND(Number(order.total || 0))}</strong>
             </div>
@@ -83,7 +83,7 @@ export const OrderSuccess = ({ order }: OrderSuccessProps) => {
           <Link href="/">
             <Button className="w-full sm:w-auto h-12 px-8 rounded-2xl bg-[#ff6900] hover:bg-[#e05d00] text-white font-black shadow-lg shadow-orange-500/20 cursor-pointer">
               <ShoppingBag className="w-4 h-4 mr-2" />
-              {t('CHECKOUT.CONTINUE_SHOPPING', 'Tiếp tục mua hàng')}
+              {t('CHECKOUT.CONTINUE_SHOPPING')}
             </Button>
           </Link>
         </div>

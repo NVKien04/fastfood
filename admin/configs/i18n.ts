@@ -21,6 +21,7 @@ if (!i18n.isInitialized) {
     .use(initReactI18next)
     .init({
       resources,
+      lng: typeof window === 'undefined' ? DEFAULT_LANGUAGE_FALLBACK : undefined,
       fallbackLng: DEFAULT_LANGUAGE_FALLBACK,
       supportedLngs: ['vi', 'en', 'ja'],
       defaultNS: 'translation',

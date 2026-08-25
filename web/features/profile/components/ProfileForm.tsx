@@ -46,14 +46,14 @@ export const ProfileForm = ({ form, onSubmit, userEmail, isUpdating, statusMessa
       {/* Full Name */}
       <div className="space-y-1.5">
         <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-          {t('PROFILE.FULL_NAME', 'Họ và tên')}
+          {t('PROFILE.FULL_NAME')}
         </label>
         <div className="relative">
           <User className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <Input
             type="text"
             {...register('name')}
-            placeholder={t('PROFILE.NAME_PLACEHOLDER', 'Nhập họ và tên của bạn')}
+            placeholder={t('PROFILE.NAME_PLACEHOLDER')}
             className={`pl-10 h-12 rounded-2xl bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
               errors.name ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800'
             }`}
@@ -65,7 +65,7 @@ export const ProfileForm = ({ form, onSubmit, userEmail, isUpdating, statusMessa
       {/* Email (Read only) */}
       <div className="space-y-1.5">
         <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-          {t('PROFILE.EMAIL', 'Địa chỉ Email')}
+          {t('PROFILE.EMAIL')}
         </label>
         <div className="relative">
           <Mail className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -77,21 +77,21 @@ export const ProfileForm = ({ form, onSubmit, userEmail, isUpdating, statusMessa
           />
         </div>
         <p className="text-[10px] text-gray-400 dark:text-zinc-500">
-          {t('PROFILE.EMAIL_IMMUTABLE', 'Email tài khoản không thể thay đổi')}
+          {t('PROFILE.EMAIL_IMMUTABLE')}
         </p>
       </div>
 
       {/* Phone */}
       <div className="space-y-1.5">
         <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 block">
-          {t('PROFILE.PHONE', 'Số điện thoại')}
+          {t('PROFILE.PHONE')}
         </label>
         <div className="relative">
           <Phone className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <Input
             type="tel"
             {...register('phone')}
-            placeholder={t('PROFILE.PHONE_PLACEHOLDER', 'Nhập số điện thoại của bạn')}
+            placeholder={t('PROFILE.PHONE_PLACEHOLDER')}
             className={`pl-10 h-12 rounded-2xl bg-gray-50/50 dark:bg-zinc-950 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 ${
               errors.phone ? 'border-red-500' : 'border-gray-200 dark:border-zinc-800'
             }`}
@@ -110,12 +110,12 @@ export const ProfileForm = ({ form, onSubmit, userEmail, isUpdating, statusMessa
           {isUpdating ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>{t('PROFILE.SAVING', 'Đang lưu thay đổi...')}</span>
+              <span>{t('PROFILE.SAVING')}</span>
             </>
           ) : (
             <>
               <Save className="w-4 h-4" />
-              <span>{t('PROFILE.SAVE_INFO', 'Lưu thông tin')}</span>
+              <span>{t('PROFILE.SAVE_INFO')}</span>
             </>
           )}
         </Button>

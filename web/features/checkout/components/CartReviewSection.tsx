@@ -66,7 +66,7 @@ export const CartReviewSection = ({
                   className="text-xs font-bold text-gray-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 transition-colors flex items-center gap-1 cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span>{t('CART.CLEAR_ALL', 'Xóa hết')}</span>
+                  <span>{t('CART.CLEAR_ALL')}</span>
                 </button>
               )}
             </div>
@@ -76,16 +76,16 @@ export const CartReviewSection = ({
               <div className="py-12 text-center text-gray-400 dark:text-zinc-500">
                 <Utensils className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p className="text-sm font-semibold text-gray-700 dark:text-zinc-300">
-                  {t('CART.EMPTY_TITLE', 'Giỏ hàng của bạn đang trống')}
+                  {t('CART.EMPTY_TITLE')}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-zinc-500 mt-1">
-                  {t('CART.EMPTY_DESC', 'Hãy chọn những món ăn ngon từ thực đơn')}
+                  {t('CART.EMPTY_DESC')}
                 </p>
                 <Link
                   href="/"
                   className="inline-flex items-center gap-2 mt-4 px-6 py-2.5 rounded-full bg-[#ff6900] text-white text-xs font-bold shadow-md shadow-orange-500/20 hover:bg-[#e05d00] transition-colors"
                 >
-                  ← {t('CART.VIEW_MENU', 'Khám phá thực đơn ngay')}
+                  ← {t('CART.VIEW_MENU')}
                 </Link>
               </div>
             ) : (
@@ -111,7 +111,7 @@ export const CartReviewSection = ({
                       {/* Variant (Size, Crust) */}
                       {item.variant && (
                         <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5 font-medium">
-                          {t('CART.SIZE_LABEL', 'Cỡ:')}{' '}
+                          {t('CART.SIZE_LABEL')}{' '}
                           <span className="text-gray-800 dark:text-zinc-200 font-semibold">{item.variant.name}</span>
                         </p>
                       )}
@@ -119,7 +119,7 @@ export const CartReviewSection = ({
                       {/* Toppings / Ingredients */}
                       {item.selectedIngredients && item.selectedIngredients.length > 0 && (
                         <p className="text-xs text-gray-500 dark:text-zinc-400 mt-0.5 truncate">
-                          {t('CART.TOPPING_LABEL', 'Topping:')} {item.selectedIngredients.map((i) => i.name).join(', ')}
+                          {t('CART.TOPPING_LABEL')} {item.selectedIngredients.map((i) => i.name).join(', ')}
                         </p>
                       )}
 
@@ -131,7 +131,7 @@ export const CartReviewSection = ({
                           className="mt-1.5 inline-flex items-center gap-1 text-xs font-bold text-[#ff6900] hover:text-[#e05d00] hover:underline cursor-pointer select-none"
                         >
                           <Edit3 className="w-3 h-3" />
-                          <span>{t('CART.EDIT_ITEM', 'Sửa món')}</span>
+                          <span>{t('CART.EDIT_ITEM')}</span>
                         </button>
                       ) : null}
                     </div>
@@ -149,7 +149,7 @@ export const CartReviewSection = ({
                           onClick={() =>
                             item.quantity > 1 ? updateQuantity(item.id, item.quantity - 1) : removeItem(item.id)
                           }
-                          aria-label={t('PRODUCT.DECREASE_QTY', 'Giảm số lượng')}
+                          aria-label={t('PRODUCT.DECREASE_QTY')}
                           className="w-6 h-6 rounded-lg bg-white dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-zinc-300 hover:text-[#ff6900] shadow-xs transition-colors cursor-pointer"
                         >
                           <Minus className="w-3 h-3" />
@@ -160,7 +160,7 @@ export const CartReviewSection = ({
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          aria-label={t('PRODUCT.INCREASE_QTY', 'Tăng số lượng')}
+                          aria-label={t('PRODUCT.INCREASE_QTY')}
                           className="w-6 h-6 rounded-lg bg-white dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-zinc-300 hover:text-[#ff6900] dark:hover:text-[#ff6900] shadow-xs transition-colors cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
@@ -173,7 +173,7 @@ export const CartReviewSection = ({
                       type="button"
                       onClick={() => removeItem(item.id)}
                       className="p-1.5 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-105 dark:hover:bg-zinc-800 transition-colors cursor-pointer shrink-0 self-center"
-                      title={t('CART.REMOVE_ITEM_TITLE', 'Xóa món ăn')}
+                      title={t('CART.REMOVE_ITEM_TITLE')}
                     >
                       <X className="w-4.5 h-4.5" />
                     </button>
@@ -210,7 +210,7 @@ export const CartReviewSection = ({
                 <div>
                   <div className="flex items-center gap-1.5">
                     <h4 className="text-xs font-bold text-gray-900 dark:text-white">
-                      {t('VOUCHER.LABEL', 'Voucher')}
+                      {t('VOUCHER.LABEL')}
                     </h4>
                     {selectedVoucher && (
                       <span className="text-[10px] font-black text-[#ff6900] bg-orange-50 dark:bg-orange-950/60 px-1.5 py-0.5 rounded-md border border-orange-200/50">
@@ -224,13 +224,13 @@ export const CartReviewSection = ({
                           amount: formatVND(selectedVoucher.discountAmount),
                           defaultValue: `Đã giảm -${formatVND(selectedVoucher.discountAmount)}`,
                         })
-                      : t('VOUCHER.CHOOSE_OR_ENTER', 'Nhập hoặc chọn voucher của bạn')}
+                      : t('VOUCHER.CHOOSE_OR_ENTER')}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1 text-gray-400 group-hover:text-[#ff6900] transition-colors">
                 <span className="text-xs font-semibold">
-                  {selectedVoucher ? t('VOUCHER.CHANGE_CODE', 'Đổi mã') : t('VOUCHER.SELECT', 'Chọn')}
+                  {selectedVoucher ? t('VOUCHER.CHANGE_CODE') : t('VOUCHER.SELECT')}
                 </span>
                 <ChevronRight className="w-4 h-4" />
               </div>
@@ -243,11 +243,11 @@ export const CartReviewSection = ({
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 <h4 className="text-xs font-bold text-gray-900 dark:text-white">
-                  {t('CART.SPECIAL_OFFER', 'Ưu đãi đặc biệt')}
+                  {t('CART.SPECIAL_OFFER')}
                 </h4>
               </div>
               <span className="text-[11px] font-bold text-[#ff6900] cursor-pointer hover:underline">
-                {t('CART.SEE_MORE', 'Xem thêm')}
+                {t('CART.SEE_MORE')}
               </span>
             </div>
             <div className="flex items-baseline gap-2">
@@ -265,7 +265,7 @@ export const CartReviewSection = ({
                 href="/"
                 className="text-xs font-bold text-[#ff6900] hover:underline inline-flex items-center gap-1"
               >
-                <span>{t('CART.ADD_MORE_ITEMS', 'Thêm món ngay')}</span>
+                <span>{t('CART.ADD_MORE_ITEMS')}</span>
                 <span>›</span>
               </Link>
             </div>
@@ -275,10 +275,10 @@ export const CartReviewSection = ({
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-5 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/30 dark:shadow-black/30 transition-colors flex items-center justify-between">
             <div>
               <h4 className="text-xs font-bold text-gray-900 dark:text-white">
-                {t('CART.PLASTIC_CUTLERY', 'Muỗng nĩa nhựa')}
+                {t('CART.PLASTIC_CUTLERY')}
               </h4>
               <p className="text-[11px] text-gray-400 dark:text-zinc-500">
-                {t('CART.PROTECT_ENVIRONMENT', 'Chung tay bảo vệ môi trường')}
+                {t('CART.PROTECT_ENVIRONMENT')}
               </p>
             </div>
             <button
@@ -290,14 +290,14 @@ export const CartReviewSection = ({
                   : 'bg-gray-100 text-gray-700 dark:bg-zinc-800 dark:text-zinc-300'
               }`}
             >
-              {needCutlery ? t('CART.TAKE_CUTLERY', 'Có lấy') : t('CART.NO_CUTLERY', 'Không lấy')}
+              {needCutlery ? t('CART.TAKE_CUTLERY') : t('CART.NO_CUTLERY')}
             </button>
           </div>
 
           {/* 4. Price Calculation Box */}
           <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-100 dark:border-zinc-800 shadow-xl shadow-gray-200/30 dark:shadow-black/30 transition-colors space-y-3">
             <div className="flex justify-between text-xs text-gray-500 dark:text-zinc-400 font-medium">
-              <span>{t('CART.SUBTOTAL', 'Tạm tính')}:</span>
+              <span>{t('CART.SUBTOTAL')}:</span>
               <span className="text-gray-900 dark:text-white font-bold">{formatVND(subTotal)}</span>
             </div>
 
@@ -317,7 +317,7 @@ export const CartReviewSection = ({
 
             <div className="flex justify-between text-xs text-gray-500 dark:text-zinc-400 font-medium">
               <span className="flex items-center gap-1">
-                <span>{t('CART.MEMBER_DISCOUNT', 'Giảm giá thành viên')}</span>
+                <span>{t('CART.MEMBER_DISCOUNT')}</span>
                 <Info className="w-3 h-3 text-gray-400" />
               </span>
               <span className="text-emerald-600 dark:text-emerald-400 font-bold">0 đ</span>
@@ -325,7 +325,7 @@ export const CartReviewSection = ({
 
             <div className="flex justify-between text-xs text-gray-500 dark:text-zinc-400 font-medium">
               <span className="flex items-center gap-1">
-                <span>{t('CART.DELIVERY_FEE', 'Phí giao hàng')}</span>
+                <span>{t('CART.DELIVERY_FEE')}</span>
                 <Info className="w-3 h-3 text-gray-400" />
               </span>
               <span className="text-gray-900 dark:text-white font-bold">
@@ -334,7 +334,7 @@ export const CartReviewSection = ({
             </div>
 
             <div className="pt-3 border-t border-gray-100 dark:border-zinc-800 flex justify-between items-baseline">
-              <span className="text-sm font-black text-gray-900 dark:text-white">{t('CART.TOTAL', 'Tổng cộng')}:</span>
+              <span className="text-sm font-black text-gray-900 dark:text-white">{t('CART.TOTAL')}:</span>
               <span className="text-xl font-black text-[#ff6900]">
                 {items.length > 0 ? formatVND(finalTotal) : '0 đ'}
               </span>
@@ -356,7 +356,7 @@ export const CartReviewSection = ({
               onClick={onProceedToCheckout}
               className="w-full mt-4 h-13 bg-[#ff6900] hover:bg-[#e05d00] active:bg-[#cc5200] disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-sm sm:text-base rounded-2xl shadow-xl shadow-orange-500/25 transition-all flex items-center justify-center cursor-pointer"
             >
-              {t('CART.CHECKOUT_BUTTON', 'Thanh Toán')}
+              {t('CART.CHECKOUT_BUTTON')}
             </button>
           </div>
         </div>

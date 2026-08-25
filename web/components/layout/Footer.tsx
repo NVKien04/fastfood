@@ -53,13 +53,13 @@ export const Footer = ({ className = '' }: FooterProps) => {
             <div className="space-y-2.5 pt-1 text-xs text-gray-600 dark:text-zinc-400">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-[#ff6900] shrink-0 mt-0.5" />
-                <span>{t('FOOTER.ADDRESS', 'Tòa nhà KeiPizza, Đường Trương Định, Tương Mai, Hoàng Mai, Hà Nội')}</span>
+                <span>{t('FOOTER.ADDRESS')}</span>
               </div>
 
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-[#ff6900] shrink-0" />
                 <span>
-                  {t('FOOTER.HOTLINE', 'Hotline:')}{' '}
+                  {t('FOOTER.HOTLINE')}{' '}
                   <strong className="text-gray-900 dark:text-zinc-200">1900 1822</strong> (8:00 - 22:00)
                 </span>
               </div>
@@ -67,7 +67,7 @@ export const Footer = ({ className = '' }: FooterProps) => {
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-[#ff6900] shrink-0" />
                 <span>
-                  {t('FOOTER.EMAIL', 'Email:')}{' '}
+                  {t('FOOTER.EMAIL')}{' '}
                   <a
                     href="mailto:support@keipizza.vn"
                     className="text-gray-900 dark:text-zinc-200 hover:text-[#ff6900] transition-colors"
@@ -81,7 +81,7 @@ export const Footer = ({ className = '' }: FooterProps) => {
             {/* Social Links */}
             <div className="pt-2">
               <h5 className="text-[11px] font-black uppercase tracking-wider text-gray-900 dark:text-zinc-300 mb-3">
-                {t('FOOTER.CONNECT_WITH_US', 'KẾT NỐI VỚI CHÚNG TÔI')}
+                {t('FOOTER.CONNECT_WITH_US')}
               </h5>
               <div className="flex items-center gap-2.5">
                 {/* Facebook */}
@@ -131,27 +131,27 @@ export const Footer = ({ className = '' }: FooterProps) => {
           {/* ======================================================== */}
           <div className="lg:col-span-2 space-y-3.5">
             <h4 className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
-              {t('FOOTER.SHOPPING', 'MUA SẮM')}
+              {t('FOOTER.SHOPPING')}
             </h4>
             <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-400">
               <li>
                 <Link href="/" className="hover:text-[#ff6900] transition-colors">
-                  {t('NAV.HOME', 'Trang chủ')}
+                  {t('NAV.HOME')}
                 </Link>
               </li>
               <li>
                 <Link href="/#pizza" className="hover:text-[#ff6900] transition-colors">
-                  {t('FOOTER.PRODUCTS', 'Sản phẩm')}
+                  {t('FOOTER.PRODUCTS')}
                 </Link>
               </li>
               <li>
                 <Link href="/#pizza" className="hover:text-[#ff6900] transition-colors">
-                  {t('FOOTER.CATEGORIES', 'Danh mục ngành hàng')}
+                  {t('FOOTER.CATEGORIES')}
                 </Link>
               </li>
               <li>
                 <Link href="/#combo" className="hover:text-[#ff6900] transition-colors">
-                  {t('FOOTER.PROMOTIONS', 'Chương trình khuyến mãi')}
+                  {t('FOOTER.PROMOTIONS')}
                 </Link>
               </li>
             </ul>
@@ -162,27 +162,27 @@ export const Footer = ({ className = '' }: FooterProps) => {
           {/* ======================================================== */}
           <div className="lg:col-span-2 space-y-3.5">
             <h4 className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
-              {t('FOOTER.SUPPORT_POLICY', 'HỖ TRỢ & CHÍNH SÁCH')}
+              {t('FOOTER.SUPPORT_POLICY')}
             </h4>
             <ul className="space-y-2.5 text-xs text-gray-500 dark:text-zinc-400">
               <li>
                 <Link href="#" className="hover:text-[#ff6900] transition-colors">
-                  {t('FOOTER.FAQ', 'Câu hỏi thường gặp (FAQ)')}
+                  {t('FOOTER.FAQ')}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-[#ff6900] transition-colors">
-                  {t('FOOTER.TERMS', 'Điều khoản sử dụng')}
+                  {t('FOOTER.TERMS')}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-[#ff6900] transition-colors">
-                  {t('FOOTER.PRIVACY', 'Chính sách bảo mật')}
+                  {t('FOOTER.PRIVACY')}
                 </Link>
               </li>
               <li>
                 <Link href="#" className="hover:text-[#ff6900] transition-colors">
-                  {t('FOOTER.BECOME_PARTNER', 'Đăng ký bán hàng cùng chúng tôi')}
+                  {t('FOOTER.BECOME_PARTNER')}
                 </Link>
               </li>
             </ul>
@@ -193,10 +193,10 @@ export const Footer = ({ className = '' }: FooterProps) => {
           {/* ======================================================== */}
           <div className="lg:col-span-4 space-y-3.5">
             <h4 className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
-              {t('FOOTER.NEWSLETTER', 'BẢN TIN KEIPIZZA')}
+              {t('FOOTER.NEWSLETTER')}
             </h4>
             <p className="text-xs text-gray-500 dark:text-zinc-400 leading-relaxed">
-              {t('FOOTER.NEWSLETTER_DESC', 'Đăng ký nhận thông tin ưu đãi và các sản phẩm nổi bật mới nhất từ chúng tôi.')}
+              {t('FOOTER.NEWSLETTER_DESC')}
             </p>
 
             {/* Newsletter Subscription Form */}
@@ -205,7 +205,7 @@ export const Footer = ({ className = '' }: FooterProps) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={t('FOOTER.EMAIL_PLACEHOLDER', 'Email của bạn...')}
+                placeholder={t('FOOTER.EMAIL_PLACEHOLDER')}
                 required
                 className="flex-1 h-10 px-3.5 rounded-xl bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-xs text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-[#ff6900] focus:ring-1 focus:ring-[#ff6900] transition-all"
               />
@@ -213,7 +213,7 @@ export const Footer = ({ className = '' }: FooterProps) => {
                 type="submit"
                 className="h-10 px-5 rounded-xl bg-[#ff6900] hover:bg-[#e05d00] active:bg-[#cc5200] text-white text-xs font-bold transition-colors cursor-pointer shrink-0 shadow-xs"
               >
-                {subscribed ? <Check className="w-4 h-4" /> : t('FOOTER.SUBSCRIBE', 'Đăng ký')}
+                {subscribed ? <Check className="w-4 h-4" /> : t('FOOTER.SUBSCRIBE')}
               </button>
             </form>
 
@@ -222,10 +222,10 @@ export const Footer = ({ className = '' }: FooterProps) => {
               <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
               <div className="flex flex-col text-[11px] leading-tight">
                 <span className="font-bold text-gray-800 dark:text-zinc-200">
-                  {t('FOOTER.SAFE_SHOPPING', 'Mua sắm an toàn 100%')}
+                  {t('FOOTER.SAFE_SHOPPING')}
                 </span>
                 <span className="text-gray-400 dark:text-zinc-500 mt-0.5">
-                  {t('FOOTER.SAFE_SHOPPING_DESC', 'Thông tin bảo mật và mã hóa hoàn toàn')}
+                  {t('FOOTER.SAFE_SHOPPING_DESC')}
                 </span>
               </div>
             </div>
@@ -242,7 +242,7 @@ export const Footer = ({ className = '' }: FooterProps) => {
 
           <div className="flex items-center gap-2">
             <span className="uppercase text-[10px] font-bold tracking-wider text-gray-400 dark:text-zinc-600">
-              {t('FOOTER.PAYMENT', 'THANH TOÁN:')}
+              {t('FOOTER.PAYMENT')}
             </span>
             <div className="flex items-center gap-1.5 font-mono text-[10px] font-black">
               <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300">

@@ -1,8 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OrderStatus, PaymentMethod, PaymentStatus } from '@/enums';
 import { BusinessException } from '@/common/exception';
-import { ErrorEnum } from '@/common/constants';
+import { ErrorEnum, REDIS_KEYS } from '@/common/constants';
 import { type PaginationResponse } from '@/common/core';
+import { type ICacheService } from '@/modules/cache/domain/interface/cache.interface';
 import { Order, OrderItem, OrderItemIngredient } from '@/modules/order/domain/entities/order.domain';
 import { type IOrderRepository } from '@/modules/order/domain/repositories/order.repository.interface';
 import { ProductService } from '@/modules/product/application/services/product.service';
@@ -38,6 +39,8 @@ export class OrderService {
     private readonly productVariantService: ProductVariantService,
     private readonly ingredientService: IngredientService,
     private readonly couponService: CouponService,
+    @Inject('ICacheService')
+    private readonly cacheService: ICacheService,
   ) {}
 
   // =============================================
@@ -134,7 +137,7 @@ export class OrderService {
     const deliveryFee = 15000; // Phí ship mặc định 15,000 VND
     const total = Math.max(0, subTotal + deliveryFee - discount);
 
-    const orderNumber = `FF-${Date.now().toString().slice(-6)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderNumber = await this.generateOrderNumber();
 
     const orderDomain: Order = {
       orderNumber,
@@ -258,6 +261,20 @@ export class OrderService {
   // =============================================
   // PRIVATE HELPERS
   // =============================================
+
+  /**
+   * Sinh mã đơn hàng duy nhất sử dụng Redis atomic increment.
+   * Format: FF-YYYYMMDD-000001 (prefix + ngày + số thứ tự 6 chữ số)
+   */
+  private async generateOrderNumber(): Promise<string> {
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+    const key = `${REDIS_KEYS.ORDER.SEQUENCE}:${dateStr}`;
+    const seq = await this.cacheService.incr(key);
+    // TTL 48h để tự dọn key cũ, đủ buffer cho ngày hôm sau
+    await this.cacheService.expire(key, 172800);
+    return `FF-${dateStr}-${String(seq).padStart(6, '0')}`;
+  }
 
   /**
    * Validate thông tin giao hàng nhập từ trình duyệt:

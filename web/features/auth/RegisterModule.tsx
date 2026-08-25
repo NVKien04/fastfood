@@ -22,11 +22,11 @@ export const RegisterModule = () => {
           className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors p-1.5 -ml-2 rounded-lg hover:bg-gray-100/60 dark:hover:bg-zinc-900 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>{t('COMMON.BACK', 'Trở lại')}</span>
+          <span>{t('COMMON.BACK')}</span>
         </button>
 
         <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight text-center flex-1 pr-6">
-          {t('AUTH.REGISTER_TITLE', 'Tạo tài khoản')}
+          {t('AUTH.REGISTER_TITLE')}
         </h1>
       </div>
 

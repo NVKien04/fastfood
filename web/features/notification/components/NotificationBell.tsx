@@ -33,7 +33,7 @@ export const NotificationBell = ({ className = '' }: NotificationBellProps) => {
       <button
         type="button"
         onClick={handleToggleOpen}
-        aria-label={t('NAV.NOTIFICATIONS', 'Thông báo')}
+        aria-label={t('NAV.NOTIFICATIONS')}
         className={`relative p-2.5 rounded-full text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer select-none ${
           isOpen ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white' : ''
         }`}
