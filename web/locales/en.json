@@ -43,7 +43,8 @@
     "DELIVERY_TIME": "34 mins",
     "STORES_COUNT": "1,510 stores across 27 countries",
     "NOTIFICATIONS": "Notifications",
-    "TRACK_ORDER": "Track Order",
+    "TRACK_ORDER": "My Orders",
+    "VOUCHERS": "Voucher Wallet",
     "CUSTOMER_SUPPORT": "Customer Support"
   },
   "NOTIFICATION": {

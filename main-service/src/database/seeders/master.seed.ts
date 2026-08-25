@@ -2,12 +2,20 @@ import { DataSource } from 'typeorm';
 import {
   CategoryEntity,
   CombosEntity,
+  CouponsEntity,
   IngredientsEntity,
+  NotificationEntity,
+  OrderItemsEntity,
+  OrderItemsIngredientsEntity,
+  OrdersEntity,
   ProductEntity,
   ProductIngredientsEntity,
   ProductVariantsEntity,
+  UserCouponsEntity,
+  UserEntity,
 } from '@/entities';
-import { SizeEnum, TypeEnum } from '@/enums';
+import { NotificationType, OrderStatus, PaymentMethod, PaymentStatus, RoleEnum, SizeEnum, TypeEnum } from '@/enums';
+import { HashUtil } from '@/utils';
 
 import {
   categories,
@@ -16,6 +24,11 @@ import {
   productVariants,
   combos,
   productIngredients,
+  users,
+  coupons,
+  userCoupons,
+  notifications,
+  seedOrders,
 } from '@/database/seeders/data';
 
 export async function MasterSeed(dataSource: DataSource) {
@@ -93,7 +106,12 @@ export async function MasterSeed(dataSource: DataSource) {
       product = await productRepo.save(product);
       console.log(`✅ Seeded Product: ${product.name}`);
     } else {
-      console.log(`⚠️ Product Existed: ${product.name}`);
+      // Cập nhật giá sale nếu có
+      if ('salePrice' in item) {
+        product.salePrice = typeof item.salePrice === 'number' ? item.salePrice : null;
+        await productRepo.save(product);
+      }
+      console.log(`⚠️ Product Existed & Updated: ${product.name}`);
     }
     productMap.set(i + 1, product);
   }
@@ -180,6 +198,245 @@ export async function MasterSeed(dataSource: DataSource) {
       await productIngredientRepo.save(pi);
       console.log(`✅ Seeded ProductIngredient: ${parentProduct.name} - ${parentIngredient.name}`);
     }
+  }
+
+  // 7. Seed Users (Admin & Customers)
+  const userRepo = dataSource.getRepository(UserEntity);
+  const userMap = new Map<string, UserEntity>();
+  const defaultHashedPassword = await HashUtil.hash('Password123');
+
+  for (const item of users) {
+    let user = await userRepo.findOne({ where: { email: item.email } });
+    if (!user) {
+      user = userRepo.create({
+        email: item.email,
+        name: item.name,
+        phone: item.phone,
+        role: item.role as RoleEnum,
+        password: defaultHashedPassword,
+        provider: item.provider || 'local',
+      });
+      user = await userRepo.save(user);
+      console.log(`✅ Seeded User: ${user.email} (${user.role})`);
+    } else {
+      console.log(`⚠️ User Existed: ${user.email}`);
+    }
+    userMap.set(user.email, user);
+  }
+
+  // 8. Seed Coupons (Mã giảm giá đơn hàng & khuyến mãi)
+  const couponRepo = dataSource.getRepository(CouponsEntity);
+  const couponMap = new Map<string, CouponsEntity>();
+
+  for (const item of coupons) {
+    let coupon = await couponRepo.findOne({ where: { code: item.code } });
+    if (!coupon) {
+      coupon = couponRepo.create({
+        code: item.code,
+        name: item.name,
+        description: item.description,
+        value: item.value,
+        minOrderAmount: item.minOrderAmount,
+        maxUser: item.maxUser,
+        currentUses: item.currentUses ?? 0,
+        startDate: item.startDate,
+        endDate: item.endDate,
+        isActive: item.isActive ?? 1,
+      });
+      coupon = await couponRepo.save(coupon);
+      console.log(`✅ Seeded Coupon: ${coupon.code} - Giảm ${coupon.value.toLocaleString('vi-VN')}đ`);
+    } else {
+      coupon.name = item.name;
+      coupon.description = item.description;
+      coupon.value = item.value;
+      coupon.minOrderAmount = item.minOrderAmount;
+      coupon.startDate = item.startDate;
+      coupon.endDate = item.endDate;
+      coupon.isActive = item.isActive ?? 1;
+      coupon = await couponRepo.save(coupon);
+      console.log(`⚠️ Coupon Existed & Synced: ${coupon.code}`);
+    }
+    couponMap.set(coupon.code, coupon);
+  }
+
+  // 9. Seed User Coupons (Gán mã giảm giá độc quyền cho từng User)
+  const userCouponRepo = dataSource.getRepository(UserCouponsEntity);
+
+  for (const item of userCoupons) {
+    const user = userMap.get(item.userEmail) || (await userRepo.findOne({ where: { email: item.userEmail } }));
+    const coupon = couponMap.get(item.couponCode) || (await couponRepo.findOne({ where: { code: item.couponCode } }));
+
+    if (!user || !coupon) {
+      console.warn(`⚠️ Cannot seed UserCoupon: User (${item.userEmail}) or Coupon (${item.couponCode}) not found`);
+      continue;
+    }
+
+    const exists = await userCouponRepo.findOne({
+      where: {
+        userId: user.id,
+        couponsId: coupon.id,
+      },
+    });
+
+    if (!exists) {
+      const uc = userCouponRepo.create({
+        userId: user.id,
+        couponsId: coupon.id,
+        isUsed: item.isUsed ?? 0,
+        userdAt: item.userdAt || null,
+      });
+      await userCouponRepo.save(uc);
+      console.log(`✅ Seeded UserCoupon: [${user.email}] <-> [${coupon.code}]`);
+    } else {
+      console.log(`⚠️ UserCoupon Existed: [${user.email}] <-> [${coupon.code}]`);
+    }
+  }
+
+  // 10. Seed Notifications
+  const notificationRepo = dataSource.getRepository(NotificationEntity);
+
+  for (const item of notifications) {
+    let targetUserId = item.userId;
+    if (!targetUserId && item.userEmail) {
+      const u = userMap.get(item.userEmail) || (await userRepo.findOne({ where: { email: item.userEmail } }));
+      if (u) targetUserId = u.id;
+    }
+
+    if (!targetUserId) {
+      const u = await userRepo.findOne({ where: { email: item.userEmail } });
+      if (u) targetUserId = u.id;
+    }
+
+    if (!targetUserId) continue;
+
+    const exists = await notificationRepo.findOne({
+      where: {
+        userId: targetUserId,
+        title: item.title,
+      },
+    });
+
+    if (!exists) {
+      const notif = notificationRepo.create({
+        title: item.title,
+        content: item.content,
+        type: item.type as NotificationType,
+        isRead: item.isRead ?? false,
+        userId: targetUserId,
+        createdAt: item.createdAt || new Date(),
+      });
+      await notificationRepo.save(notif);
+      console.log(`✅ Seeded Notification: "${item.title}" for user ${targetUserId}`);
+    } else {
+      console.log(`⚠️ Notification Existed: "${item.title}" for user ${targetUserId}`);
+    }
+  }
+
+  // 11. Seed Orders for User
+  const orderRepo = dataSource.getRepository(OrdersEntity);
+  const orderItemRepo = dataSource.getRepository(OrderItemsEntity);
+  const orderItemIngRepo = dataSource.getRepository(OrderItemsIngredientsEntity);
+
+  for (const so of seedOrders) {
+    const user = userMap.get(so.userEmail) || (await userRepo.findOne({ where: { email: so.userEmail } }));
+    if (!user) continue;
+
+    const existingOrder = await orderRepo.findOne({ where: { orderNumber: so.orderNumber } });
+    if (existingOrder) {
+      console.log(`⚠️ Order Existed: #${so.orderNumber}`);
+      continue;
+    }
+
+    // Calculate subTotal and prepare items
+    let subTotal = 0;
+    const preparedItems: {
+      productId: string;
+      productVariantId: number | null;
+      quantity: number;
+      price: number;
+      ingredientIds: number[];
+    }[] = [];
+
+    for (const it of so.items) {
+      const prod = await productRepo.findOne({ where: { name: it.productName } });
+      if (!prod) continue;
+
+      let itemPrice = Number(prod.salePrice && prod.salePrice > 0 ? prod.salePrice : prod.basePrice);
+      let variantId: number | null = null;
+
+      if (it.variantName) {
+        const variant = await variantRepo.findOne({ where: { productId: prod.id, name: it.variantName } });
+        if (variant) {
+          variantId = variant.id;
+          itemPrice += Number(variant.modifiedPrice || 0);
+        }
+      }
+
+      const ingIds: number[] = [];
+      const itemWithIngs = it as { ingredientNames?: string[] };
+      if (itemWithIngs.ingredientNames && itemWithIngs.ingredientNames.length > 0) {
+        for (const ingName of itemWithIngs.ingredientNames) {
+          const ing = await ingredientRepo.findOne({ where: { name: ingName } });
+          if (ing) {
+            ingIds.push(ing.id);
+            itemPrice += Number(ing.price || 0);
+          }
+        }
+      }
+
+      subTotal += itemPrice * it.quantity;
+
+      preparedItems.push({
+        productId: prod.id,
+        productVariantId: variantId,
+        quantity: it.quantity,
+        price: itemPrice,
+        ingredientIds: ingIds,
+      });
+    }
+
+    const total = Math.max(0, subTotal + so.deliveryFee - so.discount);
+
+    const orderEntity = orderRepo.create({
+      orderNumber: so.orderNumber,
+      status: so.status as OrderStatus,
+      paymentStatus: so.paymentStatus as PaymentStatus,
+      paymentMethod: so.paymentMethod as PaymentMethod,
+      subTotal,
+      deliveryFee: so.deliveryFee,
+      discount: so.discount,
+      total,
+      notes: so.notes,
+      userId: user.id,
+      guestName: so.guestName,
+      guestPhone: so.guestPhone,
+      guestAddress: so.guestAddress,
+      createdAt: so.createdAt,
+    });
+
+    const savedOrder = await orderRepo.save(orderEntity);
+
+    for (const pItem of preparedItems) {
+      const oi = orderItemRepo.create({
+        orderId: savedOrder.id,
+        productId: pItem.productId,
+        productVariantId: pItem.productVariantId,
+        quantity: pItem.quantity,
+        price: pItem.price,
+      });
+      const savedOi = await orderItemRepo.save(oi);
+
+      for (const ingId of pItem.ingredientIds) {
+        const oii = orderItemIngRepo.create({
+          orderItemId: savedOi.id,
+          ingredientId: ingId,
+          quantity: 1,
+        });
+        await orderItemIngRepo.save(oii);
+      }
+    }
+
+    console.log(`✅ Seeded Order: #${savedOrder.orderNumber} - Status: ${savedOrder.status} - Total: ${savedOrder.total.toLocaleString('vi-VN')}đ`);
   }
 
   console.log('🎉 --- Seeding Completed Successfully ---');

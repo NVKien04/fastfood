@@ -7,6 +7,7 @@ import { CategoryApiModule } from './module/Category.api';
 import { UploadApiModule } from './module/Upload.api';
 import { OrderApiModule } from './module/Order.api';
 import { NotificationApiModule } from './module/Notification.api';
+import { CouponApiModule } from './module/Coupon.api';
 import { useStore } from '@/stores';
 
 export class ApiMain {
@@ -19,6 +20,7 @@ export class ApiMain {
   readonly upload = new UploadApiModule(DEFAULT_API_MAIN_CONFIG);
   readonly order = new OrderApiModule(DEFAULT_API_MAIN_CONFIG);
   readonly notification = new NotificationApiModule(DEFAULT_API_MAIN_CONFIG);
+  readonly coupon = new CouponApiModule(DEFAULT_API_MAIN_CONFIG);
 
   private constructor() {
     // ─── onRefresh ──────────────────────────────────────────────────
@@ -52,6 +54,7 @@ export class ApiMain {
     setupInterceptors(this.upload.http.instance, onRefresh, onLogout);
     setupInterceptors(this.order.http.instance, onRefresh, onLogout);
     setupInterceptors(this.notification.api.instance, onRefresh, onLogout);
+    setupInterceptors(this.coupon.http.instance, onRefresh, onLogout);
   }
 
   static get instance() {

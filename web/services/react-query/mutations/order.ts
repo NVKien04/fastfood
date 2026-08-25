@@ -23,3 +23,27 @@ export const useOrderCreate = () => {
 };
 
 export const useCreateOrder = useOrderCreate;
+
+export const useCancelOrder = () => {
+  const mutationFn = async ({
+    id,
+    reason,
+  }: {
+    id: string;
+    reason?: string;
+  }): Promise<Nullable<OrderResponseDto>> => {
+    const response = await ApiMain.instance.order.cancelOrder(id, reason);
+    if (response.kind !== 'OK') return null;
+    return response.data;
+  };
+
+  return useMutation({
+    mutationFn,
+    onSuccess: (data) => {
+      if (data) {
+        invalidateListQueries([ORDER_MY_ORDERS]);
+      }
+    },
+  });
+};
+

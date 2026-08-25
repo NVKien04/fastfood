@@ -19,6 +19,19 @@ export interface OrderItem {
   price?: number | null;
   productName?: string;
   variantName?: string;
+  product?: {
+    id: string;
+    name: string;
+    img?: string;
+    basePrice: number;
+  };
+  productVariant?: {
+    id: number;
+    name: string;
+    size?: string;
+    type?: string;
+    modifiedPrice: number;
+  };
   ingredients?: OrderItemIngredient[];
 }
 

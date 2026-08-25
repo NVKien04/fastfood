@@ -659,6 +659,11 @@ export interface ProductDetailResponseDto {
    */
   basePrice: number;
   /**
+   * Giá khuyến mãi (VND)
+   * @example 150000
+   */
+  salePrice?: number | null;
+  /**
    * Thứ tự hiển thị
    * @example 0
    */

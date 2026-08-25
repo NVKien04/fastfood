@@ -33,10 +33,14 @@ export const calculateProductUnitPrice = (
     discountPrice?: number;
     salePrice?: number;
   };
-  const basePrice = Number(rawProduct.discountPrice || rawProduct.salePrice || product.basePrice || 0);
+  const effectiveBasePrice = Number(
+    rawProduct.salePrice && rawProduct.salePrice > 0 && rawProduct.salePrice < Number(product.basePrice || 0)
+      ? rawProduct.salePrice
+      : (product.basePrice || 0),
+  );
   const variantPrice = selectedVariant?.modifiedPrice || 0;
   const ingredientsPrice = selectedIngredients.reduce((sum, ing) => sum + (ing.price || 0), 0);
-  return basePrice + variantPrice + ingredientsPrice;
+  return effectiveBasePrice + variantPrice + ingredientsPrice;
 };
 
 /**

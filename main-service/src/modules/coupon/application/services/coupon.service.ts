@@ -1,6 +1,9 @@
 import { PaginationResponse, buildPaginationResponse } from '@/common/core';
 import { CouponFilterDto, CreateCouponDto, UpdateCouponDto } from '@/modules/coupon/presentation/dto';
 import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserCouponsEntity } from '@/entities';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
 import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
@@ -11,6 +14,8 @@ export class CouponService {
   constructor(
     @Inject('ICouponRepository')
     private readonly couponRepository: ICouponRepository,
+    @InjectRepository(UserCouponsEntity)
+    private readonly userCouponRepo: Repository<UserCouponsEntity>,
   ) {}
 
   // ==========================================
@@ -71,6 +76,78 @@ export class CouponService {
   // ==========================================
   // NHÓM 2: CÁC HÀM NGHIỆP VỤ THỰC TẾ (BUSINESS LOGIC)
   // ==========================================
+
+  /**
+   * Lấy danh sách mã giảm giá đang hoạt động (Public)
+   */
+  async getActiveCoupons(): Promise<Coupon[]> {
+    const now = new Date();
+    const all = await this.findAll({ isActive: 1 }, { value: 'DESC' });
+    return all.filter((c) => {
+      const start = new Date(c.startDate);
+      const end = new Date(c.endDate);
+      return now >= start && now <= end && c.currentUses < c.maxUser;
+    });
+  }
+
+  /**
+   * Lấy danh sách Voucher trong ví của User (bao gồm mã độc quyền & mã chung)
+   */
+  async getUserCoupons(userId: string) {
+    const now = new Date();
+    // 1. Lấy mã độc quyền được gán riêng
+    const userCoupons = await this.userCouponRepo.find({
+      where: { userId },
+      relations: ['coupons_obj'],
+      order: { createdAt: 'DESC' },
+    });
+
+    const exclusiveVouchers = userCoupons
+      .filter((uc) => uc.coupons_obj && uc.coupons_obj.isActive === 1)
+      .map((uc) => {
+        const c = uc.coupons_obj;
+        const start = new Date(c.startDate);
+        const end = new Date(c.endDate);
+        const isValidTime = now >= start && now <= end;
+        return {
+          id: c.id,
+          code: c.code,
+          name: c.name,
+          description: c.description,
+          value: c.value,
+          minOrderAmount: c.minOrderAmount,
+          startDate: c.startDate,
+          endDate: c.endDate,
+          isUsed: uc.isUsed === 1,
+          isExclusive: true,
+          isExpired: !isValidTime,
+          canUse: uc.isUsed === 0 && isValidTime,
+        };
+      });
+
+    // 2. Lấy mã công khai chung
+    const publicCoupons = await this.getActiveCoupons();
+    const exclusiveCodes = new Set(exclusiveVouchers.map((v) => v.code));
+
+    const publicVouchers = publicCoupons
+      .filter((c) => !exclusiveCodes.has(c.code))
+      .map((c) => ({
+        id: c.id,
+        code: c.code,
+        name: c.name,
+        description: c.description,
+        value: c.value,
+        minOrderAmount: c.minOrderAmount,
+        startDate: c.startDate,
+        endDate: c.endDate,
+        isUsed: false,
+        isExclusive: false,
+        isExpired: false,
+        canUse: true,
+      }));
+
+    return [...exclusiveVouchers, ...publicVouchers];
+  }
 
   /**
    * Tạo mới mã giảm giá

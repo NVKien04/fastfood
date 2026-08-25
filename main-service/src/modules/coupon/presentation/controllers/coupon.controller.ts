@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Auth } from '@/common/decorators';
+import { Auth, GetUser } from '@/common/decorators';
+import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
 import { ApplyCouponDto, CouponFilterDto, CreateCouponDto, UpdateCouponDto } from '@/modules/coupon/presentation/dto';
 import { RoleEnum } from '@/enums';
 import { CouponService } from '@/modules/coupon/application/services/coupon.service';
@@ -13,6 +14,28 @@ export class CouponController {
   // ==========================================
   // PUBLIC ENDPOINTS (GUEST & USER CHECKOUT)
   // ==========================================
+
+  @Get('active')
+  @ApiOperation({ summary: 'Lấy danh sách mã giảm giá đang hoạt động (Công khai)' })
+  @ApiResponse({ status: 200, description: 'Lấy danh sách mã giảm giá thành công' })
+  async getActiveCoupons() {
+    const coupons = await this.couponService.getActiveCoupons();
+    return {
+      data: coupons,
+    };
+  }
+
+  @Get('my-coupons')
+  @Auth()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Lấy danh sách mã giảm giá trong ví của người dùng' })
+  @ApiResponse({ status: 200, description: 'Lấy danh sách voucher thành công' })
+  async getMyCoupons(@GetUser() user: AuthUser) {
+    const vouchers = await this.couponService.getUserCoupons(user.userId);
+    return {
+      data: vouchers,
+    };
+  }
 
   @Post('apply')
   @ApiOperation({ summary: 'Kiểm tra và áp dụng mã giảm giá khi thanh toán (Công khai)' })

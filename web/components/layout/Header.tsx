@@ -21,6 +21,7 @@ import {
   Headphones,
   LogIn,
   UserPlus,
+  Ticket,
 } from 'lucide-react';
 import { useStore } from '@/stores';
 import { THEME, LANGUAGES, LanguageEnum, type Language } from '@/constants';
@@ -342,17 +343,30 @@ export const Header = ({
                     </>
                   )}
 
-                  {/* 2. Theo dõi đơn hàng */}
+                  {/* 2. Đơn hàng của tôi / Theo dõi đơn hàng */}
                   <button
                     type="button"
-                    onClick={() => _handleNavigate(isLoggedIn ? '/profile' : '/checkout')}
+                    onClick={() => _handleNavigate(isLoggedIn ? '/orders' : '/login')}
                     className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     <PackageSearch className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-                    <span>{t('NAV.TRACK_ORDER', 'Theo dõi đơn hàng')}</span>
+                    <span>{t('NAV.TRACK_ORDER', 'Đơn hàng của tôi')}</span>
                   </button>
 
-                  {/* 3. Hỗ trợ khách hàng */}
+                  {/* 3. Ví Voucher / Mã giảm giá */}
+                  <button
+                    type="button"
+                    onClick={() => _handleNavigate(isLoggedIn ? '/vouchers' : '/login')}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                  >
+                    <Ticket className="w-4 h-4 text-[#ff6900]" />
+                    <span className="flex-1 text-left">{t('NAV.VOUCHERS', 'Ví Voucher')}</span>
+                    <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400">
+                      HOT
+                    </span>
+                  </button>
+
+                  {/* 4. Hỗ trợ khách hàng */}
                   <a
                     href="tel:19001822"
                     className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"

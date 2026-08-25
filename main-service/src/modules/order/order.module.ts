@@ -2,14 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderItemsEntity, OrderItemsIngredientsEntity, OrdersEntity } from '@/entities';
 import { OrderService } from '@/modules/order/application/services/order.service';
-import {
-  CancelOrderUseCase,
-  CreateOrderUseCase,
-  GetOrderDetailUseCase,
-  GetOrdersPageUseCase,
-  GetUserOrdersUseCase,
-  UpdateOrderStatusUseCase,
-} from '@/modules/order/application/use-cases';
 import { OrderController } from '@/modules/order/presentation/controllers/order.controller';
 import { OrderTypeOrmRepository } from '@/modules/order/infrastructure/persistence/typeorm/order.typeorm.repository';
 import { ProductModule } from '@/modules/product/product.module';
@@ -28,12 +20,6 @@ import { CouponModule } from '@/modules/coupon/coupon.module';
   controllers: [OrderController],
   providers: [
     OrderService,
-    CreateOrderUseCase,
-    GetUserOrdersUseCase,
-    GetOrdersPageUseCase,
-    GetOrderDetailUseCase,
-    CancelOrderUseCase,
-    UpdateOrderStatusUseCase,
     {
       provide: 'IOrderRepository',
       useClass: OrderTypeOrmRepository,

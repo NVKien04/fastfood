@@ -52,25 +52,23 @@ export class CreateOrderDto {
   @IsNotEmpty()
   items: CreateOrderItemDto[];
 
-  @ApiPropertyOptional({ description: 'ID địa chỉ giao hàng của User (nếu đã đăng nhập)', example: 'uuid-address-id' })
-  @IsUUID()
-  @IsOptional()
-  addressId?: string;
-
-  @ApiPropertyOptional({ description: 'Họ tên khách hàng (nếu mua không cần tài khoản)', example: 'Nguyen Van A' })
+  @ApiPropertyOptional({ description: 'Họ tên người nhận hàng', example: 'Nguyen Van A' })
   @IsString()
   @IsOptional()
   guestName?: string;
 
-  @ApiPropertyOptional({ description: 'Số điện thoại nhận hàng', example: '0901234567' })
+  @ApiProperty({ description: 'Số điện thoại người nhận hàng', example: '0901234567' })
   @IsString()
-  @IsOptional()
-  guestPhone?: string;
+  @IsNotEmpty()
+  guestPhone: string;
 
-  @ApiPropertyOptional({ description: 'Địa chỉ giao hàng đầy đủ', example: '123 Đường ABC, Quận 1, TP.HCM' })
+  @ApiProperty({
+    description: 'Địa chỉ giao hàng đầy đủ (nhập từ trình duyệt)',
+    example: '123 Đường ABC, Quận 1, TP.HCM',
+  })
   @IsString()
-  @IsOptional()
-  guestAddress?: string;
+  @IsNotEmpty()
+  guestAddress: string;
 
   @ApiPropertyOptional({ description: 'Ghi chú cho nhà hàng / shipper', example: 'Giao giờ hành chính, không cay' })
   @IsString()

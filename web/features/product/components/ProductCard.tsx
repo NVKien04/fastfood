@@ -7,14 +7,6 @@ import { formatVND } from '@/utils';
 import { isCustomizableProduct } from '@/helpers';
 import { Utensils } from 'lucide-react';
 
-type ProductWithDiscount = ProductDetailResponseDto & {
-  originalPrice?: number;
-  oldPrice?: number;
-  discountPrice?: number;
-  salePrice?: number;
-  discountPercent?: number;
-};
-
 type ProductCardProps = {
   product: ProductDetailResponseDto;
   onOpenDetail: (product: ProductDetailResponseDto) => void;
@@ -24,12 +16,12 @@ type ProductCardProps = {
 export const ProductCard = ({ product, onOpenDetail, onQuickAdd }: ProductCardProps) => {
   const { t } = useTranslation();
   const hasOptions = isCustomizableProduct(product);
-  const p = product as ProductWithDiscount;
+  const basePrice = Number(product.basePrice || 0);
+  const salePrice = product.salePrice ? Number(product.salePrice) : null;
+  const hasDiscount = Boolean(salePrice && salePrice > 0 && salePrice < basePrice);
 
-  // Calculate prices and discount state
-  const currentPrice = Number(p.discountPrice || p.salePrice || p.basePrice || 0);
-  const originalPrice = Number(p.originalPrice || p.oldPrice || 0);
-  const hasDiscount = originalPrice > currentPrice && originalPrice > 0;
+  const currentPrice = hasDiscount ? (salePrice as number) : basePrice;
+  const originalPrice = hasDiscount ? basePrice : 0;
 
   const handleClick = (e: MouseEvent) => {
     if (hasOptions) {

@@ -48,13 +48,13 @@ export class OrderService {
    * Tạo đơn hàng mới từ dữ liệu giỏ hàng, địa chỉ và mã giảm giá nhận từ Client
    * Tự động xác thực sản phẩm, biến thể, topping, voucher và tính toán lại giá tiền chuẩn xác.
    */
-  async createOrder(dto: CreateOrderDto, userId?: string): Promise<Order> {
+  async createOrder(dto: CreateOrderDto, userId: string): Promise<Order> {
     if (!dto.items || dto.items.length === 0) {
       throw new BusinessException(ErrorEnum.CART_EMPTY);
     }
 
-    // Validate thông tin giao hàng cho khách vãng lai
-    this.validateDeliveryInfo(dto, userId);
+    // Validate thông tin giao hàng (có thể dùng addressId hoặc nhập trực tiếp địa chỉ/sđt tại browser)
+    this.validateDeliveryInfo(dto);
 
     let subTotal = 0;
     const preparedItems: OrderItem[] = [];
@@ -62,6 +62,9 @@ export class OrderService {
     for (const itemDto of dto.items) {
       // 1. Kiểm tra sản phẩm và trạng thái active
       const product = await this.productService.findByIdOrThrow(itemDto.productId);
+      if (!product.isActive || product.isActive === 0) {
+        throw new BusinessException(ErrorEnum.PRODUCT_NOT_FOUND);
+      }
 
       // 2. Kiểm tra biến thể (Size/Đế) nếu có
       let variantPriceOffset = 0;
@@ -69,10 +72,11 @@ export class OrderService {
       if (itemDto.productVariantId) {
         const variants = await this.productVariantService.findByProductId(product.id);
         const variant = variants.find((v) => v.id === itemDto.productVariantId);
-        if (variant) {
-          variantPriceOffset = variant.modifiedPrice || 0;
-          variantName = variant.name;
+        if (!variant || !variant.isActive || variant.isActive === 0) {
+          throw new BusinessException(ErrorEnum.PRODUCT_VARIANT_NOT_FOUND);
         }
+        variantPriceOffset = variant.modifiedPrice || 0;
+        variantName = variant.name;
       }
 
       // 3. Kiểm tra nguyên liệu / topping thêm nếu có
@@ -82,17 +86,18 @@ export class OrderService {
       if (itemDto.ingredients && itemDto.ingredients.length > 0) {
         for (const ingDto of itemDto.ingredients) {
           const ing = await this.ingredientService.findById(ingDto.ingredientId);
-          if (ing) {
-            const qty = ingDto.quantity || 1;
-            const ingPrice = (ing.price || 0) * qty;
-            ingredientsPriceTotal += ingPrice;
-            itemIngredients.push({
-              ingredientId: ing.id,
-              quantity: qty,
-              ingredientName: ing.name,
-              ingredientPrice: ing.price,
-            });
+          if (!ing || !ing.isActive || ing.isActive === 0) {
+            throw new BusinessException(ErrorEnum.INGREDIENT_NOT_FOUND);
           }
+          const qty = ingDto.quantity || 1;
+          const ingPrice = (ing.price || 0) * qty;
+          ingredientsPriceTotal += ingPrice;
+          itemIngredients.push({
+            ingredientId: ing.id,
+            quantity: qty,
+            ingredientName: ing.name,
+            ingredientPrice: ing.price,
+          });
         }
       }
 
@@ -142,7 +147,7 @@ export class OrderService {
       total,
       notes: dto.notes || null,
       userId: userId || null,
-      addressId: dto.addressId || null,
+      addressId: null,
       guestName: dto.guestName || null,
       guestPhone: dto.guestPhone || null,
       guestAddress: dto.guestAddress || null,
@@ -255,10 +260,11 @@ export class OrderService {
   // =============================================
 
   /**
-   * Validate thông tin giao hàng: nếu không có userId (khách vãng lai), bắt buộc phải có guestName, guestPhone, guestAddress.
+   * Validate thông tin giao hàng nhập từ trình duyệt:
+   * Bắt buộc phải có địa chỉ nhận hàng (guestAddress) và số điện thoại người nhận (guestPhone).
    */
-  private validateDeliveryInfo(dto: CreateOrderDto, userId?: string): void {
-    if (!userId && (!dto.guestName || !dto.guestPhone || !dto.guestAddress)) {
+  private validateDeliveryInfo(dto: CreateOrderDto): void {
+    if (!dto.guestAddress || !dto.guestPhone) {
       throw new BusinessException(ErrorEnum.ORDER_DELIVERY_INFO_REQUIRED);
     }
   }

@@ -40,30 +40,7 @@ export const useProductMenu = () => {
   const categories = useMemo(() => categoriesData ?? [], [categoriesData]);
   const products = useMemo(() => {
     if (productsData?.kind !== 'OK' || !productsData.data) return [];
-    const list = productsData.data;
-
-    // Mock originalPrice for sample products on first row and other rows
-    return list.map((p, idx) => {
-      if (idx === 0) {
-        return {
-          ...p,
-          originalPrice: Math.round(Number(p.basePrice) * 1.3),
-        };
-      }
-      if (idx === 1) {
-        return {
-          ...p,
-          originalPrice: Math.round(Number(p.basePrice) * 1.25),
-        };
-      }
-      if (idx === 4 || idx === 5) {
-        return {
-          ...p,
-          originalPrice: Math.round(Number(p.basePrice) * 1.2),
-        };
-      }
-      return p;
-    });
+    return productsData.data;
   }, [productsData]);
 
   const activeModalProduct = useMemo(

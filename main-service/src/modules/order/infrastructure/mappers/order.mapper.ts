@@ -23,6 +23,23 @@ export class OrderMapper {
       price: entity.price,
       productName: entity.product_obj?.name,
       variantName: entity.productVariant_obj?.name,
+      product: entity.product_obj
+        ? {
+            id: entity.product_obj.id,
+            name: entity.product_obj.name,
+            img: entity.product_obj.img,
+            basePrice: entity.product_obj.basePrice,
+          }
+        : undefined,
+      productVariant: entity.productVariant_obj
+        ? {
+            id: entity.productVariant_obj.id,
+            name: entity.productVariant_obj.name,
+            size: entity.productVariant_obj.size,
+            type: entity.productVariant_obj.type,
+            modifiedPrice: entity.productVariant_obj.modifiedPrice,
+          }
+        : undefined,
       ingredients: entity.orderItemIngredients
         ? entity.orderItemIngredients.map((ing) => this.toDomainIngredient(ing))
         : [],

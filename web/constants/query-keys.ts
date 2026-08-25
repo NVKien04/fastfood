@@ -14,3 +14,7 @@ export const ORDER_ALL = 'ORDER_ALL';
 // User Query Keys
 export const USER_PROFILE = 'USER_PROFILE';
 export const USER_LIST = 'USER_LIST';
+
+// Coupon Query Keys
+export const COUPON_ACTIVE = 'COUPON_ACTIVE';
+export const COUPON_MY_COUPONS = 'COUPON_MY_COUPONS';
