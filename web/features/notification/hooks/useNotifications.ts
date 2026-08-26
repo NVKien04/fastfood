@@ -4,8 +4,9 @@ import { useState, useMemo, useCallback, useEffect, useRef, MouseEvent } from 'r
 import { useRouter } from 'next/navigation';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { useStore } from '@/stores';
-import { NotificationItemData, NotificationFilterTab, NotificationType } from '../types';
+import { NotificationItemData, NotificationFilterTab } from '../types';
 import { INITIAL_MOCK_NOTIFICATIONS } from '../utils/mock-notifications';
+import { normalizeNotificationType } from '../utils/notification.helper';
 
 const STORAGE_KEY = 'keipizza_notifications_v1';
 
@@ -21,7 +22,11 @@ export const useNotifications = () => {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-          return JSON.parse(saved);
+          const parsed = JSON.parse(saved) as NotificationItemData[];
+          return parsed.map((item) => ({
+            ...item,
+            type: normalizeNotificationType(item.type, item.title, item.message),
+          }));
         }
       } catch {
         // ignore storage error
@@ -54,7 +59,7 @@ export const useNotifications = () => {
             id: String(item.id),
             title: item.title,
             message: item.message,
-            type: ((item.type || 'SYSTEM').toUpperCase() as NotificationType),
+            type: normalizeNotificationType(item.type, item.title, item.message),
             isRead: Boolean(item.isRead),
             createdAt: item.createdAt || new Date().toISOString(),
             linkUrl: item.linkUrl,

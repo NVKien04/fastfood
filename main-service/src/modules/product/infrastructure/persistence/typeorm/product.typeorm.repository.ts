@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ProductEntity } from '@/entities';
 import { Product } from '@/modules/product/domain/entities/product.domain';
 import { ProductMapper } from '@/modules/product/infrastructure/mappers/product.mapper';
@@ -57,7 +58,13 @@ export class ProductTypeOrmRepository implements IProductRepository {
   async update(id: string, entityData: Partial<Product>, manager?: unknown): Promise<Product | null> {
     const repo = this.getRepo(manager);
     const ormPayload = ProductMapper.toOrmEntity(entityData);
-    const result = await repo.update(id, ormPayload);
+    delete ormPayload.id;
+
+    if (Object.keys(ormPayload).length === 0) {
+      return this.findById(id);
+    }
+
+    const result = await repo.update(id, ormPayload as unknown as QueryDeepPartialEntity<ProductEntity>);
     if (result.affected && result.affected > 0) {
       return this.findById(id);
     }

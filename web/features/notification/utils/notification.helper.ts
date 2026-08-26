@@ -73,3 +73,33 @@ export const getNotificationTypeMeta = (type: NotificationType) => {
   }
 };
 
+export const normalizeNotificationType = (
+  rawType?: string | null,
+  title?: string,
+  message?: string,
+): NotificationType => {
+  const upper = (rawType || '').toUpperCase().trim();
+  if (upper.includes('ORDER')) return 'ORDER';
+  if (upper.includes('PROMO') || upper.includes('VOUCHER') || upper.includes('COUPON') || upper.includes('DISCOUNT'))
+    return 'PROMO';
+  if (upper.includes('ACCOUNT') || upper.includes('USER') || upper.includes('VIP')) return 'ACCOUNT';
+
+  // Fallback detection from title & message content
+  const content = `${title || ''} ${message || ''}`.toLowerCase();
+  if (content.includes('đơn hàng') || content.includes('giao hàng') || content.includes('order')) return 'ORDER';
+  if (
+    content.includes('voucher') ||
+    content.includes('khuyến mãi') ||
+    content.includes('freeship') ||
+    content.includes('giảm') ||
+    content.includes('ưu đãi') ||
+    content.includes('promo') ||
+    content.includes('sale')
+  )
+    return 'PROMO';
+  if (content.includes('vip') || content.includes('thành viên') || content.includes('tài khoản')) return 'ACCOUNT';
+
+  return 'SYSTEM';
+};
+
+

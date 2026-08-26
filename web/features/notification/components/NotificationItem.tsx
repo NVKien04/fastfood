@@ -98,25 +98,21 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
       {renderVisual()}
 
       {/* Content Area */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pr-5">
         {/* Top Tag & Time */}
-        <div className="flex items-center justify-between gap-2 mb-1">
-          <div className="flex items-center gap-1.5">
-            <span className={cn('px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider', typeMeta.tagClass)}>
-              {t(typeMeta.tagKey)}
-            </span>
-            <span className="text-[11px] font-medium text-gray-400 dark:text-zinc-500">
-              • {timeString}
-            </span>
-          </div>
-
-          {/* Unread indicator dot */}
+        <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+          <span className={cn('px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider', typeMeta.tagClass)}>
+            {t(typeMeta.tagKey)}
+          </span>
           {!notification.isRead && (
             <span
-              className="w-2 h-2 rounded-full bg-[#ff6900] shrink-0 animate-pulse"
+              className="w-1.5 h-1.5 rounded-full bg-[#ff6900] shrink-0"
               title={t('NOTIFICATION.UNREAD')}
             />
           )}
+          <span className="text-[11px] font-medium text-gray-400 dark:text-zinc-500">
+            • {timeString}
+          </span>
         </div>
 
         {/* Title */}
