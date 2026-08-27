@@ -1,371 +1,170 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { Eye, EyeOff, AlertCircle, Loader2, CheckCircle2, Phone, Mail, User } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRegister } from '../hooks/useRegister';
-import { Card, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { useGoogleCallback } from '../hooks/useGoogleCallback';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export const RegisterForm = () => {
-  const router = useRouter();
   const { t } = useTranslation();
   const {
     form: {
       register,
-      watch,
       formState: { errors },
     },
-    currentStep,
-    setCurrentStep,
-    handleNextStep1,
-    handleNextStep2,
     onSubmit,
     isLoading,
     errorMessage,
-    isSuccess,
     showPassword,
-    setShowPassword,
-    showConfirmPassword,
-    setShowConfirmPassword,
+    handleTogglePassword,
   } = useRegister();
 
-  const watchValues = watch();
+  const { isProcessingGoogle, googleError, handleGoogleLogin } = useGoogleCallback();
 
-  if (isSuccess) {
-    return (
-      <Card variant="default" className="text-center p-8 animate-in fade-in zoom-in-95 duration-200">
-        <div className="w-16 h-16 bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-100 dark:border-green-800">
-          <CheckCircle2 className="w-10 h-10" />
-        </div>
-        <CardTitle className="text-2xl font-extrabold mb-2">
-          {t('AUTH.REGISTER_SUCCESS_TITLE')}
-        </CardTitle>
-        <CardDescription className="text-xs sm:text-sm mb-6 leading-relaxed">
-          {t('AUTH.REGISTER_SUCCESS_DESC', {
-            name: watchValues.name || '',
-            defaultValue: `Chào mừng ${watchValues.name} đã gia nhập thế giới KeiPizza. Tài khoản của bạn đã sẵn sàng để đặt món và nhận ngàn ưu đãi.`,
-          })}
-        </CardDescription>
-        <Button type="button" onClick={() => router.push('/')} className="w-full">
-          {t('AUTH.EXPLORE_MENU')}
-        </Button>
-      </Card>
-    );
-  }
+  const displayError = errorMessage || googleError;
 
   return (
-    <Card variant="default" className="p-0 overflow-hidden">
-      {/* Step Tabs Header */}
-      <div className="grid grid-cols-3 border-b border-border bg-gray-50/50 dark:bg-zinc-950/50">
-        {/* Step 1 Tab */}
-        <div
-          className={`py-3.5 px-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors relative ${
-            currentStep === 1
-              ? 'text-[#ff6900] bg-white dark:bg-zinc-900'
-              : currentStep > 1
-                ? 'text-gray-700 dark:text-zinc-300 bg-white/60 dark:bg-zinc-900/60'
-                : 'text-gray-400 dark:text-zinc-500'
-          }`}
-        >
-          <div
-            className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ${
-              currentStep === 1
-                ? 'bg-[#ff6900] text-white'
-                : currentStep > 1
-                  ? 'bg-green-600 text-white'
-                  : 'border border-gray-300 dark:border-zinc-700 text-gray-400 dark:text-zinc-500'
-            }`}
-          >
-            {currentStep > 1 ? '✓' : '1'}
-          </div>
-          <span>{t('AUTH.STEP_1')}</span>
-          {currentStep === 1 && (
-            <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#ff6900] rounded-t-full" />
-          )}
-        </div>
+    <Card variant="default" className="w-full">
+      <CardHeader className="p-0 mb-6">
+        <CardTitle className="text-2xl font-extrabold tracking-tight">
+          {t('AUTH.REGISTER_TITLE')}
+        </CardTitle>
+        <CardDescription className="text-xs sm:text-sm mt-1">
+          {t('AUTH.REGISTER_SUBTITLE', {
+            defaultValue: 'Tạo tài khoản KeiPizza để nhận nhiều ưu đãi hấp dẫn.',
+          })}
+        </CardDescription>
+      </CardHeader>
 
-        {/* Step 2 Tab */}
-        <div
-          className={`py-3.5 px-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors relative ${
-            currentStep === 2
-              ? 'text-[#ff6900] bg-white dark:bg-zinc-900'
-              : currentStep > 2
-                ? 'text-gray-700 dark:text-zinc-300 bg-white/60 dark:bg-zinc-900/60'
-                : 'text-gray-400 dark:text-zinc-500'
-          }`}
-        >
-          <div
-            className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ${
-              currentStep === 2
-                ? 'bg-[#ff6900] text-white'
-                : currentStep > 2
-                  ? 'bg-green-600 text-white'
-                  : 'border border-gray-300 dark:border-zinc-700 text-gray-400 dark:text-zinc-500'
-            }`}
-          >
-            {currentStep > 2 ? '✓' : '2'}
-          </div>
-          <span>{t('AUTH.STEP_2')}</span>
-          {currentStep === 2 && (
-            <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#ff6900] rounded-t-full" />
-          )}
-        </div>
-
-        {/* Step 3 Tab */}
-        <div
-          className={`py-3.5 px-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-colors relative ${
-            currentStep === 3 ? 'text-[#ff6900] bg-white dark:bg-zinc-900' : 'text-gray-400 dark:text-zinc-500'
-          }`}
-        >
-          <div
-            className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ${
-              currentStep === 3
-                ? 'bg-[#ff6900] text-white'
-                : 'border border-gray-300 dark:border-zinc-700 text-gray-400 dark:text-zinc-500'
-            }`}
-          >
-            3
-          </div>
-          <span>{t('AUTH.STEP_3')}</span>
-          {currentStep === 3 && (
-            <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#ff6900] rounded-t-full" />
-          )}
-        </div>
-      </div>
-
-      {/* Form Content Body */}
-      <CardContent className="p-6 sm:p-8">
-        {/* Error Banner */}
-        {errorMessage && (
+      <CardContent className="p-0">
+        {/* Error Notification */}
+        {displayError && (
           <div className="mb-5 flex items-start gap-2.5 p-3.5 rounded-xl bg-red-50/80 dark:bg-red-950/40 border border-red-200/60 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs font-medium leading-relaxed animate-in fade-in zoom-in-95 duration-150">
             <AlertCircle className="w-4 h-4 shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
-            <span>{errorMessage}</span>
+            <span>{displayError}</span>
           </div>
         )}
 
-        <form onSubmit={onSubmit} noValidate>
-          {/* BƯỚC 1: Số điện thoại & Email */}
-          {currentStep === 1 && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              {/* Phone Field */}
-              <div className="space-y-1.5">
-                <label htmlFor="phone" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-                  {t('AUTH.PHONE')} <span className="text-[#ff6900]">*</span>
-                </label>
-                <div className="flex items-center rounded-sm border border-border overflow-hidden focus-within:border-brand-muted hover:border-primary transition-all bg-transparent">
-                  <span className="px-3.5 py-3 bg-gray-100/70 dark:bg-zinc-800 border-r border-border text-xs font-bold text-gray-600 dark:text-zinc-300 select-none">
-                    +84
-                  </span>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    {...register('phone')}
-                    placeholder={t('AUTH.PHONE_PLACEHOLDER')}
-                    className="border-0 hover:border-0 focus:border-0 rounded-none h-11"
-                  />
-                </div>
-                {errors.phone && <p className="text-[11px] font-medium text-red-500">{errors.phone.message}</p>}
-              </div>
-
-              {/* Email Field */}
-              <div className="space-y-1.5">
-                <label htmlFor="email" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-                  {t('AUTH.EMAIL')} <span className="text-[#ff6900]">*</span>
-                </label>
-                <div className="relative">
-                  <Input
-                    id="email"
-                    type="email"
-                    {...register('email')}
-                    placeholder={t('AUTH.EMAIL_PLACEHOLDER')}
-                    aria-invalid={!!errors.email}
-                    className="h-11"
-                  />
-                </div>
-                {errors.email && <p className="text-[11px] font-medium text-red-500">{errors.email.message}</p>}
-              </div>
-
-              {/* Action Button Step 1 */}
-              <div className="pt-3">
-                <Button type="button" onClick={handleNextStep1} className="w-full">
-                  {t('AUTH.CONFIRM_AND_CONTINUE')}
-                </Button>
-              </div>
+        {/* Form */}
+        <form onSubmit={onSubmit} className="space-y-4" noValidate>
+          {/* Email / Phone Field */}
+          <div className="space-y-1.5">
+            <label htmlFor="email" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
+              {t('AUTH.EMAIL_OR_PHONE')}
+            </label>
+            <div className="relative">
+              <Input
+                id="email"
+                type="text"
+                {...register('email')}
+                placeholder={t('AUTH.EMAIL_OR_PHONE_PLACEHOLDER')}
+                aria-invalid={!!errors.email}
+              />
             </div>
-          )}
+            {errors.email && <p className="text-[11px] font-medium text-red-500">{errors.email.message}</p>}
+          </div>
 
-          {/* BƯỚC 2: Thông tin cá nhân & Mật khẩu */}
-          {currentStep === 2 && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              {/* Name Field */}
-              <div className="space-y-1.5">
-                <label htmlFor="name" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-                  {t('AUTH.FULL_NAME')} <span className="text-[#ff6900]">*</span>
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  {...register('name')}
-                  placeholder={t('AUTH.FULL_NAME_PLACEHOLDER')}
-                  aria-invalid={!!errors.name}
-                  className="h-11"
-                />
-                {errors.name && <p className="text-[11px] font-medium text-red-500">{errors.name.message}</p>}
-              </div>
-
-              {/* Password Field */}
-              <div className="space-y-1.5">
-                <label htmlFor="password" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-                  {t('AUTH.PASSWORD')} <span className="text-[#ff6900]">*</span>
-                </label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    {...register('password')}
-                    placeholder={t('AUTH.PASSWORD_REQUIREMENT')}
-                    aria-invalid={!!errors.password}
-                    className="h-11 pr-12"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors focus:outline-none"
-                    aria-label={
-                      showPassword ? t('AUTH.HIDE_PASSWORD') : t('AUTH.SHOW_PASSWORD')
-                    }
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </Button>
-                </div>
-                {errors.password && <p className="text-[11px] font-medium text-red-500">{errors.password.message}</p>}
-              </div>
-
-              {/* Confirm Password Field */}
-              <div className="space-y-1.5">
-                <label htmlFor="confirmPassword" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
-                  {t('AUTH.CONFIRM_PASSWORD')} <span className="text-[#ff6900]">*</span>
-                </label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    {...register('confirmPassword')}
-                    placeholder={t('AUTH.CONFIRM_PASSWORD_PLACEHOLDER')}
-                    aria-invalid={!!errors.confirmPassword}
-                    className="h-11 pr-12"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => setShowConfirmPassword((prev) => !prev)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors focus:outline-none"
-                    aria-label={
-                      showConfirmPassword
-                        ? t('AUTH.HIDE_PASSWORD')
-                        : t('AUTH.SHOW_PASSWORD')
-                    }
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </Button>
-                </div>
-                {errors.confirmPassword && (
-                  <p className="text-[11px] font-medium text-red-500">{errors.confirmPassword.message}</p>
-                )}
-              </div>
-
-              {/* Action Buttons Step 2 */}
-              <div className="flex items-center gap-3 pt-3">
-                <Button type="button" variant="secondary" onClick={() => setCurrentStep(1)} className="w-1/3">
-                  {t('COMMON.BACK')}
-                </Button>
-                <Button type="button" onClick={handleNextStep2} className="flex-1">
-                  {t('COMMON.CONTINUE')}
-                </Button>
-              </div>
+          {/* Password Field */}
+          <div className="space-y-1.5">
+            <label htmlFor="password" className="block text-xs font-bold text-gray-700 dark:text-zinc-300">
+              {t('AUTH.PASSWORD')}
+            </label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                {...register('password')}
+                placeholder={t('AUTH.PASSWORD_PLACEHOLDER')}
+                aria-invalid={!!errors.password}
+                className="pr-12"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                onClick={handleTogglePassword}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors focus:outline-none"
+                aria-label={showPassword ? t('AUTH.HIDE_PASSWORD') : t('AUTH.SHOW_PASSWORD')}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </Button>
             </div>
-          )}
+            {errors.password && <p className="text-[11px] font-medium text-red-500">{errors.password.message}</p>}
+          </div>
 
-          {/* BƯỚC 3: Xác nhận & Tạo tài khoản */}
-          {currentStep === 3 && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              {/* Summary Box */}
-              <div className="bg-gray-50/80 dark:bg-zinc-950/80 rounded-xl p-4 border border-gray-200/60 dark:border-zinc-800 space-y-3">
-                <div className="text-xs font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
-                  {t('AUTH.CONFIRM_REGISTER_INFO')}
-                </div>
-
-                <div className="flex items-center gap-2.5 text-xs text-gray-700 dark:text-zinc-300">
-                  <User className="w-4 h-4 text-gray-400 dark:text-zinc-500 shrink-0" />
-                  <span className="font-semibold">{watchValues.name || t('AUTH.NOT_ENTERED')}</span>
-                </div>
-
-                <div className="flex items-center gap-2.5 text-xs text-gray-700 dark:text-zinc-300">
-                  <Phone className="w-4 h-4 text-gray-400 dark:text-zinc-500 shrink-0" />
-                  <span className="font-semibold">{watchValues.phone || t('AUTH.NOT_ENTERED')}</span>
-                </div>
-
-                <div className="flex items-center gap-2.5 text-xs text-gray-700 dark:text-zinc-300">
-                  <Mail className="w-4 h-4 text-gray-400 dark:text-zinc-500 shrink-0" />
-                  <span className="font-semibold">{watchValues.email || t('AUTH.NOT_ENTERED')}</span>
-                </div>
-              </div>
-
-              {/* Terms Agreement Checkbox */}
-              <div className="space-y-1.5 pt-1">
-                <label className="flex items-start gap-2.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    {...register('agreeTerms')}
-                    className="mt-0.5 w-4 h-4 text-primary rounded border-gray-300 dark:border-zinc-700 focus:ring-orange-500"
-                  />
-                  <span className="text-xs text-gray-600 dark:text-zinc-400 leading-snug">
-                    {t('AUTH.AGREE_TERMS_PREFIX')}{' '}
-                    <Link href="#" className="font-semibold text-primary hover:underline">
-                      {t('AUTH.TERMS_OF_SERVICE')}
-                    </Link>{' '}
-                    {t('AUTH.AND')}{' '}
-                    <Link href="#" className="font-semibold text-primary hover:underline">
-                      {t('AUTH.PRIVACY_POLICY')}
-                    </Link>{' '}
-                    {t('AUTH.OF_BRAND')}
-                  </span>
-                </label>
-                {errors.agreeTerms && (
-                  <p className="text-[11px] font-medium text-red-500">{errors.agreeTerms.message}</p>
-                )}
-              </div>
-
-              {/* Action Buttons Step 3 */}
-              <div className="flex items-center gap-3 pt-3">
-                <Button type="button" variant="secondary" onClick={() => setCurrentStep(2)} className="w-1/3">
-                  {t('COMMON.BACK')}
-                </Button>
-                <Button type="submit" disabled={isLoading} className="flex-1">
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>{t('AUTH.PROCESSING')}</span>
-                    </>
-                  ) : (
-                    <span>{t('AUTH.COMPLETE_REGISTRATION')}</span>
-                  )}
-                </Button>
-              </div>
-            </div>
-          )}
+          {/* Submit Button */}
+          <div className="pt-2">
+            <Button type="submit" disabled={isLoading || isProcessingGoogle} className="w-full">
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{t('AUTH.PROCESSING')}</span>
+                </>
+              ) : (
+                <span>{t('AUTH.REGISTER_BUTTON', { defaultValue: 'Đăng ký' })}</span>
+              )}
+            </Button>
+          </div>
         </form>
 
+        {/* Divider */}
+        <div className="my-5 flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-800" />
+          <span className="text-xs text-gray-400 dark:text-zinc-500 font-medium uppercase tracking-wider">
+            {t('AUTH.OR')}
+          </span>
+          <div className="h-px flex-1 bg-gray-200 dark:bg-zinc-800" />
+        </div>
+
+        {/* Google Register Button */}
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={handleGoogleLogin}
+          disabled={isLoading || isProcessingGoogle}
+          className="w-full gap-3 cursor-pointer"
+        >
+          {isProcessingGoogle ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin text-gray-600 dark:text-zinc-400" />
+              <span>{t('AUTH.LOGGING_IN_GOOGLE')}</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                />
+              </svg>
+              <span>{t('AUTH.LOGIN_WITH_GOOGLE')}</span>
+            </>
+          )}
+        </Button>
+
         {/* Bottom Sign In Link */}
-        <div className="mt-6 text-center text-xs text-gray-600 dark:text-zinc-400 font-medium border-t border-border pt-4">
+        <div className="mt-6 text-center text-xs text-gray-600 dark:text-zinc-400 font-medium">
           {t('AUTH.HAVE_ACCOUNT')}{' '}
-          <Link href="/login" className="font-bold text-primary hover:text-brand-primary-active hover:underline ml-1">
+          <Link
+            href="/login"
+            className="font-bold text-primary hover:text-brand-primary-active hover:underline ml-1"
+          >
             {t('AUTH.LOGIN_BUTTON')}
           </Link>
         </div>

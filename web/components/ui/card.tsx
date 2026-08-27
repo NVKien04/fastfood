@@ -8,11 +8,11 @@ const cardVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-brand-canvas border border-border text-foreground rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)]',
-        feature: 'bg-brand-surface-card text-brand-ink rounded-2xl border border-transparent',
-        dark: 'bg-brand-surface-dark text-brand-on-dark rounded-2xl border border-transparent',
-        'dark-elevated': 'bg-brand-surface-dark-elevated text-brand-on-dark rounded-2xl border border-transparent',
-        coral: 'bg-brand-primary text-primary-foreground rounded-2xl border border-transparent',
+        default: 'bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-900 dark:text-zinc-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/40',
+        feature: 'bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-zinc-100 rounded-2xl border border-transparent',
+        dark: 'bg-zinc-900 text-white rounded-2xl border border-transparent',
+        'dark-elevated': 'bg-zinc-800 text-white rounded-2xl border border-transparent',
+        coral: 'bg-primary text-white rounded-2xl border border-transparent',
       },
       size: {
         default: '[--card-spacing:--spacing(6)] p-6 sm:p-8',

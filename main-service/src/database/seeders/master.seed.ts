@@ -292,7 +292,6 @@ export async function MasterSeed(dataSource: DataSource) {
     }
   }
 
-  // 10. Seed Notifications
   const notificationRepo = dataSource.getRepository(NotificationEntity);
 
   for (const item of notifications) {
@@ -436,7 +435,9 @@ export async function MasterSeed(dataSource: DataSource) {
       }
     }
 
-    console.log(`✅ Seeded Order: #${savedOrder.orderNumber} - Status: ${savedOrder.status} - Total: ${savedOrder.total.toLocaleString('vi-VN')}đ`);
+    console.log(
+      `✅ Seeded Order: #${savedOrder.orderNumber} - Status: ${savedOrder.status} - Total: ${savedOrder.total.toLocaleString('vi-VN')}đ`,
+    );
   }
 
   console.log('🎉 --- Seeding Completed Successfully ---');

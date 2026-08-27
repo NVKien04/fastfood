@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { formatVND } from '@/utils';
 import { CartItem } from '@/stores';
@@ -64,7 +65,7 @@ export const OrderSummary = ({
               {/* Product Thumbnail */}
               <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-zinc-800 shrink-0 border border-gray-100 dark:border-zinc-700 flex items-center justify-center">
                 {item.product.img ? (
-                  <img src={item.product.img} alt={item.product.name} className="w-full h-full object-cover" />
+                  <Image src={item.product.img} alt={item.product.name} fill sizes="48px" className="object-cover" />
                 ) : (
                   <Utensils className="w-5 h-5 text-gray-400 dark:text-zinc-500" />
                 )}

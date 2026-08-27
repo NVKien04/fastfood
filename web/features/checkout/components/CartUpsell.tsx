@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useRef } from 'react';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useProductList } from '@/services/react-query/queries/product';
 import { useCategoryList } from '@/services/react-query/queries/category';
@@ -145,12 +146,14 @@ export const CartUpsell = () => {
               className="flex items-center justify-between p-5 rounded-3xl bg-gray-50/70 dark:bg-zinc-950/70 border border-gray-100 dark:border-zinc-800/80 hover:border-orange-200 dark:hover:border-zinc-700 transition-all group w-[380px] sm:w-[440px] shrink-0 select-none"
             >
               <div className="flex items-center gap-4.5 min-w-0">
-                <div className="w-24 h-24 rounded-2xl bg-white dark:bg-zinc-800 p-2 shrink-0 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-zinc-700 shadow-xs">
+                <div className="relative w-24 h-24 rounded-2xl bg-white dark:bg-zinc-800 p-2 shrink-0 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-zinc-700 shadow-xs">
                   {product.img ? (
-                    <img
+                    <Image
                       src={product.img}
                       alt={product.name}
-                      className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                      fill
+                      sizes="96px"
+                      className="object-contain p-2 group-hover:scale-105 transition-transform"
                     />
                   ) : (
                     <Utensils className="w-10 h-10 text-gray-400 dark:text-zinc-500" />

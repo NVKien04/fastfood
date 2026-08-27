@@ -1,18 +1,15 @@
 'use client';
 
 import { MouseEvent } from 'react';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import {
-  PackageCheck,
+  Package,
   TicketPercent,
-  Megaphone,
-  Crown,
+  User,
+  Settings,
   Trash2,
   ChevronRight,
-  Pizza,
-  Gift,
-  Truck,
-  Sparkles,
 } from 'lucide-react';
 import { NotificationItemData } from '../types';
 import { formatNotificationTime, getNotificationTypeMeta } from '../utils/notification.helper';
@@ -30,18 +27,12 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
   const timeString = formatNotificationTime(notification.createdAt, t);
   const typeMeta = getNotificationTypeMeta(notification.type);
 
-  // Render distinct rich visual illustration / badge for each notification type
+  // Render clean, minimalist icon without excessive colors/gradients
   const renderVisual = () => {
     if (notification.img) {
       return (
-        <div className="relative w-11 h-11 rounded-2xl overflow-hidden shrink-0 shadow-sm border border-gray-100 dark:border-zinc-800">
-          <img src={notification.img} alt={notification.title} className="w-full h-full object-cover" />
-          <span className={cn('absolute -bottom-1 -right-1 p-1 rounded-full text-white shadow-xs', typeMeta.gradientBg)}>
-            {notification.type === 'ORDER' && <Truck className="w-2.5 h-2.5" />}
-            {notification.type === 'PROMO' && <TicketPercent className="w-2.5 h-2.5" />}
-            {notification.type === 'SYSTEM' && <Megaphone className="w-2.5 h-2.5" />}
-            {notification.type === 'ACCOUNT' && <Crown className="w-2.5 h-2.5" />}
-          </span>
+        <div className="relative w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-gray-100 dark:bg-zinc-800 border border-gray-200/80 dark:border-zinc-700/80">
+          <Image src={notification.img} alt={notification.title} fill sizes="40px" className="object-cover" />
         </div>
       );
     }
@@ -49,36 +40,27 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
     switch (notification.type) {
       case 'ORDER':
         return (
-          <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-blue-600 flex items-center justify-center text-white shrink-0 shadow-md shadow-blue-500/20">
-            <div className="relative">
-              <PackageCheck className="w-5 h-5" />
-              <Pizza className="w-3 h-3 absolute -top-1.5 -right-1.5 text-amber-300 animate-pulse" />
-            </div>
+          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 flex items-center justify-center shrink-0 border border-gray-200/60 dark:border-zinc-700/60">
+            <Package className="w-5 h-5" />
           </div>
         );
       case 'PROMO':
         return (
-          <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-500/20">
-            <div className="relative">
-              <TicketPercent className="w-5 h-5" />
-              <Gift className="w-3 h-3 absolute -top-1.5 -right-1.5 text-yellow-200" />
-            </div>
+          <div className="w-10 h-10 rounded-xl bg-orange-50 dark:bg-zinc-800 text-[#ff6900] flex items-center justify-center shrink-0 border border-orange-100 dark:border-zinc-700/60">
+            <TicketPercent className="w-5 h-5" />
           </div>
         );
       case 'ACCOUNT':
         return (
-          <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500 via-fuchsia-500 to-pink-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-purple-500/20">
-            <div className="relative">
-              <Crown className="w-5 h-5" />
-              <Sparkles className="w-3 h-3 absolute -top-1.5 -right-1.5 text-pink-200" />
-            </div>
+          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 flex items-center justify-center shrink-0 border border-gray-200/60 dark:border-zinc-700/60">
+            <User className="w-5 h-5" />
           </div>
         );
       case 'SYSTEM':
       default:
         return (
-          <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-emerald-600 flex items-center justify-center text-white shrink-0 shadow-md shadow-emerald-500/20">
-            <Megaphone className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 flex items-center justify-center shrink-0 border border-gray-200/60 dark:border-zinc-700/60">
+            <Settings className="w-5 h-5" />
           </div>
         );
     }
@@ -157,4 +139,3 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
     </div>
   );
 };
-

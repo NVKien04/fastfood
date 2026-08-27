@@ -90,6 +90,8 @@
     "LOGIN_TITLE": "ログイン",
     "LOGIN_SUBTITLE": "おかえりなさい！情報を入力して続行してください。",
     "REGISTER_TITLE": "アカウント作成",
+    "REGISTER_SUBTITLE": "KeiPizzaアカウントを作成して特典を受け取りましょう。",
+    "REGISTER_BUTTON": "登録する",
     "REGISTER_SUCCESS_TITLE": "登録が完了しました！",
     "REGISTER_SUCCESS_DESC": "KeiPizzaへようこそ {{name}}様。注文する準備が整いました。",
     "EXPLORE_MENU": "メニューを見る",
@@ -332,6 +334,24 @@
     "CONTINUE_SHOPPING": "買い物を続ける",
     "ORDER_FAILED": "注文に失敗しました。後でもう一度お試しください。",
     "CART_EMPTY_ERROR": "カートは空です！"
+  },
+  "ADDRESS": {
+    "MODAL_TITLE": "お届け先住所",
+    "MODAL_SUBTITLE": "住所を選択または入力して素早くピザをお届けします",
+    "SAVED_TAB": "保存済み住所",
+    "NEW_TAB": "+ 新しい住所を追加",
+    "DEFAULT_BADGE": "デフォルト",
+    "ADD_ANOTHER_ADDRESS": "他の住所を追加",
+    "CITY_LABEL": "都道府県 / 市",
+    "CITY_PLACEHOLDER": "都道府県または市を入力",
+    "DISTRICT_LABEL": "区 / 郡",
+    "DISTRICT_PLACEHOLDER": "例: カウゼイ、ホアンキエム...",
+    "WARD_LABEL": "町名 / 村",
+    "WARD_PLACEHOLDER": "例: ディックボン...",
+    "STREET_LABEL": "番地・建物名・部屋番号",
+    "STREET_PLACEHOLDER": "例: 12番地、チャン・タイ・トン通り...",
+    "SET_AS_DEFAULT": "デフォルトのお届け先に設定する",
+    "CONFIRM_AND_DELIVER": "この住所にお届けする"
   },
   "PROFILE": {
     "TITLE": "マイプロフィール",

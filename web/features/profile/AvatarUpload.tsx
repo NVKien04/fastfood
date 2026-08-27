@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
+import Image from 'next/image';
 import { Camera, Loader2, Trash2, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAvatarUpload } from './hooks/useAvatarUpload';
@@ -31,7 +32,7 @@ export const AvatarUpload = ({ currentAvatar, userName = 'User', onAvatarChange 
       <div className="relative group">
         <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl shadow-gray-200/50 dark:shadow-black/50 bg-gray-100 dark:bg-zinc-800 flex items-center justify-center relative transition-colors">
           {activeAvatarUrl ? (
-            <img src={activeAvatarUrl} alt={userName} className="w-full h-full object-cover" />
+            <Image src={activeAvatarUrl} alt={userName} fill sizes="(max-width: 640px) 112px, 128px" className="object-cover" unoptimized />
           ) : (
             <div className="w-full h-full bg-gradient-to-tr from-red-600 to-rose-400 flex items-center justify-center text-white text-3xl font-black uppercase">
               {userName.charAt(0) || 'U'}

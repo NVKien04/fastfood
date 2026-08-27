@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -50,24 +51,30 @@ export const ProductDetailModal = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         showCloseButton={false}
-        className="sm:max-w-4xl md:max-w-4xl lg:max-w-5xl w-[95vw] max-h-[92vh] md:h-[640px] p-0 overflow-hidden rounded-3xl border border-gray-200/80 dark:border-zinc-800/80 bg-white dark:bg-[#18181b] text-gray-900 dark:text-white shadow-2xl flex flex-col md:flex-row focus:outline-none"
+        className="sm:max-w-4xl md:max-w-4xl lg:max-w-5xl w-[95vw] max-h-[92vh] md:h-160 p-0 overflow-hidden rounded-3xl border border-gray-200/80 dark:border-zinc-800/80 bg-white dark:bg-[#18181b] text-gray-900 dark:text-white shadow-2xl flex flex-col md:flex-row focus:outline-none"
       >
         {/* ============================================================ */}
         {/* LEFT COLUMN: Pizza Showcase with Interactive Scale Animation */}
         {/* ============================================================ */}
-        <div className="md:w-1/2 lg:w-[52%] bg-[#fafaf8] dark:bg-[#121215] relative flex flex-col items-center justify-center p-6 sm:p-10 select-none overflow-hidden min-h-[260px] md:min-h-full border-b md:border-b-0 md:border-r border-gray-100 dark:border-zinc-800/80">
+        <div className="md:w-1/2 lg:w-[52%] bg-[#fafaf8] dark:bg-[#121215] relative flex flex-col items-center justify-center p-6 sm:p-10 select-none overflow-hidden min-h-65 md:min-h-full border-b md:border-b-0 md:border-r border-gray-100 dark:border-zinc-800/80">
           {/* Subtle background glow */}
           <div className="absolute w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
 
           {/* Product Image */}
           <div className="relative z-10 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 lg:w-80 lg:h-80 flex items-center justify-center">
             {product.img ? (
-              <img
-                src={product.img}
-                alt={product.name}
-                className="w-full h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)] transition-transform duration-500 ease-out"
+              <div
+                className="relative w-full h-full transition-transform duration-500 ease-out"
                 style={{ transform: `scale(${imageScale})` }}
-              />
+              >
+                <Image
+                  src={product.img}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 640px) 192px, (max-width: 1024px) 288px, 320px"
+                  className="object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_20px_35px_rgba(0,0,0,0.7)]"
+                />
+              </div>
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-zinc-600 bg-gray-100 dark:bg-zinc-800/50 rounded-full">
                 <Utensils className="w-16 h-16" />
@@ -105,7 +112,8 @@ export const ProductDetailModal = ({
 
               {/* Subtitle / Specs (Size & Crust) */}
               <p className="text-xs text-gray-500 dark:text-zinc-400 font-medium mt-1">
-                {productSpecsText || (product.description ? product.description.slice(0, 60) : t('PRODUCT.DEFAULT_DESC'))}
+                {productSpecsText ||
+                  (product.description ? product.description.slice(0, 60) : t('PRODUCT.DEFAULT_DESC'))}
               </p>
 
               {/* Description */}
@@ -202,17 +210,19 @@ export const ProductDetailModal = ({
                         {/* Checkmark indicator */}
                         {isSelected && (
                           <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#ff5c00] text-white flex items-center justify-center shadow-xs">
-                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                            <Check className="w-2.5 h-2.5 stroke-3" />
                           </div>
                         )}
 
                         {/* Ingredient Image */}
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center my-1">
+                        <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center my-1">
                           {ingredient.imageUrl ? (
-                            <img
+                            <Image
                               src={ingredient.imageUrl}
                               alt={ingredient.name}
-                              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200 drop-shadow-xs"
+                              fill
+                              sizes="56px"
+                              className="object-contain group-hover:scale-105 transition-transform duration-200 drop-shadow-xs"
                             />
                           ) : (
                             <Utensils className="w-6 h-6 text-gray-400 dark:text-zinc-500" />
@@ -220,7 +230,7 @@ export const ProductDetailModal = ({
                         </div>
 
                         {/* Ingredient Name */}
-                        <span className="text-[11px] font-bold text-gray-800 dark:text-zinc-200 line-clamp-2 h-[28px] leading-tight mt-1 group-hover:text-gray-950 dark:group-hover:text-white flex items-center justify-center">
+                        <span className="text-[11px] font-bold text-gray-800 dark:text-zinc-200 line-clamp-2 h-7 leading-tight mt-1 group-hover:text-gray-950 dark:group-hover:text-white flex items-center justify-center">
                           {ingredient.name}
                         </span>
 

@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { useStore } from '@/stores';
 import { registerSchema } from '../utils/auth.schema';
-import { RegisterFormValues, AuthStep } from '../types';
+import { RegisterFormValues } from '../types';
 
 export const useRegister = () => {
   const router = useRouter();
@@ -17,34 +17,42 @@ export const useRegister = () => {
   const setAccessToken = useStore((s) => s.setAccessToken);
   const setUser = useStore((s) => s.setUser);
 
-  const [currentStep, setCurrentStep] = useState<AuthStep>(1);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     mode: 'onTouched',
     defaultValues: {
-      phone: '',
       email: '',
-      name: '',
       password: '',
-      confirmPassword: '',
-      agreeTerms: false,
     },
   });
 
   const mutation = useMutation({
     mutationFn: async (values: RegisterFormValues) => {
-      const formattedPhone = values.phone.startsWith('+84') ? '0' + values.phone.slice(3) : values.phone;
+      const rawInput = values.email.trim();
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawInput);
+      const isPhone = /^(0|\+84)[0-9]{8,10}$/.test(rawInput.replace(/\s+/g, ''));
+
+      let email = rawInput;
+      let phone: string | undefined = undefined;
+      let name = rawInput;
+
+      if (isEmail) {
+        email = rawInput;
+        name = rawInput.split('@')[0];
+      } else if (isPhone) {
+        phone = rawInput.startsWith('+84') ? '0' + rawInput.slice(3) : rawInput;
+        email = `${phone}@fastfood.vn`;
+        name = phone;
+      }
 
       const response = await ApiMain.instance.auth.register({
-        email: values.email.trim(),
+        email,
         password: values.password,
-        name: values.name.trim(),
-        phone: formattedPhone.trim(),
+        name,
+        phone,
         provider: 'local',
       });
 
@@ -55,7 +63,7 @@ export const useRegister = () => {
       // Tự động đăng nhập sau khi tạo tài khoản
       try {
         const loginRes = await ApiMain.instance.auth.login({
-          email: values.email.trim(),
+          email,
           password: values.password,
         });
 
@@ -81,36 +89,16 @@ export const useRegister = () => {
       return response.data;
     },
     onSuccess: () => {
-      setIsSuccess(true);
+      router.push('/');
     },
     onError: (error: Error) => {
       setErrorMessage(error.message || t('AUTH.REGISTER_FAILED'));
     },
   });
 
-  const _handleNextStep1 = useCallback(async () => {
-    const isStep1Valid = await form.trigger(['phone', 'email']);
-    if (isStep1Valid) {
-      setErrorMessage('');
-      setCurrentStep(2);
-    }
-  }, [form]);
-
-  const _handleNextStep2 = useCallback(async () => {
-    const isStep2Valid = await form.trigger(['name', 'password', 'confirmPassword']);
-    if (isStep2Valid) {
-      setErrorMessage('');
-      setCurrentStep(3);
-    }
-  }, [form]);
-
-  const _handlePrevStep = useCallback(() => {
-    if (currentStep > 1) {
-      setCurrentStep((prev) => (prev - 1) as AuthStep);
-    } else {
-      router.push('/login');
-    }
-  }, [currentStep, router]);
+  const handleTogglePassword = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
 
   const _handleRegisterSubmit = useCallback(
     (values: RegisterFormValues) => {
@@ -124,18 +112,10 @@ export const useRegister = () => {
 
   return {
     form,
-    currentStep,
-    setCurrentStep,
-    handleNextStep1: _handleNextStep1,
-    handleNextStep2: _handleNextStep2,
-    handlePrevStep: _handlePrevStep,
     onSubmit: _handleSubmit,
     isLoading: mutation.isPending,
     errorMessage,
-    isSuccess,
     showPassword,
-    setShowPassword,
-    showConfirmPassword,
-    setShowConfirmPassword,
+    handleTogglePassword,
   };
 };

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { OrderResponseDto } from '@/services/apis/main/module/Order.api';
 import { OrderProgressStepper } from './OrderProgressStepper';
@@ -34,7 +35,6 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
 
   const canCancel = canCancelOrder(order.status);
-  const isDelivered = order.status === 'DELIVERED';
   const isCancelled = order.status === 'CANCELLED';
 
   const getStatusBadge = () => {
@@ -175,11 +175,15 @@ export const OrderCard = ({ order, onCancelClick }: OrderCardProps) => {
                   >
                     <div className="flex items-center gap-3">
                       {item.product?.img ? (
-                        <img
-                          src={item.product.img}
-                          alt={item.product.name}
-                          className="w-12 h-12 rounded-xl object-contain bg-white dark:bg-zinc-900 p-1 shrink-0 shadow-xs"
-                        />
+                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white dark:bg-zinc-900 p-1 shrink-0 shadow-xs">
+                          <Image
+                            src={item.product.img}
+                            alt={item.product.name}
+                            fill
+                            sizes="48px"
+                            className="object-contain p-1"
+                          />
+                        </div>
                       ) : (
                         <div className="w-12 h-12 rounded-xl bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-gray-400 dark:text-zinc-500 shrink-0">
                           <Utensils className="w-5 h-5" />

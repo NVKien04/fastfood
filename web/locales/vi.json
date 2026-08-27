@@ -91,6 +91,8 @@
     "LOGIN_TITLE": "Đăng nhập",
     "LOGIN_SUBTITLE": "Chào mừng bạn quay trở lại! Vui lòng nhập thông tin để tiếp tục.",
     "REGISTER_TITLE": "Tạo tài khoản",
+    "REGISTER_SUBTITLE": "Đăng ký tài khoản KeiPizza để nhận nhiều ưu đãi hấp dẫn.",
+    "REGISTER_BUTTON": "Đăng ký",
     "REGISTER_SUCCESS_TITLE": "Đăng ký thành công!",
     "REGISTER_SUCCESS_DESC": "Chào mừng {{name}} đã gia nhập thế giới KeiPizza. Tài khoản của bạn đã sẵn sàng để đặt món và nhận ngàn ưu đãi.",
     "EXPLORE_MENU": "Khám phá thực đơn ngay",
@@ -333,6 +335,24 @@
     "CONTINUE_SHOPPING": "Tiếp tục mua hàng",
     "ORDER_FAILED": "Đặt hàng thất bại. Vui lòng thử lại sau.",
     "CART_EMPTY_ERROR": "Giỏ hàng của bạn đang trống!"
+  },
+  "ADDRESS": {
+    "MODAL_TITLE": "Địa chỉ nhận hàng",
+    "MODAL_SUBTITLE": "Chọn hoặc nhập địa chỉ để nhận pizza nhanh nhất",
+    "SAVED_TAB": "Địa chỉ đã lưu",
+    "NEW_TAB": "+ Thêm địa chỉ mới",
+    "DEFAULT_BADGE": "Mặc định",
+    "ADD_ANOTHER_ADDRESS": "Thêm địa chỉ giao hàng khác",
+    "CITY_LABEL": "Tỉnh / Thành phố",
+    "CITY_PLACEHOLDER": "Nhập Tỉnh / Thành phố",
+    "DISTRICT_LABEL": "Quận / Huyện",
+    "DISTRICT_PLACEHOLDER": "VD: Cầu Giấy, Hoàn Kiếm...",
+    "WARD_LABEL": "Phường / Xã",
+    "WARD_PLACEHOLDER": "VD: Dịch Vọng, Hàng Bài...",
+    "STREET_LABEL": "Số nhà, tên đường, ngõ ngách",
+    "STREET_PLACEHOLDER": "VD: Số 12 ngõ 34, phố Trần Thái Tông...",
+    "SET_AS_DEFAULT": "Đặt làm địa chỉ giao hàng mặc định",
+    "CONFIRM_AND_DELIVER": "Giao đến địa chỉ này"
   },
   "PROFILE": {
     "TITLE": "Hồ sơ cá nhân",

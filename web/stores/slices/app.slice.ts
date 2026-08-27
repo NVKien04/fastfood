@@ -7,8 +7,10 @@ export type { Language, THEME };
 export type AppSlice = {
   locale: Language;
   theme: THEME;
+  deliveryAddress: string;
   updateTheme: (payload: AppSlice['theme']) => void;
   updateLocale: (payload: AppSlice['locale']) => void;
+  setDeliveryAddress: (address: string) => void;
 };
 
 const applyThemeToDOM = (theme: THEME) => {
@@ -27,6 +29,7 @@ const applyThemeToDOM = (theme: THEME) => {
 export const createAppSlice: SliceCreator<AppSlice> = (set) => ({
   locale: DEFAULT_LANGUAGE,
   theme: DEFAULT_THEME,
+  deliveryAddress: 'Đường Trương Định/Ngõ 58 Tổ 10D, Tương Mai, Hoàng Mai, Hà Nội',
 
   updateTheme: (payload: AppSlice['theme']) => {
     applyThemeToDOM(payload);
@@ -41,6 +44,12 @@ export const createAppSlice: SliceCreator<AppSlice> = (set) => ({
     }
     set((state) => {
       state.locale = payload;
+    });
+  },
+
+  setDeliveryAddress: (address: string) => {
+    set((state) => {
+      state.deliveryAddress = address;
     });
   },
 });

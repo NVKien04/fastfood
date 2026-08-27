@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { CartItem } from '@/stores';
 import { formatVND } from '@/utils';
@@ -94,9 +95,15 @@ export const CartReviewSection = ({
                 {items.map((item) => (
                   <div key={item.id} className="py-4 first:pt-0 last:pb-0 flex items-start justify-between gap-4">
                     {/* Item Image */}
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-orange-50/50 dark:bg-zinc-800 p-1.5 shrink-0 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-zinc-700">
+                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-orange-50/50 dark:bg-zinc-800 p-1.5 shrink-0 flex items-center justify-center overflow-hidden border border-gray-100 dark:border-zinc-700">
                       {item.product.img ? (
-                        <img src={item.product.img} alt={item.product.name} className="w-full h-full object-contain" />
+                        <Image
+                          src={item.product.img}
+                          alt={item.product.name}
+                          fill
+                          sizes="(max-width: 640px) 64px, 80px"
+                          className="object-contain p-1.5"
+                        />
                       ) : (
                         <Utensils className="w-8 h-8 text-gray-400" />
                       )}

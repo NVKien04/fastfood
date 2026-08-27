@@ -23,6 +23,8 @@ export const useCheckout = () => {
   const deliveryFee = DEFAULT_DELIVERY_FEE;
   const total = subTotal + deliveryFee;
 
+  const deliveryAddress = useStore((s) => s.deliveryAddress);
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [createdOrder, setCreatedOrder] = useState<OrderResponseDto | null>(null);
 
@@ -31,7 +33,7 @@ export const useCheckout = () => {
     defaultValues: {
       guestName: user?.fullName || '',
       guestPhone: '',
-      guestAddress: '',
+      guestAddress: deliveryAddress || '',
       notes: '',
       paymentMethod: PaymentMethodEnum.COD,
     },
@@ -42,7 +44,10 @@ export const useCheckout = () => {
     if (user?.fullName) {
       form.setValue('guestName', user.fullName);
     }
-  }, [user, form]);
+    if (deliveryAddress && !form.getValues('guestAddress')) {
+      form.setValue('guestAddress', deliveryAddress);
+    }
+  }, [user, deliveryAddress, form]);
 
   const createOrderMutation = useCreateOrder();
 

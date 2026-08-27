@@ -91,6 +91,8 @@
     "LOGIN_TITLE": "Sign In",
     "LOGIN_SUBTITLE": "Welcome back! Please enter your details to continue.",
     "REGISTER_TITLE": "Create Account",
+    "REGISTER_SUBTITLE": "Create a KeiPizza account to receive exclusive offers.",
+    "REGISTER_BUTTON": "Sign Up",
     "REGISTER_SUCCESS_TITLE": "Registered Successfully!",
     "REGISTER_SUCCESS_DESC": "Welcome {{name}} to KeiPizza! Your account is ready to start ordering and receiving amazing perks.",
     "EXPLORE_MENU": "Explore Menu Now",
@@ -333,6 +335,24 @@
     "CONTINUE_SHOPPING": "Continue Shopping",
     "ORDER_FAILED": "Failed to place order. Please try again later.",
     "CART_EMPTY_ERROR": "Your cart is empty!"
+  },
+  "ADDRESS": {
+    "MODAL_TITLE": "Delivery Address",
+    "MODAL_SUBTITLE": "Select or enter an address to get your pizza delivered fast",
+    "SAVED_TAB": "Saved Addresses",
+    "NEW_TAB": "+ Add New Address",
+    "DEFAULT_BADGE": "Default",
+    "ADD_ANOTHER_ADDRESS": "Add another address",
+    "CITY_LABEL": "City / Province",
+    "CITY_PLACEHOLDER": "Enter City / Province",
+    "DISTRICT_LABEL": "District",
+    "DISTRICT_PLACEHOLDER": "e.g. Cau Giay, Hoan Kiem...",
+    "WARD_LABEL": "Ward",
+    "WARD_PLACEHOLDER": "e.g. Dich Vong, Hang Bai...",
+    "STREET_LABEL": "Street / Detailed Address",
+    "STREET_PLACEHOLDER": "e.g. No. 12 Lane 34, Tran Thai Tong St...",
+    "SET_AS_DEFAULT": "Set as default delivery address",
+    "CONFIRM_AND_DELIVER": "Deliver to this address"
   },
   "PROFILE": {
     "TITLE": "Personal Profile",

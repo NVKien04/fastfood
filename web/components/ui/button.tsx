@@ -9,20 +9,20 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground hover:bg-brand-primary-active active:bg-brand-primary-active disabled:bg-brand-primary-disabled disabled:text-brand-muted shadow-xs',
+          'bg-primary text-white hover:bg-brand-primary-active active:bg-brand-primary-active disabled:bg-brand-primary-disabled disabled:text-brand-muted shadow-xs font-bold',
         outline:
           'border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
         secondary:
-          'border-brand-hairline border bg-transparent text-brand-ink hover:bg-brand-surface-soft active:bg-brand-surface-cream-strong aria-expanded:bg-brand-surface-soft',
+          'border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 active:bg-gray-100 dark:active:bg-zinc-600',
         'secondary-on-dark':
-          'bg-brand-surface-dark-elevated text-brand-on-dark hover:bg-brand-surface-dark-soft active:bg-brand-surface-dark',
+          'bg-zinc-800 text-white hover:bg-zinc-700 active:bg-zinc-900',
         ghost:
-          'hover:bg-brand-surface-soft hover:text-brand-ink aria-expanded:bg-brand-surface-soft dark:hover:bg-brand-surface-dark-soft',
+          'hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-300',
         destructive:
           'bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
         link: 'text-primary underline-offset-4 hover:underline decoration-primary',
         'icon-circular':
-          'rounded-full bg-brand-canvas border border-brand-hairline text-brand-ink hover:bg-brand-surface-soft active:bg-brand-surface-cream-strong',
+          'rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-800 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 active:bg-gray-100 dark:active:bg-zinc-600',
       },
       size: {
         default:

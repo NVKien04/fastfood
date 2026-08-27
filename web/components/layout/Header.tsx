@@ -3,6 +3,7 @@
 import { useState, useRef, useMemo, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import {
   Menu,
@@ -28,6 +29,7 @@ import { THEME, LANGUAGES, LanguageEnum, type Language } from '@/constants';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { formatVND } from '@/utils';
 import { NotificationBell } from '@/features/notification';
+import { DeliveryAddressModal } from '@/features/address';
 
 type HeaderProps = {
   className?: string;
@@ -37,7 +39,7 @@ type HeaderProps = {
 
 export const Header = ({
   className = '',
-  deliveryAddress = 'Đường Trương Định/Ngõ 58 Tổ 10D, Tương Mai, Hoàng Mai, Hà Nội',
+  deliveryAddress: customDeliveryAddress,
   onAddressClick,
 }: HeaderProps) => {
   // 1. Next.js Router & navigation hooks
@@ -50,6 +52,7 @@ export const Header = ({
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState<boolean>(false);
   const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState<boolean>(false);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState<boolean>(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const languageRef = useRef<HTMLDivElement | null>(null);
@@ -62,6 +65,9 @@ export const Header = ({
   const theme = useStore((s) => s.theme);
   const updateTheme = useStore((s) => s.updateTheme);
   const updateLocale = useStore((s) => s.updateLocale);
+  const storeDeliveryAddress = useStore((s) => s.deliveryAddress);
+
+  const activeDeliveryAddress = customDeliveryAddress || storeDeliveryAddress;
 
   // 5. Memoized values
   const isLoggedIn = useMemo(() => !!accessToken, [accessToken]);
@@ -182,14 +188,20 @@ export const Header = ({
 
           {/* 2. Delivery Address Information */}
           <div
-            onClick={onAddressClick}
+            onClick={() => {
+              if (onAddressClick) {
+                onAddressClick();
+              } else {
+                setIsAddressModalOpen(true);
+              }
+            }}
             className="hidden md:flex flex-col text-left cursor-pointer group hover:opacity-90 transition-opacity select-none min-w-0 max-w-65 lg:max-w-xs"
             role="button"
             tabIndex={0}
           >
             <div className="flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-gray-900 dark:text-white">
               <span className="shrink-0">{t('NAV.DELIVERY_TO')}</span>
-              <span className="text-[#ff6900] group-hover:underline truncate">{deliveryAddress}</span>
+              <span className="text-[#ff6900] group-hover:underline truncate">{activeDeliveryAddress}</span>
               <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 group-hover:text-[#ff6900] transition-colors shrink-0" />
             </div>
             <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-zinc-400 mt-1">
@@ -294,10 +306,9 @@ export const Header = ({
               className="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
             >
               <Menu className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-              <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-600 dark:text-zinc-300 overflow-hidden">
+              <div className="relative w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-600 dark:text-zinc-300 overflow-hidden">
                 {isLoggedIn && user?.avatar ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={user.avatar} alt={userDisplayName} className="w-full h-full object-cover" />
+                  <Image src={user.avatar} alt={userDisplayName} fill sizes="24px" className="object-cover" unoptimized />
                 ) : (
                   <UserIcon className="w-3.5 h-3.5 text-gray-600 dark:text-zinc-400" />
                 )}
@@ -482,6 +493,12 @@ export const Header = ({
           </div>
         </div>
       </div>
+
+      {/* Delivery Address Selection & Creation Modal */}
+      <DeliveryAddressModal
+        isOpen={isAddressModalOpen}
+        onClose={() => setIsAddressModalOpen(false)}
+      />
     </header>
   );
 };
