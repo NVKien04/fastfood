@@ -19,7 +19,7 @@ export const VoucherWallet = () => {
   ];
 
   return (
-    <div className="w-full max-w-300 mx-auto px-4 py-6 sm:py-10 transition-colors">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 transition-colors">
       {/* 1. Header Banner & Title */}
       <div className="relative rounded-3xl bg-linear-to-r from-orange-500 via-[#ff6900] to-amber-500 p-6 sm:p-8 text-white shadow-xl shadow-orange-500/20 mb-8 overflow-hidden">
         {/* Subtle decorative elements */}
@@ -102,7 +102,7 @@ export const VoucherWallet = () => {
           <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">{t('VOUCHER.LOADING_VOUCHERS')}</p>
         </div>
       ) : vouchers.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {vouchers.map((voucher) => (
             <VoucherCard key={voucher.id || voucher.code} voucher={voucher} />
           ))}

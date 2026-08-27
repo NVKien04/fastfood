@@ -161,7 +161,7 @@ export const Header = ({
     <header
       className={`sticky top-0 z-40 w-full h-27.5 min-h-27.5 max-h-27.5 bg-white dark:bg-zinc-950/95 backdrop-blur-md border-b border-gray-100 dark:border-zinc-800/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-colors ${className}`}
     >
-      <div className="max-w-300 w-full h-full mx-auto px-4 flex items-center justify-between gap-4">
+      <div className="max-w-7xl w-full h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* ========================================================= */}
         {/* Left Side: Brand Logo (1) and Delivery Address (2) */}
         {/* ========================================================= */}

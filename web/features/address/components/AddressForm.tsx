@@ -18,8 +18,6 @@ type AddressFormProps = {
   submitButtonText?: string;
 };
 
-const POPULAR_CITIES = ['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ'];
-
 export const AddressForm = ({
   initialValues,
   onSubmit,
@@ -33,8 +31,6 @@ export const AddressForm = ({
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
@@ -47,46 +43,24 @@ export const AddressForm = ({
     },
   });
 
-  const selectedCity = watch('city');
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left" noValidate>
-      {/* Quick City Selector Chips */}
+      {/* City Input */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-gray-700 dark:text-zinc-300 flex items-center justify-between">
+        <label htmlFor="city" className="text-xs font-bold text-gray-700 dark:text-zinc-300 flex items-center justify-between">
           <span className="flex items-center gap-1.5">
             <Building className="w-3.5 h-3.5 text-[#ff6900]" />
             <span>{t('ADDRESS.CITY_LABEL', { defaultValue: 'Tỉnh / Thành phố' })}</span>
             <span className="text-[#ff6900]">*</span>
           </span>
         </label>
-        <div className="flex flex-wrap gap-1.5 pt-0.5">
-          {POPULAR_CITIES.map((city) => {
-            const isActive = selectedCity === city;
-            return (
-              <button
-                key={city}
-                type="button"
-                onClick={() => setValue('city', city, { shouldValidate: true })}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-[#ff6900] text-white shadow-xs'
-                    : 'bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700'
-                }`}
-              >
-                {city}
-              </button>
-            );
-          })}
-        </div>
-        <div className="pt-1">
-          <Input
-            type="text"
-            {...register('city')}
-            placeholder={t('ADDRESS.CITY_PLACEHOLDER', { defaultValue: 'Nhập Tỉnh / Thành phố' })}
-            aria-invalid={!!errors.city}
-          />
-        </div>
+        <Input
+          id="city"
+          type="text"
+          {...register('city')}
+          placeholder={t('ADDRESS.CITY_PLACEHOLDER', { defaultValue: 'Nhập Tỉnh / Thành phố (VD: Hà Nội, TP. Hồ Chí Minh...)' })}
+          aria-invalid={!!errors.city}
+        />
         {errors.city && <p className="text-[11px] font-medium text-red-500">{errors.city.message}</p>}
       </div>
 
