@@ -12,7 +12,11 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { NotificationItemData } from '../types';
-import { formatNotificationTime, getNotificationTypeMeta } from '../utils/notification.helper';
+import {
+  formatNotificationTime,
+  getNotificationTypeMeta,
+  renderNotificationText,
+} from '../utils/notification.helper';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -106,12 +110,12 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
               : 'font-black text-gray-900 dark:text-white',
           )}
         >
-          {notification.title}
+          {renderNotificationText(notification.title, t)}
         </h5>
 
         {/* Message */}
         <p className="text-xs text-gray-500 dark:text-zinc-400 line-clamp-2 leading-relaxed mb-2">
-          {notification.message}
+          {renderNotificationText(notification.message, t)}
         </p>
 
         {/* Bottom Link Action */}

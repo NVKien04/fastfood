@@ -85,7 +85,19 @@
     "TYPE_ORDER": "Đơn hàng",
     "TYPE_PROMO": "Khuyến mãi",
     "TYPE_SYSTEM": "Hệ thống",
-    "TYPE_ACCOUNT": "Tài khoản"
+    "TYPE_ACCOUNT": "Tài khoản",
+    "ORDER_CREATED_TITLE": "Đặt hàng thành công",
+    "ORDER_CREATED_CONTENT": "Đơn hàng #{{orderNumber}} của bạn đã được tiếp nhận và đang chờ xác nhận.",
+    "ORDER_CONFIRMED_TITLE": "Đơn hàng đã được xác nhận",
+    "ORDER_CONFIRMED_CONTENT": "Đơn hàng #{{orderNumber}} của bạn đã được nhà hàng xác nhận và chuyển xuống bếp chế biến.",
+    "ORDER_PREPARING_TITLE": "Bếp đang chế biến món ăn",
+    "ORDER_PREPARING_CONTENT": "Đầu bếp đang chuẩn bị món ăn tươi ngon cho đơn hàng #{{orderNumber}}.",
+    "ORDER_SHIPPING_TITLE": "Đơn hàng đang được giao",
+    "ORDER_SHIPPING_CONTENT": "Đơn hàng #{{orderNumber}} đã chuẩn bị xong và đang trên đường giao đến bạn.",
+    "ORDER_DELIVERED_TITLE": "Giao hàng thành công",
+    "ORDER_DELIVERED_CONTENT": "Đơn hàng #{{orderNumber}} đã được giao thành công. Chúc bạn ngon miệng!",
+    "ORDER_CANCELLED_TITLE": "Đơn hàng đã bị hủy",
+    "ORDER_CANCELLED_CONTENT": "Đơn hàng #{{orderNumber}} đã bị hủy."
   },
   "AUTH": {
     "LOGIN_TITLE": "Đăng nhập",

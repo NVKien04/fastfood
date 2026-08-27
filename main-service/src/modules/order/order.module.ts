@@ -8,6 +8,7 @@ import { ProductModule } from '@/modules/product/product.module';
 import { ProductVariantModule } from '@/modules/product-variant/product-variant.module';
 import { IngredientModule } from '@/modules/ingredient/ingredient.module';
 import { CouponModule } from '@/modules/coupon/coupon.module';
+import { NotificationModule } from '@/modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CouponModule } from '@/modules/coupon/coupon.module';
     ProductVariantModule,
     IngredientModule,
     CouponModule,
+    NotificationModule,
   ],
   controllers: [OrderController],
   providers: [

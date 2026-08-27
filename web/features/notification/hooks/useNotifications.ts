@@ -2,13 +2,14 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { ApiMain } from '@/services/apis/main/api.main';
 import { useStore } from '@/stores';
 import { NotificationItemData, NotificationFilterTab } from '../types';
-import { INITIAL_MOCK_NOTIFICATIONS } from '../utils/mock-notifications';
-import { normalizeNotificationType } from '../utils/notification.helper';
-
-const STORAGE_KEY = 'keipizza_notifications_v1';
+import { useNotificationListQuery } from '@/services/react-query/queries/notification';
+import {
+  useMarkNotificationAsReadMutation,
+  useMarkAllNotificationsAsReadMutation,
+  useDeleteNotificationMutation,
+} from '@/services/react-query/mutations/notification';
 
 export const useNotifications = () => {
   const router = useRouter();
@@ -17,69 +18,25 @@ export const useNotifications = () => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<NotificationFilterTab>('ALL');
-  const [notifications, setNotifications] = useState<NotificationItemData[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved) as NotificationItemData[];
-          return parsed.map((item) => ({
-            ...item,
-            type: normalizeNotificationType(item.type, item.title, item.message),
-          }));
-        }
-      } catch {
-        // ignore storage error
-      }
+
+  // TanStack Query với staleTime: 60s
+  // Trong 60s đầu, dữ liệu ở trạng thái Fresh (không gọi lại API)
+  // Sau 60s, dữ liệu chuyển sang Stale và chỉ gọi lại API khi có tương tác người dùng (focus window, mở dropdown, refetch)
+  const { data: apiNotifications, isLoading, refetch } = useNotificationListQuery(Boolean(accessToken));
+
+  const markAsReadMutation = useMarkNotificationAsReadMutation();
+  const markAllAsReadMutation = useMarkAllNotificationsAsReadMutation();
+  const deleteNotificationMutation = useDeleteNotificationMutation();
+
+  // Danh sách thông báo hiển thị (lấy từ Query hoặc mock nếu chưa đăng nhập)
+  const notifications: NotificationItemData[] = useMemo(() => {
+    if (accessToken) {
+      return apiNotifications || [];
     }
-    return INITIAL_MOCK_NOTIFICATIONS;
-  });
+    return [];
+  }, [accessToken, apiNotifications]);
 
-  // Save to localStorage when notifications change
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
-      } catch {
-        // ignore
-      }
-    }
-  }, [notifications]);
-
-  // Fetch from API if logged in
-  useEffect(() => {
-    if (!accessToken) return;
-
-    let isMounted = true;
-    const fetchApiNotifications = async () => {
-      try {
-        const res = await ApiMain.instance.notification.getNotifications();
-        if (isMounted && res.kind === 'OK' && Array.isArray(res.data) && res.data.length > 0) {
-          const mapped: NotificationItemData[] = res.data.map((item) => ({
-            id: String(item.id),
-            title: item.title,
-            message: item.message,
-            type: normalizeNotificationType(item.type, item.title, item.message),
-            isRead: Boolean(item.isRead),
-            createdAt: item.createdAt || new Date().toISOString(),
-            linkUrl: item.linkUrl,
-            img: (item as unknown as { img?: string; thumbnail?: string }).img || (item as unknown as { thumbnail?: string }).thumbnail,
-          }));
-          setNotifications(mapped);
-        }
-      } catch {
-        // Fallback to local mock data on error
-      }
-    };
-
-    fetchApiNotifications();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [accessToken]);
-
-  // Close dropdown on click outside or Escape
+  // Đóng dropdown khi click bên ngoài hoặc bấm phím Escape
   useEffect(() => {
     const handleClickOutside = (e: globalThis.MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -123,55 +80,41 @@ export const useNotifications = () => {
   }, [notifications, activeTab]);
 
   const handleToggleOpen = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
+    setIsOpen((prev) => {
+      const next = !prev;
+      // Khi người dùng mở dropdown và dữ liệu đã Stale, có thể kích hoạt refetch
+      if (next && accessToken) {
+        refetch();
+      }
+      return next;
+    });
+  }, [accessToken, refetch]);
 
   const handleMarkAsRead = useCallback(
     async (id: string) => {
-      setNotifications((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, isRead: true } : item)),
-      );
-
       if (accessToken) {
-        try {
-          await ApiMain.instance.notification.markAsRead(id);
-        } catch {
-          // ignore
-        }
+        markAsReadMutation.mutate(id);
       }
     },
-    [accessToken],
+    [accessToken, markAsReadMutation],
   );
 
   const handleMarkAllAsRead = useCallback(async () => {
-    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
-
     if (accessToken) {
-      try {
-        await ApiMain.instance.notification.markAllAsRead();
-      } catch {
-        // ignore
-      }
+      markAllAsReadMutation.mutate();
     }
-  }, [accessToken]);
+  }, [accessToken, markAllAsReadMutation]);
 
   const handleDelete = useCallback(
     async (id: string, e?: MouseEvent) => {
       if (e) {
         e.stopPropagation();
       }
-
-      setNotifications((prev) => prev.filter((item) => item.id !== id));
-
       if (accessToken) {
-        try {
-          await ApiMain.instance.notification.deleteNotification(id);
-        } catch {
-          // ignore
-        }
+        deleteNotificationMutation.mutate(id);
       }
     },
-    [accessToken],
+    [accessToken, deleteNotificationMutation],
   );
 
   const handleNotificationClick = useCallback(
@@ -197,6 +140,8 @@ export const useNotifications = () => {
     notifications,
     unreadCount,
     filteredNotifications,
+    isLoading,
+    refetch,
     handleToggleOpen,
     handleMarkAsRead,
     handleMarkAllAsRead,

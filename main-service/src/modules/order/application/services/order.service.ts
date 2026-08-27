@@ -1,7 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { OrderStatus, PaymentMethod, PaymentStatus } from '@/enums';
+import { NotificationType, OrderStatus, PaymentMethod, PaymentStatus } from '@/enums';
 import { BusinessException } from '@/common/exception';
-import { ErrorEnum, REDIS_KEYS } from '@/common/constants';
+import {
+  CANCELLABLE_STATUSES,
+  ErrorEnum,
+  REDIS_KEYS,
+  STATUS_NOTIFICATIONS,
+  VALID_TRANSITIONS,
+} from '@/common/constants';
 import { type PaginationResponse } from '@/common/core';
 import { type ICacheService } from '@/modules/cache/domain/interface/cache.interface';
 import { Order, OrderItem, OrderItemIngredient } from '@/modules/order/domain/entities/order.domain';
@@ -10,23 +16,9 @@ import { ProductService } from '@/modules/product/application/services/product.s
 import { ProductVariantService } from '@/modules/product-variant/application/services/product-variant.service';
 import { IngredientService } from '@/modules/ingredient/application/services/ingredient.service';
 import { CouponService } from '@/modules/coupon/application/services/coupon.service';
+import { NotificationService } from '@/modules/notification/application/services/notification.service';
 import { CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
 import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
-
-/**
- * Bảng chuyển trạng thái hợp lệ cho đơn hàng (State Machine).
- * Key = trạng thái hiện tại, Value = danh sách trạng thái có thể chuyển đến.
- */
-const VALID_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
-  [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
-  [OrderStatus.CONFIRMED]: [OrderStatus.PREPARING, OrderStatus.CANCELLED],
-  [OrderStatus.PREPARING]: [OrderStatus.READY_FOR_SHIPMENT],
-  [OrderStatus.READY_FOR_SHIPMENT]: [OrderStatus.DELIVERED],
-  [OrderStatus.DELIVERED]: [],
-  [OrderStatus.CANCELLED]: [],
-};
-
-const CANCELLABLE_STATUSES: OrderStatus[] = [OrderStatus.PENDING, OrderStatus.CONFIRMED];
 
 @Injectable()
 export class OrderService {
@@ -39,6 +31,7 @@ export class OrderService {
     private readonly productVariantService: ProductVariantService,
     private readonly ingredientService: IngredientService,
     private readonly couponService: CouponService,
+    private readonly notificationService: NotificationService,
     @Inject('ICacheService')
     private readonly cacheService: ICacheService,
   ) {}
@@ -164,6 +157,20 @@ export class OrderService {
       await this.couponService.incrementUsage(appliedCouponId);
     }
 
+    // 7. Tạo thông báo đặt hàng thành công cho khách hàng
+    if (savedOrder.userId) {
+      try {
+        await this.notificationService.createNotification({
+          userId: savedOrder.userId,
+          title: 'NOTIFICATION.ORDER_CREATED_TITLE',
+          content: `NOTIFICATION.ORDER_CREATED_CONTENT::${savedOrder.orderNumber}::${savedOrder.id}`,
+          type: NotificationType.ORDER_STATUS,
+        });
+      } catch (notiErr) {
+        this.logger.error(`Failed to create order placement notification: ${notiErr}`);
+      }
+    }
+
     return savedOrder;
   }
 
@@ -227,6 +234,22 @@ export class OrderService {
     }
 
     this.logger.log(`📦 Order #${order.orderNumber}: ${order.status} → ${newStatus}`);
+
+    // Tự động tạo thông báo cho khách hàng khi trạng thái đơn thay đổi
+    const template = STATUS_NOTIFICATIONS[newStatus];
+    if (order.userId && template) {
+      try {
+        await this.notificationService.createNotification({
+          userId: order.userId,
+          title: template.titleKey,
+          content: `${template.contentKey}::${order.orderNumber}::${order.id}`,
+          type: NotificationType.ORDER_STATUS,
+        });
+      } catch (notiErr) {
+        this.logger.error(`Failed to create order status notification: ${notiErr}`);
+      }
+    }
+
     return updated;
   }
 
@@ -255,6 +278,21 @@ export class OrderService {
     this.logger.log(
       `❌ Order #${order.orderNumber} cancelled by user ${currentUser.userId}. Reason: ${reason || 'N/A'}`,
     );
+
+    // Tự động tạo thông báo khi đơn hàng bị hủy
+    if (order.userId) {
+      try {
+        await this.notificationService.createNotification({
+          userId: order.userId,
+          title: 'NOTIFICATION.ORDER_CANCELLED_TITLE',
+          content: `NOTIFICATION.ORDER_CANCELLED_CONTENT::${order.orderNumber}::${order.id}${reason ? `::${reason}` : ''}`,
+          type: NotificationType.ORDER_STATUS,
+        });
+      } catch (notiErr) {
+        this.logger.error(`Failed to create order cancel notification: ${notiErr}`);
+      }
+    }
+
     return cancelled;
   }
 

@@ -84,7 +84,19 @@
     "TYPE_ORDER": "ご注文",
     "TYPE_PROMO": "クーポン",
     "TYPE_SYSTEM": "システム",
-    "TYPE_ACCOUNT": "アカウント"
+    "TYPE_ACCOUNT": "アカウント",
+    "ORDER_CREATED_TITLE": "ご注文を受け付けました",
+    "ORDER_CREATED_CONTENT": "ご注文 #{{orderNumber}} を受け付けました。確認中です。",
+    "ORDER_CONFIRMED_TITLE": "ご注文が確認されました",
+    "ORDER_CONFIRMED_CONTENT": "ご注文 #{{orderNumber}} が確認され、キッチンに送られました。",
+    "ORDER_PREPARING_TITLE": "調理中",
+    "ORDER_PREPARING_CONTENT": "ご注文 #{{orderNumber}} の調理を開始しました。",
+    "ORDER_SHIPPING_TITLE": "配達中",
+    "ORDER_SHIPPING_CONTENT": "ご注文 #{{orderNumber}} の配達を開始しました。",
+    "ORDER_DELIVERED_TITLE": "配達完了",
+    "ORDER_DELIVERED_CONTENT": "ご注文 #{{orderNumber}} の配達が完了しました。どうぞお召し上がりください！",
+    "ORDER_CANCELLED_TITLE": "注文キャンセル",
+    "ORDER_CANCELLED_CONTENT": "ご注文 #{{orderNumber}} がキャンセルされました。"
   },
   "AUTH": {
     "LOGIN_TITLE": "ログイン",

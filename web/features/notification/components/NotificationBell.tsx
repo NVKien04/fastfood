@@ -2,6 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { Bell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useNotifications } from '../hooks/useNotifications';
 import { NotificationDropdown } from './NotificationDropdown';
 
@@ -30,11 +31,13 @@ export const NotificationBell = ({ className = '' }: NotificationBellProps) => {
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       {/* Bell Trigger Button */}
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={handleToggleOpen}
         aria-label={t('NAV.NOTIFICATIONS')}
-        className={`relative p-2.5 rounded-full text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer select-none ${
+        className={`relative rounded-full text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white cursor-pointer select-none transition-colors ${
           isOpen ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white' : ''
         }`}
       >
@@ -47,7 +50,7 @@ export const NotificationBell = ({ className = '' }: NotificationBellProps) => {
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ff6900]" />
           </span>
         )}
-      </button>
+      </Button>
 
       {/* Dropdown Modal Container */}
       <NotificationDropdown

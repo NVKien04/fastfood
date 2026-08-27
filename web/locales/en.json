@@ -85,7 +85,19 @@
     "TYPE_ORDER": "Order",
     "TYPE_PROMO": "Promotion",
     "TYPE_SYSTEM": "System",
-    "TYPE_ACCOUNT": "Account"
+    "TYPE_ACCOUNT": "Account",
+    "ORDER_CREATED_TITLE": "Order Placed Successfully",
+    "ORDER_CREATED_CONTENT": "Your order #{{orderNumber}} has been placed and is waiting for restaurant confirmation.",
+    "ORDER_CONFIRMED_TITLE": "Order Confirmed",
+    "ORDER_CONFIRMED_CONTENT": "Your order #{{orderNumber}} has been confirmed and sent to the kitchen.",
+    "ORDER_PREPARING_TITLE": "Kitchen Preparing",
+    "ORDER_PREPARING_CONTENT": "The chef is preparing delicious dishes for order #{{orderNumber}}.",
+    "ORDER_SHIPPING_TITLE": "Out for Delivery",
+    "ORDER_SHIPPING_CONTENT": "Order #{{orderNumber}} is ready and on the way to you.",
+    "ORDER_DELIVERED_TITLE": "Delivered Successfully",
+    "ORDER_DELIVERED_CONTENT": "Order #{{orderNumber}} has been delivered. Enjoy your meal!",
+    "ORDER_CANCELLED_TITLE": "Order Cancelled",
+    "ORDER_CANCELLED_CONTENT": "Order #{{orderNumber}} has been cancelled."
   },
   "AUTH": {
     "LOGIN_TITLE": "Sign In",

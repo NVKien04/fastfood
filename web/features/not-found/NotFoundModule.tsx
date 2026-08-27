@@ -2,35 +2,11 @@
 
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Home, Utensils, Package, Ticket, User, ArrowRight, Pizza, Sparkles } from 'lucide-react';
+import { Home, Utensils, Pizza } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export const NotFoundModule = () => {
   const { t } = useTranslation();
-
-  const quickLinks = [
-    {
-      title: t('NOT_FOUND_PAGE.ORDERS_LINK'),
-      desc: t('NOT_FOUND_PAGE.ORDERS_DESC'),
-      href: '/orders',
-      icon: Package,
-      badge: 'Order',
-    },
-    {
-      title: t('NOT_FOUND_PAGE.VOUCHERS_LINK'),
-      desc: t('NOT_FOUND_PAGE.VOUCHERS_DESC'),
-      href: '/vouchers',
-      icon: Ticket,
-      badge: 'Deals',
-    },
-    {
-      title: t('NOT_FOUND_PAGE.PROFILE_LINK'),
-      desc: t('NOT_FOUND_PAGE.PROFILE_DESC'),
-      href: '/profile',
-      icon: User,
-      badge: 'Account',
-    },
-  ];
 
   return (
     <div className="w-full max-w-300 mx-auto px-4 py-10 sm:py-16 flex flex-col items-center justify-center text-center transition-colors">
@@ -46,7 +22,7 @@ export const NotFoundModule = () => {
           </span>
 
           {/* Center Pizza Icon / Graphic */}
-          <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-[#ff6900] to-amber-500 flex items-center justify-center shadow-xl shadow-orange-500/30 animate-bounce duration-1000">
+          <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-linear-to-tr from-[#ff6900] to-amber-500 flex items-center justify-center shadow-xl shadow-orange-500/30 animate-bounce duration-1000">
             <Pizza className="w-10 h-10 sm:w-14 sm:h-14 text-white" />
           </div>
 
