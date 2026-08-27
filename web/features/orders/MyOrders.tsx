@@ -35,7 +35,7 @@ export const MyOrders = () => {
   ];
 
   return (
-    <div className="w-full max-w-300 mx-auto px-4 py-6 sm:py-10 transition-colors">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 transition-colors">
       {/* 1. Header Title & Stats */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-zinc-800 mb-8">
         <div>

@@ -185,12 +185,14 @@ export const OrderDetailModule = ({ params }: OrderDetailModuleProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-4">
-          <OrderStatusTimeline
-            currentStatus={order.status}
-            createdAt={order.createdAt}
-            updatedAt={order.updatedAt}
-            notes={order.notes}
-          />
+          <div className="max-w-5xl mx-auto py-1 px-4 sm:px-8">
+            <OrderStatusTimeline
+              currentStatus={order.status}
+              createdAt={order.createdAt}
+              updatedAt={order.updatedAt}
+              notes={order.notes}
+            />
+          </div>
         </CardContent>
       </Card>
 

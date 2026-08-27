@@ -2,8 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { CheckCircle2, Clock, ChefHat, Truck, Check, XCircle } from 'lucide-react';
-
-type StepStatus = 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'READY_FOR_SHIPMENT' | 'DELIVERED' | 'CANCELLED';
+import { cn } from '@/lib/utils';
 
 type OrderProgressStepperProps = {
   status: string;
@@ -72,49 +71,57 @@ export const OrderProgressStepper = ({ status }: OrderProgressStepperProps) => {
 
   return (
     <div className="w-full py-2">
-      <div className="relative flex items-center justify-between">
-        {/* Continuous background bar */}
-        <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 dark:bg-zinc-800 -translate-y-1/2 z-0 rounded-full" />
-        {/* Completed bar */}
+      <div className="relative">
+        {/* Continuous background line connecting from center of first icon to center of last icon */}
+        <div className="absolute top-4 left-4 right-4 h-1 bg-gray-200 dark:bg-zinc-800 -translate-y-1/2 rounded-full" />
+
+        {/* Continuous active green progress line */}
         <div
-          className="absolute top-1/2 left-0 h-1 bg-emerald-500 -translate-y-1/2 z-0 rounded-full transition-all duration-500"
+          className="absolute top-4 left-4 h-1 bg-emerald-500 -translate-y-1/2 rounded-full transition-all duration-500"
           style={{
-            width: `${(currentStepIndex / (steps.length - 1)) * 100}%`,
+            width: `calc((100% - 32px) * ${currentStepIndex / (steps.length - 1)})`,
           }}
         />
 
-        {steps.map((step, idx) => {
-          const Icon = step.icon;
-          const isPassed = idx < currentStepIndex;
-          const isCurrent = idx === currentStepIndex;
+        {/* Step Nodes */}
+        <div className="relative flex justify-between">
+          {steps.map((step, idx) => {
+            const Icon = step.icon;
+            const isPassed = idx < currentStepIndex;
+            const isCurrent = idx === currentStepIndex;
 
-          return (
-            <div key={step.key} className="relative z-10 flex flex-col items-center group">
-              <div
-                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  isPassed
-                    ? 'bg-emerald-500 text-white shadow-xs'
-                    : isCurrent
-                      ? 'bg-orange-500 text-white ring-4 ring-orange-100 dark:ring-orange-950 shadow-md scale-110'
-                      : 'bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-600 border-2 border-gray-200 dark:border-zinc-700'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            return (
+              <div key={step.key} className="flex flex-col items-center w-8">
+                {/* Circle Icon */}
+                <div
+                  className={cn(
+                    'w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 z-10 shrink-0',
+                    isPassed && 'bg-emerald-500 text-white shadow-xs',
+                    isCurrent &&
+                      'bg-orange-500 text-white ring-4 ring-orange-100 dark:ring-orange-950 shadow-md scale-110',
+                    !isPassed &&
+                      !isCurrent &&
+                      'bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-600 border-2 border-gray-200 dark:border-zinc-700',
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                </div>
+
+                {/* Step Label */}
+                <span
+                  className={cn(
+                    'mt-2 text-[10px] sm:text-xs font-bold text-center transition-colors leading-tight whitespace-nowrap -mx-8',
+                    isCurrent && 'text-orange-600 dark:text-orange-400',
+                    isPassed && 'text-gray-900 dark:text-zinc-200',
+                    !isPassed && !isCurrent && 'text-gray-400 dark:text-zinc-600',
+                  )}
+                >
+                  {step.label}
+                </span>
               </div>
-              <span
-                className={`mt-1.5 text-[10px] sm:text-xs font-bold text-center transition-colors max-w-[65px] sm:max-w-[80px] leading-tight ${
-                  isCurrent
-                    ? 'text-orange-600 dark:text-orange-400'
-                    : isPassed
-                      ? 'text-gray-900 dark:text-zinc-200'
-                      : 'text-gray-400 dark:text-zinc-600'
-                }`}
-              >
-                {step.label}
-              </span>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );
