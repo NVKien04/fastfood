@@ -12,9 +12,7 @@ import {
   MapPin,
   MessageSquare,
   Sparkles,
-  ArrowRight,
   Ban,
-  Eye,
   Check,
   PackageCheck,
   ShoppingBag,
@@ -32,7 +30,7 @@ import {
 import { formatCurrency } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface KitchenBoardViewProps {
