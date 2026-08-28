@@ -62,6 +62,7 @@ export class OrderMapper {
       addressId: entity.addressId,
       guestName: entity.guestName,
       guestPhone: entity.guestPhone,
+      guestEmail: entity.guestEmail,
       guestAddress: entity.guestAddress,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,

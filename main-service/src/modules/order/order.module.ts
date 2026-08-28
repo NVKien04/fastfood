@@ -9,6 +9,7 @@ import { ProductVariantModule } from '@/modules/product-variant/product-variant.
 import { IngredientModule } from '@/modules/ingredient/ingredient.module';
 import { CouponModule } from '@/modules/coupon/coupon.module';
 import { NotificationModule } from '@/modules/notification/notification.module';
+import { UserModule } from '@/modules/user/user.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { NotificationModule } from '@/modules/notification/notification.module';
     IngredientModule,
     CouponModule,
     NotificationModule,
+    UserModule,
   ],
   controllers: [OrderController],
   providers: [

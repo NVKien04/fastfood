@@ -19,6 +19,8 @@ import { CouponService } from '@/modules/coupon/application/services/coupon.serv
 import { NotificationService } from '@/modules/notification/application/services/notification.service';
 import { CreateOrderDto, OrderFilterDto } from '@/modules/order/presentation/dto';
 import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
+import { MailService } from '@/modules/mail/application/services/mail.service';
+import { UserService } from '@/modules/user/application/services/user.service';
 
 @Injectable()
 export class OrderService {
@@ -32,6 +34,8 @@ export class OrderService {
     private readonly ingredientService: IngredientService,
     private readonly couponService: CouponService,
     private readonly notificationService: NotificationService,
+    private readonly userService: UserService,
+    private readonly mailService: MailService,
     @Inject('ICacheService')
     private readonly cacheService: ICacheService,
   ) {}
@@ -146,6 +150,7 @@ export class OrderService {
       addressId: null,
       guestName: dto.guestName || null,
       guestPhone: dto.guestPhone || null,
+      guestEmail: dto.guestEmail || null,
       guestAddress: dto.guestAddress || null,
       orderItems: preparedItems,
     };
@@ -170,6 +175,9 @@ export class OrderService {
         this.logger.error(`Failed to create order placement notification: ${notiErr}`);
       }
     }
+
+    // 8. Gửi email xác nhận đơn hàng (chạy nền)
+    this.sendOrderConfirmationEmailAsync(savedOrder, dto.guestEmail);
 
     return savedOrder;
   }
@@ -250,6 +258,9 @@ export class OrderService {
       }
     }
 
+    // Gửi email cập nhật trạng thái đơn hàng cho khách (chạy nền)
+    this.sendOrderStatusEmailAsync(updated, newStatus);
+
     return updated;
   }
 
@@ -293,12 +304,137 @@ export class OrderService {
       }
     }
 
+    // Gửi email thông báo hủy đơn hàng (chạy nền)
+    this.sendOrderStatusEmailAsync(cancelled, OrderStatus.CANCELLED, reason);
+
     return cancelled;
   }
 
   // =============================================
   // PRIVATE HELPERS
   // =============================================
+
+  /**
+   * Lấy text hiển thị thân thiện cho từng trạng thái đơn hàng
+   */
+  private getStatusDisplay(status: OrderStatus): { statusTitle: string; statusDesc: string } {
+    switch (status) {
+      case OrderStatus.CONFIRMED:
+        return {
+          statusTitle: 'Đã xác nhận đơn hàng',
+          statusDesc: 'Nhà hàng đã xác nhận đơn hàng và đang chuẩn bị chế biến món ăn cho bạn.',
+        };
+      case OrderStatus.PREPARING:
+        return {
+          statusTitle: 'Đang chuẩn bị món ăn',
+          statusDesc: 'Các món ăn nóng hổi thơm ngon của bạn đang được bếp chuẩn bị chu đáo.',
+        };
+      case OrderStatus.READY_FOR_SHIPMENT:
+        return {
+          statusTitle: 'Sẵn sàng giao hàng',
+          statusDesc: 'Đơn hàng đã chuẩn bị xong và đang trên đường giao tới bạn.',
+        };
+      case OrderStatus.DELIVERED:
+        return {
+          statusTitle: 'Đã giao hàng thành công',
+          statusDesc: 'Đơn hàng đã được giao tận nơi thành công. Chúc bạn có bữa ăn thật ngon miệng!',
+        };
+      case OrderStatus.CANCELLED:
+        return {
+          statusTitle: 'Đơn hàng đã bị hủy',
+          statusDesc: 'Đơn hàng của bạn đã được hủy theo yêu cầu.',
+        };
+      default:
+        return {
+          statusTitle: `Cập nhật trạng thái: ${status}`,
+          statusDesc: `Đơn hàng của bạn hiện đang ở trạng thái ${status}.`,
+        };
+    }
+  }
+
+  /**
+   * Gửi email xác nhận đơn hàng không đồng bộ (chạy nền)
+   */
+  private sendOrderConfirmationEmailAsync(order: Order, guestEmail?: string): void {
+    void Promise.resolve().then(async () => {
+      try {
+        let recipientEmail = guestEmail || order.guestEmail;
+        let recipientName = order.guestName || 'Quý khách';
+
+        if (!recipientEmail && order.userId) {
+          const user = await this.userService.findById(order.userId);
+          if (user?.email) {
+            recipientEmail = user.email;
+            recipientName = user.name || user.email.split('@')[0];
+          }
+        }
+
+        if (!recipientEmail) return;
+
+        const items = (order.orderItems || []).map((item) => ({
+          name: item.productName || item.product?.name || 'Món ăn',
+          quantity: item.quantity,
+          price: item.price || 0,
+          variantName: item.variantName || item.productVariant?.name,
+        }));
+
+        await this.mailService.sendOrderConfirmationEmail({
+          to: recipientEmail,
+          customerName: recipientName,
+          orderCode: order.orderNumber,
+          items,
+          totalAmount: order.subTotal,
+          shippingFee: order.deliveryFee,
+          discountAmount: order.discount,
+          finalAmount: order.total,
+          deliveryAddress: order.guestAddress || 'Tại cửa hàng',
+          paymentMethod: order.paymentMethod || PaymentMethod.COD,
+          orderDate: order.createdAt || new Date(),
+        });
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        this.logger.error(`Failed to send order confirmation email for #${order.orderNumber}: ${msg}`);
+      }
+    });
+  }
+
+  /**
+   * Gửi email cập nhật trạng thái đơn hàng không đồng bộ (chạy nền)
+   */
+  private sendOrderStatusEmailAsync(order: Order, newStatus: OrderStatus, customReason?: string): void {
+    void Promise.resolve().then(async () => {
+      try {
+        let recipientEmail = order.guestEmail;
+        let recipientName = order.guestName || 'Quý khách';
+
+        if (!recipientEmail && order.userId) {
+          const user = await this.userService.findById(order.userId);
+          if (user?.email) {
+            recipientEmail = user.email;
+            recipientName = user.name || user.email.split('@')[0];
+          }
+        }
+
+        if (!recipientEmail) return;
+
+        const { statusTitle, statusDesc } = this.getStatusDisplay(newStatus);
+        const description = customReason ? `${statusDesc} (Lý do: ${customReason})` : statusDesc;
+
+        await this.mailService.sendOrderStatusEmail({
+          to: recipientEmail,
+          customerName: recipientName,
+          orderCode: order.orderNumber,
+          status: statusTitle,
+          statusDescription: description,
+          finalAmount: order.total,
+          deliveryAddress: order.guestAddress || undefined,
+        });
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        this.logger.error(`Failed to send order status email for #${order.orderNumber}: ${msg}`);
+      }
+    });
+  }
 
   /**
    * Sinh mã đơn hàng duy nhất sử dụng Redis atomic increment.

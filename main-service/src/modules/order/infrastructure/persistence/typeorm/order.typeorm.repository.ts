@@ -40,6 +40,7 @@ export class OrderTypeOrmRepository implements IOrderRepository {
         addressId: order.addressId ?? undefined,
         guestName: order.guestName ?? undefined,
         guestPhone: order.guestPhone ?? undefined,
+        guestEmail: order.guestEmail ?? undefined,
         guestAddress: order.guestAddress ?? undefined,
       });
 

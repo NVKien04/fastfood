@@ -50,6 +50,7 @@ export interface Order {
   addressId?: string | null;
   guestName?: string | null;
   guestPhone?: string | null;
+  guestEmail?: string | null;
   guestAddress?: string | null;
   createdAt?: Date;
   updatedAt?: Date;

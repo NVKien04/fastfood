@@ -23,6 +23,7 @@ import { ComboModule } from '@/modules/combo/combo.module';
 import { CacheModule } from '@/modules/cache/cache.module';
 import { StorageModule } from '@/modules/storage/storage.module';
 import { DeliverySimulationModule } from '@/modules/delivery-simulation/delivery-simulation.module';
+import { MailModule } from '@/modules/mail/mail.module';
 
 // Domain Modules
 
@@ -31,6 +32,7 @@ import { DeliverySimulationModule } from '@/modules/delivery-simulation/delivery
     HttpModule,
     CacheModule,
     StorageModule,
+    MailModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],

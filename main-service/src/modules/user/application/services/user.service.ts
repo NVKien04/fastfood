@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserFilterDto, UserResponseDto } from '@/modules/user/presentation/dto';
 import { RoleEnum } from '@/enums';
 import { HashUtil } from '@/utils';
@@ -9,12 +9,16 @@ import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
 import { User } from '@/modules/user/domain/entities/user.domain';
 import { type IUserRepository } from '@/modules/user/domain/repositories/user.repository.interface';
+import { MailService } from '@/modules/mail/application/services/mail.service';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
+
   constructor(
     @Inject('IUserRepository')
     private readonly repo: IUserRepository,
+    private readonly mailService: MailService,
   ) {}
 
   // ==========================================
@@ -101,6 +105,21 @@ export class UserService {
       role: userDto.role || RoleEnum.CUSTOMER,
     };
     const user = await this.save(dataToSave);
+    const userEmail = user.email;
+
+    // Gửi email chào mừng thành viên mới (chạy nền, không chặn response đăng ký)
+    if (userEmail) {
+      this.mailService
+        .sendWelcomeEmail({
+          to: userEmail,
+          userName: user.name || userEmail.split('@')[0],
+        })
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : 'Unknown error';
+          this.logger.error(`Không thể gửi welcome email tới ${userEmail}: ${msg}`);
+        });
+    }
+
     return UserMapper.toResponse(user);
   }
 
@@ -172,6 +191,19 @@ export class UserService {
         provider: 'google',
         role: RoleEnum.CUSTOMER,
       });
+
+      const userEmail = user.email;
+      if (userEmail) {
+        this.mailService
+          .sendWelcomeEmail({
+            to: userEmail,
+            userName: user.name || profile.displayName || userEmail.split('@')[0],
+          })
+          .catch((err: unknown) => {
+            const msg = err instanceof Error ? err.message : 'Unknown error';
+            this.logger.error(`Không thể gửi welcome email tới ${userEmail}: ${msg}`);
+          });
+      }
     } else {
       // Nếu user chưa có avatar, cập nhật avatar từ Google
       if (!user.avatar && profile.avatar) {

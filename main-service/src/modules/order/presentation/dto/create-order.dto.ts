@@ -62,6 +62,11 @@ export class CreateOrderDto {
   @IsNotEmpty()
   guestPhone: string;
 
+  @ApiPropertyOptional({ description: 'Email người nhận hàng', example: 'customer@example.com' })
+  @IsString()
+  @IsOptional()
+  guestEmail?: string;
+
   @ApiProperty({
     description: 'Địa chỉ giao hàng đầy đủ (nhập từ trình duyệt)',
     example: '123 Đường ABC, Quận 1, TP.HCM',

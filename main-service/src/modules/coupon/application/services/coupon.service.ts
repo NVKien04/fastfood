@@ -1,19 +1,23 @@
 import { PaginationResponse, buildPaginationResponse } from '@/common/core';
 import { CouponFilterDto, CreateCouponDto, UpdateCouponDto } from '@/modules/coupon/presentation/dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { BusinessException } from '@/common/exception';
 import { ErrorEnum } from '@/common/constants';
 import { Coupon } from '@/modules/coupon/domain/entities/coupon.domain';
 import { type ICouponRepository } from '@/modules/coupon/domain/repositories/coupon.repository.interface';
 import { type IUserCouponRepository } from '@/modules/coupon/domain/repositories/user-coupon.repository.interface';
+import { MailService } from '@/modules/mail/application/services/mail.service';
 
 @Injectable()
 export class CouponService {
+  private readonly logger = new Logger(CouponService.name);
+
   constructor(
     @Inject('ICouponRepository')
     private readonly couponRepository: ICouponRepository,
     @Inject('IUserCouponRepository')
     private readonly userCouponRepository: IUserCouponRepository,
+    private readonly mailService: MailService,
   ) {}
 
   // ==========================================
@@ -263,5 +267,37 @@ export class CouponService {
       discount,
       finalTotal,
     };
+  }
+
+  /**
+   * Gửi email thông báo mã giảm giá tới một hoặc nhiều người dùng
+   */
+  async notifyCouponToUsers(couponId: string, recipients: Array<{ email: string; name?: string }>): Promise<void> {
+    const coupon = await this.findByIdOrThrow(couponId);
+
+    const discountDisplay =
+      coupon.value > 100
+        ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(coupon.value)
+        : `${coupon.value}%`;
+
+    for (const recipient of recipients) {
+      if (!recipient.email) continue;
+
+      this.mailService
+        .sendCouponNotificationEmail({
+          to: recipient.email,
+          userName: recipient.name,
+          couponCode: coupon.code,
+          discountDisplay,
+          minOrderValue: coupon.minOrderAmount,
+          startDate: coupon.startDate,
+          endDate: coupon.endDate,
+          description: coupon.description || undefined,
+        })
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : 'Unknown error';
+          this.logger.error(`Failed to send coupon email to ${recipient.email}: ${msg}`);
+        });
+    }
   }
 }
