@@ -39,7 +39,7 @@ export class IngredientApiModule {
    */
   getIngredients = async (filter: IngredientFilterDto = {}): Promise<BaseResponse<IngredientResponseDto[]>> => {
     try {
-      const response = await this.http.instance.get('/api/ingredient', { params: filter });
+      const response = await this.http.instance.post('/api/ingredient/get-page', filter);
       return apiFormatPaginated<IngredientResponseDto, IngredientResponseDto[]>(response);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown error';
