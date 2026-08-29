@@ -31,11 +31,7 @@ export const toDayjs = (time: TimeInput): Dayjs => {
   // Nếu là chuỗi UTC ISO không có 'Z' ở cuối thì xử lý an toàn
   if (typeof time === 'string') {
     const trimmed = time.trim();
-    if (
-      /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}/.test(trimmed) &&
-      !trimmed.endsWith('Z') &&
-      !/[+-]\d{2}:?\d{2}$/.test(trimmed)
-    ) {
+    if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}/.test(trimmed) && !trimmed.endsWith('Z') && !/[+-]\d{2}:?\d{2}$/.test(trimmed)) {
       return dayjs.utc(trimmed.replace(' ', 'T')).local();
     }
   }
@@ -60,7 +56,10 @@ export const isValidDate = (time: TimeInput): boolean => {
  * @example formatDateTime("2026-08-28T08:20:30.000Z") => "28/08/2026, 03:20 PM"
  * @example formatDateTime("2026-08-28T08:20:30.000Z", "DD/MM/YYYY HH:mm") => "28/08/2026 15:20"
  */
-export const formatDateTime = (time: TimeInput, format: string = 'DD/MM/YYYY, hh:mm A'): string => {
+export const formatDateTime = (
+  time: TimeInput,
+  format: string = 'DD/MM/YYYY, hh:mm A',
+): string => {
   if (!time || !isValidDate(time)) return '—';
   return toDayjs(time).format(format);
 };
@@ -69,7 +68,10 @@ export const formatDateTime = (time: TimeInput, format: string = 'DD/MM/YYYY, hh
  * Hiển thị Ngày tháng năm
  * @example formatDate("2026-08-28T08:20:30.000Z") => "28/08/2026"
  */
-export const formatDate = (time: TimeInput, format: string = 'DD/MM/YYYY'): string => {
+export const formatDate = (
+  time: TimeInput,
+  format: string = 'DD/MM/YYYY',
+): string => {
   if (!time || !isValidDate(time)) return '—';
   return toDayjs(time).format(format);
 };
@@ -155,7 +157,11 @@ export const plusTime = (time: TimeInput, quantity: number, unit: ManipulateType
 export const minusTime = (time: TimeInput, quantity: number, unit: ManipulateType = 'day'): Dayjs =>
   toDayjs(time).subtract(quantity, unit);
 
-export const getDiff = (timeStart: TimeInput, timeEnd: TimeInput, unit: QUnitType | OpUnitType = 'minute'): number => {
+export const getDiff = (
+  timeStart: TimeInput,
+  timeEnd: TimeInput,
+  unit: QUnitType | OpUnitType = 'minute',
+): number => {
   return toDayjs(timeStart).diff(toDayjs(timeEnd), unit);
 };
 

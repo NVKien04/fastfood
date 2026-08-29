@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { NOTIFICATION_KEYS } from '../constants/notification-keys';
-import { mapApiNotificationToItem } from '@/features/notification/utils/notification.helper';
+import { mapApiNotificationToItem } from '@/helpers/notification.helper';
 import { NotificationItemData } from '@/features/notification/types';
 
 export const useNotificationListQuery = (enabled: boolean = true) => {

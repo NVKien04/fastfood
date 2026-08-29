@@ -3,20 +3,13 @@
 import { MouseEvent } from 'react';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
-import {
-  Package,
-  TicketPercent,
-  User,
-  Settings,
-  Trash2,
-  ChevronRight,
-} from 'lucide-react';
+import { Package, TicketPercent, User, Settings, Trash2, ChevronRight } from 'lucide-react';
 import { NotificationItemData } from '../types';
 import {
   formatNotificationTime,
   getNotificationTypeMeta,
   renderNotificationText,
-} from '../utils/notification.helper';
+} from '../../../helpers/notification.helper';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -87,18 +80,15 @@ export const NotificationItem = ({ notification, onClick, onDelete }: Notificati
       <div className="flex-1 min-w-0 pr-5">
         {/* Top Tag & Time */}
         <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-          <span className={cn('px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider', typeMeta.tagClass)}>
+          <span
+            className={cn('px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider', typeMeta.tagClass)}
+          >
             {t(typeMeta.tagKey)}
           </span>
           {!notification.isRead && (
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-[#ff6900] shrink-0"
-              title={t('NOTIFICATION.UNREAD')}
-            />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ff6900] shrink-0" title={t('NOTIFICATION.UNREAD')} />
           )}
-          <span className="text-[11px] font-medium text-gray-400 dark:text-zinc-500">
-            • {timeString}
-          </span>
+          <span className="text-[11px] font-medium text-gray-400 dark:text-zinc-500">• {timeString}</span>
         </div>
 
         {/* Title */}

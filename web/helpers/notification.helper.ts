@@ -1,11 +1,14 @@
 import { TFunction } from 'i18next';
-import { NotificationType, NotificationItemData } from '../types';
+import { NotificationType, NotificationItemData } from '../features/notification/types';
+import { toDayjs } from '@/utils/time';
+import dayjs from 'dayjs';
 
 export const formatNotificationTime = (dateString: string, t: TFunction): string => {
+  if (!dateString) return '';
   try {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    const date = toDayjs(dateString);
+    const now = dayjs();
+    const diffInSeconds = Math.floor(Math.abs(now.diff(date, 'second')));
 
     if (diffInSeconds < 60) {
       return t('NOTIFICATION.TIME_JUST_NOW');
@@ -26,10 +29,7 @@ export const formatNotificationTime = (dateString: string, t: TFunction): string
       return t('NOTIFICATION.TIME_DAYS_AGO', { count: diffInDays });
     }
 
-    return date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-    });
+    return date.format('DD/MM/YYYY');
   } catch {
     return '';
   }

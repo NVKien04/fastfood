@@ -4,6 +4,13 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AllExceptionFilter } from '@/common/filter/all-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { types } from 'pg';
+
+// Chuẩn hóa PostgreSQL Driver: luôn parse TIMESTAMP (OID 1114) thành UTC Date chuẩn ISO 8601
+types.setTypeParser(1114, (stringValue: string) => {
+  if (!stringValue) return null;
+  return new Date(`${stringValue.replace(' ', 'T')}Z`);
+});
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

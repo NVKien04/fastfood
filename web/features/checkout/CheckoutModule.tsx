@@ -37,7 +37,7 @@ export const CheckoutModule = () => {
     <div className="w-full transition-colors">
       {/* Sticky Checkout Sub-Header Bar */}
       <div className="w-full bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md sticky top-27.5 z-30 transition-colors">
-        <div className="max-w-300 w-full mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 relative flex items-center justify-center">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 relative flex items-center justify-center">
           {/* 1. Left Side: Back Arrow Only */}
           <div className="absolute left-4 sm:left-6 lg:left-8 flex items-center">
             {step === 1 ? (
@@ -62,15 +62,13 @@ export const CheckoutModule = () => {
 
           {/* 2. Center: Large Title */}
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 dark:text-white tracking-tight text-center">
-            {step === 1
-              ? t('CART.MY_CART')
-              : t('CHECKOUT.DELIVERY_AND_PAYMENT')}
+            {step === 1 ? t('CART.MY_CART') : t('CHECKOUT.DELIVERY_AND_PAYMENT')}
           </h1>
         </div>
       </div>
 
       {/* Main Content Area (Khoảng cách trên bằng 0) */}
-      <div className="w-full max-w-300 mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-12 transition-colors">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-12 transition-colors">
         {/* Error Banner */}
         {errorMessage && (
           <div className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs font-semibold flex items-center gap-3">

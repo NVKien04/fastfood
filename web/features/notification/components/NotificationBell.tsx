@@ -32,22 +32,20 @@ export const NotificationBell = ({ className = '' }: NotificationBellProps) => {
     <div className={`relative ${className}`} ref={dropdownRef}>
       {/* Bell Trigger Button */}
       <Button
+        variant="default"
         type="button"
-        variant="ghost"
         size="icon"
         onClick={handleToggleOpen}
         aria-label={t('NAV.NOTIFICATIONS')}
-        className={`relative rounded-full text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white cursor-pointer select-none transition-colors ${
-          isOpen ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white' : ''
-        }`}
+        className={`relative h-9 w-9 rounded-full bg-white dark:bg-zinc-900 text-gray-700 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-800  cursor-pointer select-none transition-all active:scale-95`}
       >
-        <Bell className="w-5 h-5" />
+        <Bell className="size-4.5 text-gray-600 dark:text-zinc-400" />
 
         {/* Unread Indicator Badge with Pulsing Ping */}
         {unreadCount > 0 && (
-          <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
+          <span className="absolute top-1 right-1 flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff6900] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#ff6900]" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff6900]" />
           </span>
         )}
       </Button>

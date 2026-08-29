@@ -16,7 +16,6 @@ import {
   Moon,
   Laptop,
   Check,
-  Globe,
   Palette,
   PackageSearch,
   Headphones,
@@ -25,11 +24,13 @@ import {
   Ticket,
 } from 'lucide-react';
 import { useStore } from '@/stores';
-import { THEME, LANGUAGES, LanguageEnum, type Language } from '@/constants';
+import { THEME } from '@/constants';
 import { ApiMain } from '@/services/apis/main/api.main';
 import { formatVND } from '@/utils';
 import { NotificationBell } from '@/features/notification';
 import { DeliveryAddressModal } from '@/features/address';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { Button } from '@/components/ui/button';
 
 type HeaderProps = {
   className?: string;
@@ -37,25 +38,19 @@ type HeaderProps = {
   onAddressClick?: () => void;
 };
 
-export const Header = ({
-  className = '',
-  deliveryAddress: customDeliveryAddress,
-  onAddressClick,
-}: HeaderProps) => {
+export const Header = ({ className = '', deliveryAddress: customDeliveryAddress, onAddressClick }: HeaderProps) => {
   // 1. Next.js Router & navigation hooks
   const router = useRouter();
 
   // 2. Translation hook
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   // 3. Local state & refs
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState<boolean>(false);
   const [isThemeSubmenuOpen, setIsThemeSubmenuOpen] = useState<boolean>(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState<boolean>(false);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const languageRef = useRef<HTMLDivElement | null>(null);
 
   // 4. Zustand global state
   const user = useStore((s) => s.user);
@@ -64,7 +59,6 @@ export const Header = ({
   const cartTotalPrice = useStore((s) => s.getTotalPrice());
   const theme = useStore((s) => s.theme);
   const updateTheme = useStore((s) => s.updateTheme);
-  const updateLocale = useStore((s) => s.updateLocale);
   const storeDeliveryAddress = useStore((s) => s.deliveryAddress);
 
   const activeDeliveryAddress = customDeliveryAddress || storeDeliveryAddress;
@@ -76,14 +70,6 @@ export const Header = ({
     if (!user) return '';
     return user.fullName || user.email || t('NAV.PROFILE');
   }, [user, t]);
-
-  const currentLanguage = (i18n.language || 'vi').toLowerCase();
-
-  const currentLangLabel = useMemo(() => {
-    if (currentLanguage.startsWith('en')) return 'EN';
-    if (currentLanguage.startsWith('ja')) return 'JA';
-    return 'VI';
-  }, [currentLanguage]);
 
   const currentThemeLabel = useMemo(() => {
     switch (theme) {
@@ -105,9 +91,6 @@ export const Header = ({
         setIsMenuOpen(false);
         setIsThemeSubmenuOpen(false);
       }
-      if (languageRef.current && !languageRef.current.contains(target)) {
-        setIsLanguageOpen(false);
-      }
     };
     document.addEventListener('mousedown', _handleClickOutside);
     return () => {
@@ -119,10 +102,6 @@ export const Header = ({
   const _handleToggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
     setIsThemeSubmenuOpen(false);
-  }, []);
-
-  const _handleToggleLanguage = useCallback(() => {
-    setIsLanguageOpen((prev) => !prev);
   }, []);
 
   const _handleNavigate = useCallback(
@@ -146,11 +125,6 @@ export const Header = ({
       router.push('/login');
     }
   }, [router]);
-
-  const _handleLanguageChange = (lang: Language) => {
-    updateLocale(lang);
-    setIsLanguageOpen(false);
-  };
 
   const _handleThemeChange = (newTheme: THEME) => {
     updateTheme(newTheme);
@@ -180,9 +154,7 @@ export const Header = ({
               <span className="text-2xl sm:text-[28px] font-black tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-[#ff6900] transition-colors">
                 KeiPizza
               </span>
-              <span className="text-[11px] text-gray-500 dark:text-zinc-400 font-medium">
-                {t('NAV.STORES_COUNT')}
-              </span>
+              <span className="text-[11px] text-gray-500 dark:text-zinc-400 font-medium">{t('NAV.STORES_COUNT')}</span>
             </div>
           </Link>
 
@@ -205,9 +177,7 @@ export const Header = ({
               <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-zinc-500 group-hover:text-[#ff6900] transition-colors shrink-0" />
             </div>
             <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-zinc-400 mt-1">
-              <span className="font-bold text-gray-800 dark:text-zinc-300">
-                {t('NAV.DELIVERY_TIME')}
-              </span>
+              <span className="font-bold text-gray-800 dark:text-zinc-300">{t('NAV.DELIVERY_TIME')}</span>
               <span>•</span>
               <span className="flex items-center gap-0.5 text-amber-500 font-bold">4.8 ★</span>
             </div>
@@ -222,57 +192,9 @@ export const Header = ({
           <NotificationBell />
 
           {/* ========================================================= */}
-          {/* Language Selector (Tách ra bên ngoài Header) */}
+          {/* Language Selector */}
           {/* ========================================================= */}
-          <div className="relative" ref={languageRef}>
-            <button
-              type="button"
-              onClick={_handleToggleLanguage}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-800 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
-              aria-label={t('NAV.SELECT_LANGUAGE')}
-            >
-              <Globe className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
-              <span className="tracking-wide font-extrabold">{currentLangLabel}</span>
-              <ChevronDown
-                className={`w-3 h-3 text-gray-400 dark:text-zinc-500 transition-transform duration-200 ${
-                  isLanguageOpen ? 'rotate-180 text-gray-900 dark:text-white' : ''
-                }`}
-              />
-            </button>
-
-            {/* Language Dropdown Menu (Trắng đen tối giản) */}
-            {isLanguageOpen && (
-              <div className="absolute right-0 mt-2 w-44 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-xl shadow-black/10 dark:shadow-black/60 p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 select-none">
-                <div className="space-y-0.5">
-                  {LANGUAGES.map((lang) => {
-                    const isSelected =
-                      currentLanguage === lang.code ||
-                      (lang.code === LanguageEnum.VI && currentLanguage.startsWith('vi')) ||
-                      (lang.code === LanguageEnum.EN && currentLanguage.startsWith('en')) ||
-                      (lang.code === LanguageEnum.JA && currentLanguage.startsWith('ja'));
-
-                    return (
-                      <button
-                        key={lang.code}
-                        type="button"
-                        onClick={() => _handleLanguageChange(lang.code)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-                          isSelected
-                            ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white font-bold'
-                            : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800/60'
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <span>{lang.name}</span>
-                        </span>
-                        {isSelected && <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
+          <LanguageSwitcher variant="compact" />
 
           {/* Orange Cart Pill Button with Badge on Top-Right Corner */}
           <Link
@@ -300,20 +222,31 @@ export const Header = ({
           {/* User / Navigation Menu Trigger Button */}
           {/* ========================================================= */}
           <div className="relative" ref={menuRef}>
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={_handleToggleMenu}
-              className="flex items-center gap-2 px-3 py-2 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
+              aria-expanded={isMenuOpen}
+              aria-label={t('NAV.MENU', { defaultValue: 'Menu' })}
+              className="flex items-center gap-2 px-3 py-2 h-9 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
             >
               <Menu className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
               <div className="relative w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-600 dark:text-zinc-300 overflow-hidden">
                 {isLoggedIn && user?.avatar ? (
-                  <Image src={user.avatar} alt={userDisplayName} fill sizes="24px" className="object-cover" unoptimized />
+                  <Image
+                    src={user.avatar}
+                    alt={userDisplayName}
+                    fill
+                    sizes="24px"
+                    className="object-cover"
+                    unoptimized
+                  />
                 ) : (
                   <UserIcon className="w-3.5 h-3.5 text-gray-600 dark:text-zinc-400" />
                 )}
               </div>
-            </button>
+            </Button>
 
             {/* ========================================================= */}
             {/* User Dropdown Menu (Màu sắc tối giản Trắng Đen) */}
@@ -324,63 +257,73 @@ export const Header = ({
                   {/* 1. Trạng thái Auth: Tài khoản (auth=true) hoặc Đăng nhập/Đăng ký (auth=false) */}
                   {isLoggedIn ? (
                     /* Khi đã đăng nhập: Mục "Tài khoản" dạng list item đơn giản */
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="sm"
                       onClick={() => _handleNavigate('/profile')}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                      className="w-full h-9 flex items-center justify-start gap-3 px-3 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                     >
                       <UserIcon className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                       <span className="truncate">{userDisplayName}</span>
-                    </button>
+                    </Button>
                   ) : (
                     /* Khi chưa đăng nhập: Mục "Đăng nhập" & "Đăng ký" */
                     <>
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => _handleNavigate('/login')}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                        className="w-full h-9 flex items-center justify-start gap-3 px-3 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                       >
                         <LogIn className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                         <span>{t('NAV.LOGIN')}</span>
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => _handleNavigate('/register')}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                        className="w-full h-9 flex items-center justify-start gap-3 px-3 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                       >
                         <UserPlus className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                         <span>{t('NAV.REGISTER')}</span>
-                      </button>
+                      </Button>
                     </>
                   )}
 
                   {/* 2. Đơn hàng của tôi / Theo dõi đơn hàng */}
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => _handleNavigate(isLoggedIn ? '/orders' : '/login')}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                    className="w-full h-9 flex items-center justify-start gap-3 px-3 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     <PackageSearch className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                     <span>{t('NAV.TRACK_ORDER')}</span>
-                  </button>
+                  </Button>
 
                   {/* 3. Ví Voucher / Mã giảm giá */}
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => _handleNavigate(isLoggedIn ? '/vouchers' : '/login')}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                    className="w-full h-9 flex items-center justify-start gap-3 px-3 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     <Ticket className="w-4 h-4 text-[#ff6900]" />
                     <span className="flex-1 text-left">{t('NAV.VOUCHERS')}</span>
-                    <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400">
+                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400">
                       HOT
                     </span>
-                  </button>
+                  </Button>
 
                   {/* 4. Hỗ trợ khách hàng */}
                   <a
                     href="tel:19001822"
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-colors cursor-pointer"
                   >
                     <Headphones className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
                     <span>{t('NAV.CUSTOMER_SUPPORT')}</span>
@@ -388,10 +331,12 @@ export const Header = ({
 
                   {/* 4. Giao diện (Menu Cấp 2) */}
                   <div className="pt-0.5">
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setIsThemeSubmenuOpen((prev) => !prev)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${
+                      className={`w-full h-9 flex items-center justify-between px-3 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${
                         isThemeSubmenuOpen
                           ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
                           : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-800'
@@ -409,16 +354,18 @@ export const Header = ({
                           }`}
                         />
                       </span>
-                    </button>
+                    </Button>
 
                     {/* Submenu cấp 2 mở rộng bên dưới */}
                     {isThemeSubmenuOpen && (
                       <div className="mt-1 ml-2 pl-2 border-l border-gray-250 dark:border-zinc-800 space-y-0.5 animate-in fade-in slide-in-from-top-1 duration-150">
                         {/* Sáng */}
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="sm"
                           onClick={() => _handleThemeChange('light')}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                          className={`w-full h-9 flex items-center justify-between px-3 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                             theme === 'light'
                               ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
                               : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
@@ -431,13 +378,15 @@ export const Header = ({
                           {theme === 'light' && (
                             <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
                           )}
-                        </button>
+                        </Button>
 
                         {/* Tối */}
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="sm"
                           onClick={() => _handleThemeChange('dark')}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                          className={`w-full h-9 flex items-center justify-between px-3 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                             theme === 'dark'
                               ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
                               : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
@@ -450,13 +399,15 @@ export const Header = ({
                           {theme === 'dark' && (
                             <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
                           )}
-                        </button>
+                        </Button>
 
                         {/* Hệ thống */}
-                        <button
+                        <Button
                           type="button"
+                          variant="ghost"
+                          size="sm"
                           onClick={() => _handleThemeChange('system')}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+                          className={`w-full h-9 flex items-center justify-between px-3 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                             theme === 'system'
                               ? 'bg-gray-100 dark:bg-zinc-800 text-gray-900 dark:text-white'
                               : 'text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800'
@@ -469,7 +420,7 @@ export const Header = ({
                           {theme === 'system' && (
                             <Check className="w-3.5 h-3.5 text-gray-900 dark:text-white stroke-[2.5]" />
                           )}
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -477,14 +428,16 @@ export const Header = ({
                   {/* 5. Đăng xuất (Cuối cùng khi đã đăng nhập) */}
                   {isLoggedIn && (
                     <div className="pt-1 mt-1 border-t border-gray-100 dark:border-zinc-800">
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={_handleLogout}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors cursor-pointer"
+                        className="w-full h-9 flex items-center justify-start gap-3 px-3 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors cursor-pointer"
                       >
                         <LogOut className="w-4 h-4 text-red-600 dark:text-red-400" />
                         <span>{t('NAV.LOGOUT')}</span>
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -495,10 +448,7 @@ export const Header = ({
       </div>
 
       {/* Delivery Address Selection & Creation Modal */}
-      <DeliveryAddressModal
-        isOpen={isAddressModalOpen}
-        onClose={() => setIsAddressModalOpen(false)}
-      />
+      <DeliveryAddressModal isOpen={isAddressModalOpen} onClose={() => setIsAddressModalOpen(false)} />
     </header>
   );
 };
