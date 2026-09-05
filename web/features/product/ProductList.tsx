@@ -7,7 +7,8 @@ import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { categoryToSlug, getCategoryTranslationKey, formatCategoryName } from '@/helpers';
 import { Button } from '@/components/ui/button';
-import { Utensils, Loader2 } from 'lucide-react';
+import { Utensils } from 'lucide-react';
+import { Loading } from '@/components/Loading';
 import { useProductMenu } from './hooks/useProductMenu';
 
 export const ProductList = () => {
@@ -54,14 +55,7 @@ export const ProductList = () => {
       {/* 2. Main Content Container */}
       <main className="flex-1 max-w-[1200px] w-full mx-auto px-4 py-6 sm:py-8">
         {/* Loading State */}
-        {isLoading && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-red-600 mb-3" />
-            <p className="text-sm font-medium text-gray-500 dark:text-zinc-400">
-              {t('COMMON.LOADING')}
-            </p>
-          </div>
-        )}
+        {isLoading && <Loading text={t('COMMON.LOADING')} />}
 
         {/* Error State */}
         {!isLoading && productError && (

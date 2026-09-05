@@ -6,8 +6,9 @@ import { OrderCard } from './components/OrderCard';
 import { OrderCancelModal } from './components/OrderCancelModal';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Package, Search, ShoppingBag, Loader2, RefreshCw } from 'lucide-react';
+import { Package, Search, ShoppingBag, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
+import { Loading } from '@/components/Loading';
 
 export const MyOrders = () => {
   const { t } = useTranslation();
@@ -112,12 +113,7 @@ export const MyOrders = () => {
 
       {/* 3. Orders List or Empty State */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ff6900] mb-3" />
-          <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
-            {t('ORDER.LOADING_ORDERS')}
-          </p>
-        </div>
+        <Loading text={t('ORDER.LOADING_ORDERS')} />
       ) : orders.length > 0 ? (
         <div className="space-y-6">
           {orders.map((order) => (

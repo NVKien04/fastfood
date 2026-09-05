@@ -9,6 +9,7 @@ import { BYPASS_KEY } from '@/common/decorators';
 export class ApiResponseInterceptor<T> implements NestInterceptor<T, unknown> {
   constructor(private readonly reflector: Reflector) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   intercept(context: ExecutionContext, next: CallHandler): Observable<ApiResponseDto<T> | unknown> {
     // Kiểm tra @Bypass() decorator → bỏ qua auto-wrap
     const isBypassed = this.reflector.get<boolean>(BYPASS_KEY, context.getHandler());

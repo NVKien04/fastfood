@@ -5,21 +5,15 @@ import { useProfile } from './hooks/useProfile';
 import { AvatarUpload } from './AvatarUpload';
 import { ProfileForm } from './components/ProfileForm';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, Sparkles, Loader2 } from 'lucide-react';
+import { ShieldCheck, Sparkles } from 'lucide-react';
+import { Loading } from '@/components/Loading';
 
 export const UserProfile = () => {
   const { t } = useTranslation();
   const { form, user, profileData, isProfileLoading, isUpdating, statusMessage, onSubmit } = useProfile();
 
   if (isProfileLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <Loader2 className="w-8 h-8 animate-spin text-red-600 mb-3" />
-        <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
-          {t('PROFILE.LOADING_PROFILE')}
-        </p>
-      </div>
-    );
+    return <Loading text={t('PROFILE.LOADING_PROFILE')} />;
   }
 
   return (

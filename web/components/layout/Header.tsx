@@ -199,10 +199,10 @@ export const Header = ({ className = '', deliveryAddress: customDeliveryAddress,
           {/* Orange Cart Pill Button with Badge on Top-Right Corner */}
           <Link
             href="/checkout"
-            className="relative flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-[#ff6900] hover:bg-[#e05d00] active:scale-95 text-white font-black text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all cursor-pointer select-none"
+            className="relative flex items-center gap-2 px-3.5 sm:px-4 h-9 rounded-full bg-[#ff6900] hover:bg-[#e05d00] active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all cursor-pointer select-none shrink-0"
           >
-            <ShoppingBag className="w-4 h-4 text-white" />
-            <span>
+            <ShoppingBag className="w-4 h-4 text-white shrink-0" />
+            <span className="leading-none">
               {cartTotalPrice > 0
                 ? formatVND(cartTotalPrice)
                 : cartTotalCount > 0
@@ -212,7 +212,7 @@ export const Header = ({ className = '', deliveryAddress: customDeliveryAddress,
 
             {/* Badge on Top-Right Corner of the Button */}
             {cartTotalCount > 0 && (
-              <span className="absolute -top-2 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-black flex items-center justify-center shadow-md border-2 border-white dark:border-zinc-900 leading-none">
+              <span className="absolute -top-1.5 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-black flex items-center justify-center shadow-md border-2 border-white dark:border-zinc-900 leading-none">
                 {cartTotalCount}
               </span>
             )}
@@ -221,7 +221,7 @@ export const Header = ({ className = '', deliveryAddress: customDeliveryAddress,
           {/* ========================================================= */}
           {/* User / Navigation Menu Trigger Button */}
           {/* ========================================================= */}
-          <div className="relative" ref={menuRef}>
+          <div className="relative shrink-0" ref={menuRef}>
             <Button
               type="button"
               variant="outline"
@@ -229,7 +229,7 @@ export const Header = ({ className = '', deliveryAddress: customDeliveryAddress,
               onClick={_handleToggleMenu}
               aria-expanded={isMenuOpen}
               aria-label={t('NAV.MENU', { defaultValue: 'Menu' })}
-              className="flex items-center gap-2 px-3 py-2 h-9 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
+              className="flex items-center gap-2 px-3 h-9 rounded-full border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 text-gray-700 dark:text-zinc-200 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer select-none"
             >
               <Menu className="w-4 h-4 text-gray-600 dark:text-zinc-400" />
               <div className="relative w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-600 dark:text-zinc-300 overflow-hidden">

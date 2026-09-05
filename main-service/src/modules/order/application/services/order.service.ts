@@ -436,44 +436,27 @@ export class OrderService {
     });
   }
 
-  /**
-   * Sinh mã đơn hàng duy nhất sử dụng Redis atomic increment.
-   * Format: FF-YYYYMMDD-000001 (prefix + ngày + số thứ tự 6 chữ số)
-   */
   private async generateOrderNumber(): Promise<string> {
     const today = new Date();
     const dateStr = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
     const key = `${REDIS_KEYS.ORDER.SEQUENCE}:${dateStr}`;
     const seq = await this.cacheService.incr(key);
-    // TTL 48h để tự dọn key cũ, đủ buffer cho ngày hôm sau
     await this.cacheService.expire(key, 172800);
     return `FF-${dateStr}-${String(seq).padStart(6, '0')}`;
   }
 
-  /**
-   * Validate thông tin giao hàng nhập từ trình duyệt:
-   * Bắt buộc phải có địa chỉ nhận hàng (guestAddress) và số điện thoại người nhận (guestPhone).
-   */
   private validateDeliveryInfo(dto: CreateOrderDto): void {
     if (!dto.guestAddress || !dto.guestPhone) {
       throw new BusinessException(ErrorEnum.ORDER_DELIVERY_INFO_REQUIRED);
     }
   }
 
-  /**
-   * Kiểm tra quyền sở hữu đơn hàng.
-   * - Admin: được phép truy cập tất cả.
-   * - User thường: chỉ truy cập đơn hàng do chính mình tạo.
-   */
   private assertOrderOwnership(order: Order, currentUser: AuthUser): void {
     if (currentUser.role !== 'admin' && order.userId !== currentUser.userId) {
       throw new BusinessException(ErrorEnum.ORDER_ACCESS_DENIED);
     }
   }
 
-  /**
-   * Validate chuyển trạng thái đơn hàng theo State Machine.
-   */
   private assertValidTransition(currentStatus: OrderStatus, newStatus: OrderStatus): void {
     const allowed = VALID_TRANSITIONS[currentStatus];
     if (!allowed || !allowed.includes(newStatus)) {

@@ -22,7 +22,7 @@ const buttonVariants = cva(
           'bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
         link: 'text-primary underline-offset-4 hover:underline decoration-primary',
         'icon-circular':
-          'rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-800 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 active:bg-gray-100 dark:active:bg-zinc-600',
+          'rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-800 dark:text-zinc-200 hover:bg-gray-50 dark:hover:bg-zinc-700 active:bg-gray-100 dark:active:bg-zinc-600 shadow-xs',
       },
       size: {
         default:
@@ -36,6 +36,12 @@ const buttonVariants = cva(
         'icon-lg': 'size-12 rounded-md',
       },
     },
+    compoundVariants: [
+      {
+        variant: 'icon-circular',
+        className: 'rounded-full',
+      },
+    ],
     defaultVariants: {
       variant: 'default',
       size: 'default',

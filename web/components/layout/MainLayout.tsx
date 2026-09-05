@@ -1,16 +1,16 @@
 'use client';
 
-import * as React from 'react';
+import { ReactNode } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
 type MainLayoutProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   showCategoryBar?: boolean;
   className?: string;
 };
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ children, className = '' }) => {
+export const MainLayout = ({ children, className = '' }: MainLayoutProps) => {
   return (
     <div className="min-h-screen flex flex-col bg-[#fdfdfd] dark:bg-zinc-950 text-gray-900 dark:text-zinc-100 font-sans transition-colors">
       {/* 1. Header (72px) */}

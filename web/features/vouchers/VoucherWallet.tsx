@@ -3,8 +3,9 @@
 import { useTranslation } from 'react-i18next';
 import { useVouchers, VoucherFilterTab } from './hooks/useVouchers';
 import { VoucherCard } from './components/VoucherCard';
-import { Sparkles, Search, RefreshCw, Loader2, Gift } from 'lucide-react';
+import { Sparkles, Search, RefreshCw, Gift } from 'lucide-react';
 import Link from 'next/link';
+import { Loading } from '@/components/Loading';
 
 export const VoucherWallet = () => {
   const { t } = useTranslation();
@@ -97,10 +98,7 @@ export const VoucherWallet = () => {
 
       {/* 3. Vouchers List */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-[#ff6900] mb-3" />
-          <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">{t('VOUCHER.LOADING_VOUCHERS')}</p>
-        </div>
+        <Loading text={t('VOUCHER.LOADING_VOUCHERS')} />
       ) : vouchers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {vouchers.map((voucher) => (

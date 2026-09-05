@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { MapPin, Plus, Trash2, Home, X, Check } from 'lucide-react';
@@ -58,7 +58,7 @@ export const DeliveryAddressModal = ({ isOpen, onClose }: DeliveryAddressModalPr
     onClose();
   };
 
-  const handleDeleteAddress = async (id: string, e: React.MouseEvent) => {
+  const handleDeleteAddress = async (id: string, e: MouseEvent) => {
     e.stopPropagation();
     try {
       await deleteAddressMutation.mutateAsync(id);
@@ -67,7 +67,7 @@ export const DeliveryAddressModal = ({ isOpen, onClose }: DeliveryAddressModalPr
     }
   };
 
-  const handleSetDefault = async (addr: (typeof savedAddresses)[0], e: React.MouseEvent) => {
+  const handleSetDefault = async (addr: (typeof savedAddresses)[0], e: MouseEvent) => {
     e.stopPropagation();
     try {
       await updateAddressMutation.mutateAsync({

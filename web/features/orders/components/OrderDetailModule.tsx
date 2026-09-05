@@ -18,10 +18,10 @@ import {
   Utensils,
   Sparkles,
   MessageSquare,
-  Loader2,
   RefreshCw,
   ShoppingBag,
 } from 'lucide-react';
+import { Loading } from '@/components/Loading';
 import { useOrderDetail } from '@/services/react-query/queries/order';
 import { useCancelOrder } from '@/services/react-query/mutations/order';
 import { OrderProgressStepper } from './OrderProgressStepper';
@@ -78,14 +78,7 @@ export const OrderDetailModule = ({ params }: OrderDetailModuleProps) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col items-center justify-center text-center">
-        <Loader2 className="w-9 h-9 animate-spin text-[#ff6900] mb-3" />
-        <p className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
-          {t('ORDER.LOADING_ORDERS', { defaultValue: 'Đang tải chi tiết đơn hàng...' })}
-        </p>
-      </div>
-    );
+    return <Loading text={t('ORDER.LOADING_ORDERS', { defaultValue: 'Đang tải chi tiết đơn hàng...' })} />;
   }
 
   if (!order) {
