@@ -8,7 +8,6 @@ import { ChangePasswordDto, LoginDto, LoginResponseDto } from '@/modules/auth/pr
 import { CreateUserDto, UserResponseDto } from '@/modules/user/presentation/dto';
 import { Auth } from '@/common/decorators';
 import { GoogleAuthGuard } from '@/guards';
-import { RoleEnum } from '@/enums';
 import ms, { StringValue } from 'ms';
 import { type AuthUser } from '@/modules/auth/domain/interface/auth.interface';
 
@@ -141,27 +140,5 @@ export class AuthController {
     const userId = req.user.userId;
     await this.authService.changePassword(userId, data);
     return { message: 'Thay đổi mật khẩu thành công' };
-  }
-
-  @Auth(RoleEnum.CUSTOMER)
-  @ApiBearerAuth()
-  @Post('test-customer')
-  @ApiOperation({ summary: 'Test truy cập với quyền CUSTOMER' })
-  testCustomer(@Request() req: AuthenticatedRequest) {
-    return {
-      message: 'Truy cập role CUSTOMER thành công',
-      user: req.user,
-    };
-  }
-
-  @Auth(RoleEnum.ADMIN)
-  @ApiBearerAuth()
-  @Post('test-admin')
-  @ApiOperation({ summary: 'Test truy cập với quyền ADMIN' })
-  testAdmin(@Request() req: AuthenticatedRequest) {
-    return {
-      message: 'Truy cập role ADMIN thành công',
-      user: req.user,
-    };
   }
 }

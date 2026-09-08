@@ -5,11 +5,18 @@ import QueryProvider from './QueryProvider';
 import { AuthProvider } from './AuthProvider';
 import { I18nProvider } from './I18nProvider';
 import { ThemeProvider } from './ThemeProvider';
+import { Theme, Language } from '@/constants';
 
-export default function Provider({ children }: { children: ReactNode }) {
+type ProviderProps = {
+  children: ReactNode;
+  initialLocale?: Language;
+  initialTheme?: Theme;
+};
+
+export default function Provider({ children, initialLocale, initialTheme }: ProviderProps) {
   return (
-    <ThemeProvider>
-      <I18nProvider>
+    <ThemeProvider initialTheme={initialTheme}>
+      <I18nProvider initialLocale={initialLocale}>
         <QueryProvider>
           <AuthProvider>{children}</AuthProvider>
         </QueryProvider>
@@ -17,3 +24,4 @@ export default function Provider({ children }: { children: ReactNode }) {
     </ThemeProvider>
   );
 }
+

@@ -6,7 +6,7 @@ import vi from '@/locales/vi.json';
 import en from '@/locales/en.json';
 import ja from '@/locales/ja.json';
 
-import { LANGUAGES, SupportedLanguage, DEFAULT_LANGUAGE_FALLBACK } from '@/constants';
+import { LANGUAGES, SupportedLanguage, DEFAULT_LANGUAGE_FALLBACK, COOKIE_KEYS } from '@/constants';
 export { LANGUAGES, type SupportedLanguage };
 
 export const resources = {
@@ -33,10 +33,11 @@ if (!i18n.isInitialized) {
       defaultNS: 'translation',
       fallbackNS: 'translation',
       detection: {
-        order: ['localStorage', 'cookie', 'navigator'],
+        order: ['cookie', 'localStorage', 'navigator'],
+        lookupCookie: COOKIE_KEYS.LOCALE,
         lookupLocalStorage: 'i18nextLng',
-        lookupCookie: 'i18next',
-        caches: ['localStorage'],
+        caches: ['cookie', 'localStorage'],
+        cookieMinutes: 60 * 24 * 365,
       },
       interpolation: {
         escapeValue: false,

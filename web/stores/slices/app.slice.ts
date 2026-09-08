@@ -1,6 +1,16 @@
 import { SliceCreator } from '../type';
 import i18n from '@/configs/i18n';
-import { Language, THEME, DEFAULT_LANGUAGE, DEFAULT_THEME } from '@/constants';
+import {
+  Language,
+  THEME,
+  DEFAULT_LANGUAGE,
+  DEFAULT_THEME,
+  ThemeEnum,
+  LanguageEnum,
+  COOKIE_KEYS,
+} from '@/constants';
+import { getCookie, setCookie } from '@/utils/cookie';
+import { setThemeCookie, setLocaleCookie } from '@/actions/cookie';
 
 export type { Language, THEME };
 
@@ -26,19 +36,43 @@ const applyThemeToDOM = (theme: THEME) => {
   }
 };
 
+const getInitialTheme = (): THEME => {
+  if (typeof document !== 'undefined') {
+    const cookieTheme = getCookie(COOKIE_KEYS.THEME);
+    if (cookieTheme && Object.values(ThemeEnum).includes(cookieTheme as ThemeEnum)) {
+      return cookieTheme as THEME;
+    }
+  }
+  return DEFAULT_THEME;
+};
+
+const getInitialLocale = (): Language => {
+  if (typeof document !== 'undefined') {
+    const cookieLocale = getCookie(COOKIE_KEYS.LOCALE);
+    if (cookieLocale && Object.values(LanguageEnum).includes(cookieLocale as LanguageEnum)) {
+      return cookieLocale as Language;
+    }
+  }
+  return DEFAULT_LANGUAGE;
+};
+
 export const createAppSlice: SliceCreator<AppSlice> = (set) => ({
-  locale: DEFAULT_LANGUAGE,
-  theme: DEFAULT_THEME,
+  locale: getInitialLocale(),
+  theme: getInitialTheme(),
   deliveryAddress: 'Đường Trương Định/Ngõ 58 Tổ 10D, Tương Mai, Hoàng Mai, Hà Nội',
 
   updateTheme: (payload: AppSlice['theme']) => {
     applyThemeToDOM(payload);
+    setCookie(COOKIE_KEYS.THEME, payload);
+    setThemeCookie(payload).catch(() => {});
     set((state) => {
       state.theme = payload;
     });
   },
 
   updateLocale: (payload: AppSlice['locale']) => {
+    setCookie(COOKIE_KEYS.LOCALE, payload);
+    setLocaleCookie(payload).catch(() => {});
     if (typeof window !== 'undefined' && i18n.isInitialized) {
       i18n.changeLanguage(payload);
     }
@@ -53,3 +87,4 @@ export const createAppSlice: SliceCreator<AppSlice> = (set) => ({
     });
   },
 });
+

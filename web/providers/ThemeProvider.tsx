@@ -2,13 +2,23 @@
 
 import { useEffect, ReactNode } from 'react';
 import { useStore } from '@/stores';
+import { Theme } from '@/constants';
 
 type ThemeProviderProps = {
   children: ReactNode;
+  initialTheme?: Theme;
 };
 
-export const ThemeProvider = ({ children }: ThemeProviderProps) => {
+export const ThemeProvider = ({ children, initialTheme }: ThemeProviderProps) => {
   const theme = useStore((s) => s.theme);
+  const updateTheme = useStore((s) => s.updateTheme);
+
+  // Đồng bộ theme từ server cookie khi khởi tạo
+  useEffect(() => {
+    if (initialTheme && useStore.getState().theme !== initialTheme) {
+      updateTheme(initialTheme);
+    }
+  }, [initialTheme, updateTheme]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
